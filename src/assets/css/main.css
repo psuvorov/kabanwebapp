@@ -1,0 +1,116 @@
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+}
+
+.page-container {
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100vh;
+}
+.page-item {
+    margin: 5px;
+    padding: 5px;
+    flex: 0 1 auto;
+}
+.page-item:nth-child(2) {
+    flex: 1 1 auto;
+}
+
+
+
+
+.top-menu-row {
+    display: flex;
+    height: 40px;
+    justify-content: space-between;
+    border: 1px solid;
+}
+.top-menu-item {
+    margin: 5px;
+    flex: 0 1 auto;
+}
+
+
+.bottom-menu-row {
+    display: flex;
+    height: 40px;
+    justify-content: space-between;
+    border: 1px solid;
+}
+.bottom-menu-item {
+    margin: 5px;
+    flex: 0 1 auto;
+}
+
+
+
+.list {
+    border: 1px solid;
+    width: 240px;
+}
+
+.list .list-header {
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
+}
+
+.list-header .list-caption {
+    flex: 0 1 auto;
+}
+
+.list-header .list-menu {
+    flex: 0 1 auto;
+}
+
+.list-header .list-menu span {
+    cursor: pointer;
+}
+
+
+.content-area .list-container {
+    display: flex;
+
+}
+
+.list-container .list {
+    padding: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    flex: 0 1 auto;
+}
+
+.list-container .list:first-child {
+    margin-left: 0px;
+}
+
+.list-container .list:last-child {
+    margin-right: 0px;
+}
+
+.list-container .fake-list {
+    height: 18px;
+}
+
+.list .list-cards {
+    border: 1px solid;
+}
+
+.list-cards .list-card {
+    border: 1px solid;
+}
+
+
+.list .card-composer span,
+.fake-list span{
+    cursor: pointer;
+}
+
+
+.card-composer {
+    margin-top: 10px;
+}
+

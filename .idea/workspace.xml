@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b3617a-e4bc-49de-8c5e-24d0d814cdf4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+    <list default="true" id="40b3617a-e4bc-49de-8c5e-24d0d814cdf4" name="Default Changelist" comment="Basic project structure">
+      <change afterPath="$PROJECT_DIR$/Page drafts.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/css/reset.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/img/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/board.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/js/modules/boards/boards.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/js/modules/dashboard/dashboard.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/js/modules/home/home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gulpfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/gulpfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/main.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,14 +26,21 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="CSS File" />
         <option value="HTML File" />
         <option value="JavaScript File" />
-        <option value="CSS File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/../.idea" />
+      </set>
+    </option>
   </component>
   <component name="ProjectId" id="1aDb3GpHy4rFoVHU0cpzxe0Mrrl" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -31,15 +52,23 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../src/assets/css" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/assets/css" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/pages" />
+      <recent name="$PROJECT_DIR$/src/assets" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/assets/css" />
       <recent name="$PROJECT_DIR$/../src/assets/css" />
     </key>
   </component>
@@ -54,29 +83,54 @@
       <option name="presentableId" value="Default" />
       <updated>1586272911051</updated>
       <workItem from="1586272914614" duration="4000" />
-      <workItem from="1586273201100" duration="1684000" />
+      <workItem from="1586273201100" duration="4559000" />
+      <workItem from="1586329446269" duration="21422000" />
     </task>
+    <task id="LOCAL-00001" summary="Initial commit">
+      <created>1586275026522</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1586275026522</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/.." />
+    </ignored-roots>
+    <MESSAGE value="Initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
+  </component>
   <component name="WindowStateProjectService">
-    <state width="1846" height="278" key="GridCell.Tab.0.bottom" timestamp="1586273746943">
+    <state x="544" y="151" width="872" height="803" key="CommitChangelistDialog2" timestamp="1586359838989">
       <screen x="51" y="27" width="1869" height="1053" />
     </state>
-    <state width="1846" height="278" key="GridCell.Tab.0.bottom/51.27.1869.1053@51.27.1869.1053" timestamp="1586273746943" />
-    <state width="1846" height="278" key="GridCell.Tab.0.center" timestamp="1586273746942">
+    <state x="544" y="151" width="872" height="803" key="CommitChangelistDialog2/51.27.1869.1053@51.27.1869.1053" timestamp="1586359838989" />
+    <state width="1846" height="278" key="GridCell.Tab.0.bottom" timestamp="1586293200653">
       <screen x="51" y="27" width="1869" height="1053" />
     </state>
-    <state width="1846" height="278" key="GridCell.Tab.0.center/51.27.1869.1053@51.27.1869.1053" timestamp="1586273746942" />
-    <state width="1846" height="278" key="GridCell.Tab.0.left" timestamp="1586273746941">
+    <state width="1846" height="278" key="GridCell.Tab.0.bottom/51.27.1869.1053@51.27.1869.1053" timestamp="1586293200653" />
+    <state width="1846" height="278" key="GridCell.Tab.0.center" timestamp="1586293200652">
       <screen x="51" y="27" width="1869" height="1053" />
     </state>
-    <state width="1846" height="278" key="GridCell.Tab.0.left/51.27.1869.1053@51.27.1869.1053" timestamp="1586273746941" />
-    <state width="1846" height="278" key="GridCell.Tab.0.right" timestamp="1586273746942">
+    <state width="1846" height="278" key="GridCell.Tab.0.center/51.27.1869.1053@51.27.1869.1053" timestamp="1586293200652" />
+    <state width="1846" height="278" key="GridCell.Tab.0.left" timestamp="1586293200651">
       <screen x="51" y="27" width="1869" height="1053" />
     </state>
-    <state width="1846" height="278" key="GridCell.Tab.0.right/51.27.1869.1053@51.27.1869.1053" timestamp="1586273746942" />
+    <state width="1846" height="278" key="GridCell.Tab.0.left/51.27.1869.1053@51.27.1869.1053" timestamp="1586293200651" />
+    <state width="1846" height="278" key="GridCell.Tab.0.right" timestamp="1586293200652">
+      <screen x="51" y="27" width="1869" height="1053" />
+    </state>
+    <state width="1846" height="278" key="GridCell.Tab.0.right/51.27.1869.1053@51.27.1869.1053" timestamp="1586293200652" />
+    <state x="474" y="187" key="SettingsEditor" timestamp="1586329479865">
+      <screen x="51" y="27" width="1869" height="1053" />
+    </state>
+    <state x="474" y="187" key="SettingsEditor/51.27.1869.1053@51.27.1869.1053" timestamp="1586329479865" />
   </component>
 </project>
