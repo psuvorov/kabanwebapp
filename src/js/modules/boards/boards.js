@@ -1,7 +1,5 @@
 const boards = () => {
 
-
-
     const listContainerElem = document.querySelector(".list-container");
 
     const addCardLink = document.querySelector(".fake-list span");
@@ -15,7 +13,7 @@ const boards = () => {
             return;
 
         const newList = document.createElement("div");
-        newList.classList.add("list");
+        newList.classList.add("animated", "fadeIn", "list");
         // TODO: set id after successful write to db
         //newList.setAttribute("data-list-id", "");
         newList.innerHTML = `
@@ -54,19 +52,48 @@ const boards = () => {
 
     listContainerElem.addEventListener("click", function(e) {
         if (e.target && e.target.parentElement && e.target.parentElement.classList.contains("card-composer")) {
+            // "+ Add a card" was clicked
             const cardName = prompt();
-            createNewCard(e.target.parentElement.parentElement.parentElement, cardName);
+            createNewCard(e.target.parentElement.parentElement, cardName);
         }
     });
 
-    const createNewCard = (listCardsElem, cardName) => {
+    listContainerElem.addEventListener("dragstart", function(e) {
+        if (e.target.classList.contains("list-card")) {
+            // List card started dragging
+            //e.dataTransfer.setData("text", e.target.id);
+
+        }
+    });
+
+    listContainerElem.addEventListener("dragover", function(e) {
+        e.preventDefault();
+    });
+
+    listContainerElem.addEventListener("drop", function(e) {
+        e.preventDefault();
+
+        const targetList = e.target.closest(".list");
+        if (targetList) {
+            // console.log(targetList);
+            // var data = e.dataTransfer.getData("text");
+            // console.log(data);
+        }
+
+
+    });
+
+
+    const createNewCard = (listElem, cardName) => {
         if (!cardName)
             return;
 
-        const listCards = listCardsElem.querySelector(".list-cards");
+        const listCards = listElem.querySelector(".list-cards");
 
         const listCard = document.createElement("div");
-        listCard.classList.add("list-card");
+        listCard.classList.add("animated", "fadeIn", "list-card");
+        listCard.setAttribute("draggable", "true");
+        //listCard.setAttribute("ondragstart", "drag(event)");
         // TODO: set id after successful write to db
         //listCard.setAttribute("data-card-id", "");
 

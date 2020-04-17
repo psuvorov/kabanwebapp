@@ -6,7 +6,10 @@ import boards from "./modules/boards/boards";
 window.addEventListener("DOMContentLoaded", (e) => {
     "use strict";
 
-    home();
-    dashboard();
-    boards();
+    if (window.location.pathname === "/")
+        home();
+    else if (window.location.pathname === "/dashboard.html")
+        dashboard();
+    else if (window.location.pathname === "/board.html")
+        boards();
 });
