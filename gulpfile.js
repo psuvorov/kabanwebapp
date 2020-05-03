@@ -1,13 +1,19 @@
 "use strict";
 
 const gulp = require("gulp");
+const less = require("gulp-less");
+const fileinclude = require('gulp-file-include');
 const webpack = require("webpack-stream");
 const browsersync = require("browser-sync");
 
 const dist = "./dist/";
 
 gulp.task("copy-html", () => {
-    return gulp.src("./src/**/*.html")
+    return gulp.src(["./src/html/*.html", "./src/html/_includes/*.html"])
+        .pipe(fileinclude({
+            prefix: '@@',
+            basepath: '@file'
+        }))
         .pipe(gulp.dest(dist))
         .pipe(browsersync.stream());
 });
@@ -44,25 +50,33 @@ gulp.task("build-js", () => {
         .on("end", browsersync.reload);
 });
 
+gulp.task("build-less", () => {
+    return gulp.src("./src/less/*.less")
+        .pipe(less())
+        .pipe(gulp.dest(dist + "assets/css"))
+        .pipe(browsersync.stream());
+});
+
 gulp.task("copy-assets", () => {
     return gulp.src("./src/assets/**/*.*")
-        .pipe(gulp.dest(dist + "/assets"))
+        .pipe(gulp.dest(dist + "assets"))
         .on("end", browsersync.reload);
 });
 
 gulp.task("watch", () => {
     browsersync.init({
-        server: "./dist/",
+        server: dist,
         port: 4000,
         notify: true
     });
 
-    gulp.watch("./src/**/*.html", gulp.parallel("copy-html"));
+    gulp.watch("./src/less/*.less", gulp.parallel("build-less"));
+    gulp.watch(["./src/html/*.html", "./src/html/_includes/*.html"], gulp.parallel("copy-html"));
     gulp.watch("./src/assets/**/*.*", gulp.parallel("copy-assets"));
     gulp.watch("./src/js/**/*.js", gulp.parallel("build-js"));
 });
 
-gulp.task("build", gulp.parallel("copy-html", "copy-assets", "build-js"));
+gulp.task("build", gulp.series("copy-html", "build-less", "copy-assets", "build-js"));
 
 gulp.task("build-prod-js", () => {
     return gulp.src("./src/js/main.js")

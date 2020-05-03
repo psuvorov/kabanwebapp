@@ -1,0 +1,157 @@
+
+
+.page-container {
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100vh;
+
+
+    .page-item {
+        margin: 5px;
+        padding: 5px;
+        flex: 0 1 auto;
+
+        .top-menu-row {
+            display: flex;
+            height: 40px;
+            justify-content: space-between;
+            border: 1px solid;
+
+
+            .top-menu-item {
+                margin: 5px;
+                flex: 0 1 auto;
+            }
+
+            .left-items-area {
+                display: inline-flex;
+                align-items: center;
+                cursor: pointer;
+
+                .logo {
+                    width: 32px;
+                    height: 32px;
+                    cursor: pointer;
+                }
+
+                h3 {
+                    margin-left: 10px;
+                    font-size: 18px;
+                    font-weight: 600;
+                }
+
+
+            }
+
+            .right-items-area {
+                display: inline-flex;
+                align-items: center;
+
+
+
+            }
+
+
+        }
+
+        .main-content-row {
+
+            .content-area {
+
+                .list-container {
+                    display: flex;
+                    align-items: flex-start;
+
+                    .list {
+                        border: 1px solid;
+                        width: 240px;
+                        padding: 5px;
+                        margin-left: 5px;
+                        margin-right: 5px;
+                        flex: 0 1 auto;
+
+                        .list-header {
+                            display: flex;
+                            justify-content: space-between;
+                            height: 30px;
+
+                            .list-caption {
+                                flex: 0 1 auto;
+                            }
+
+                            .list-menu {
+                                flex: 0 1 auto;
+                            }
+
+                            .list-menu {
+
+                                span {
+                                    cursor: pointer;
+                                }
+
+                            }
+                        }
+
+                        .list-cards {
+                            border: 1px solid;
+
+                            .list-card {
+                                border: 1px solid;
+                            }
+                        }
+
+                        .card-composer {
+                            margin-top: 10px;
+
+                            span {
+                                cursor: pointer;
+                            }
+                        }
+
+                    }
+
+                    .list:first-child {
+                        margin-left: 0px;
+                    }
+
+                    .list:last-child {
+                        margin-right: 0px;
+                    }
+
+                    .fake-list {
+                        height: 18px;
+
+                        span {
+                            cursor: pointer;
+                        }
+                    }
+
+                }
+
+
+            }
+
+        }
+
+        .bottom-menu-row {
+            display: flex;
+            height: 40px;
+            justify-content: space-between;
+            border: 1px solid;
+
+            .bottom-menu-item {
+                margin: 5px;
+                flex: 0 1 auto;
+            }
+
+        }
+
+    }
+
+    .page-item:nth-child(2) {
+        flex: 1 1 auto;
+    }
+
+
+
+}

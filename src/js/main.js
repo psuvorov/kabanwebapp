@@ -1,6 +1,7 @@
 import home from "./modules/home/home";
 import dashboard from "./modules/dashboard/dashboard";
 import boards from "./modules/boards/boards";
+import common from "./modules/common";
 
 
 window.addEventListener("DOMContentLoaded", (e) => {
@@ -12,4 +13,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
         dashboard();
     else if (window.location.pathname === "/board.html")
         boards();
+
+    common();
+
 });
