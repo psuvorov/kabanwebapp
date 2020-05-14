@@ -52,6 +52,12 @@
                         margin-right: 10px;
                     }
                 }
+
+                .user-area {
+                    .create-board, .notifications, .profile {
+                        margin-right: 10px;
+                    }
+                }
             }
 
 
@@ -61,7 +67,7 @@
 
             .content-area {
 
-                .list-container {
+                .lists-container {
                     display: flex;
                     align-items: flex-start;
 
@@ -131,6 +137,34 @@
 
                 }
 
+                .boards-container {
+                    display: flex;
+                    flex-flow: row wrap;
+
+                    .board-item {
+                        flex: 0 1 auto;
+                        display: flex;
+                        flex-flow: column nowrap;
+                        height: 100px;
+                        width: 200px;
+                        border: 1px solid;
+                        margin: 5px;
+                        padding: 5px;
+                        cursor: pointer;
+
+                        .title {
+                            flex: 0 1 auto;
+                        }
+
+                        .description {
+                            flex: 1 1 auto;
+                            overflow: auto;
+                        }
+
+
+                    }
+
+                }
 
             }
 
