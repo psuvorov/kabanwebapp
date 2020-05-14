@@ -1,6 +1,21 @@
+import {LocalStorageKeys} from "../../helper";
+
 const boards = () => {
 
-    const listContainerElem = document.querySelector(".list-container");
+    if (!localStorage.getItem(LocalStorageKeys.currentUser)) {
+        window.location = "/";
+        return;
+    }
+
+    const authWrapperElem = document.querySelector(".auth-wrapper");
+    authWrapperElem.classList.add("hidden");
+
+    const userAreaElem = document.querySelector(".user-area");
+    userAreaElem.classList.remove("hidden");
+
+
+
+    const listContainerElem = document.querySelector(".lists-container");
 
     const addCardLink = document.querySelector(".fake-list span");
     addCardLink.addEventListener("click", () => {
@@ -32,10 +47,12 @@ const boards = () => {
                 </div>
         `;
 
-        const listContainerElem = document.querySelector(".list-container");
+        const listContainerElem = document.querySelector(".lists-container");
         const fakeListElem = document.querySelector(".fake-list");
         listContainerElem.insertBefore(newList, fakeListElem);
     };
+
+
 
 
     let timeoutId = null;
