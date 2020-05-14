@@ -8,7 +8,9 @@ export const DialogTypes = Object.freeze({
 
 export const ModalWindowElementType = Object.freeze({
     Input: "Input",
+    EmailInput: "EmailInput",
     PasswordInput: "PasswordInput",
+    Label: "Label",
     Textarea: "Textarea"
 });
 
@@ -18,12 +20,12 @@ export class ModalWindowElement {
      *
      * @param {ModalWindowElementType} elementType
      * @param {string} elementName
-     * @param {string} elementClass
+     * @param {string} elementLabel
      */
-    constructor(elementType, elementName, elementClass) {
+    constructor(elementType, elementName, elementLabel) {
         this._elementType = elementType;
         this._elementName = elementName;
-        this._elementClass = elementClass;
+        this._elementLabel = elementLabel;
     }
 
     get elementType() {
@@ -34,8 +36,8 @@ export class ModalWindowElement {
         return this._elementName;
     }
 
-    get elementClass() {
-        return this._elementClass;
+    get elementLabel() {
+        return this._elementLabel;
     }
 
 }
@@ -63,34 +65,50 @@ export class ModalWindow {
      */
     initialize() {
         this.initWindowUi();
+        this.initWindowElements();
+
+        // --- Attach events ---
+        this.modalWindowElem.querySelector(".close-button").addEventListener("click", () => this.dispose());
+        this.initFooterButtons();
+    }
+
+    /**
+     * @private
+     */
+    initWindowElements() {
+        if (this.elements.length === 0)
+            return;
 
         const mainAreaElem = this.modalWindowElem.querySelector(".modal-main-area");
+        const formElem = document.createElement("form");
+        formElem.setAttribute("name", "modal-form");
+        formElem.setAttribute("method", "post");
+        mainAreaElem.append(formElem);
+
+
         this.elements.forEach(modalWindowElement => {
             const elementWrapper = document.createElement("div");
             elementWrapper.classList.add("element-wrapper");
 
             if (modalWindowElement.elementType === ModalWindowElementType.Input) {
-                elementWrapper.innerHTML = `<input type="text" name="${modalWindowElement.elementName}" class="${modalWindowElement.elementClass}">`;
-                mainAreaElem.append(elementWrapper);
+                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="text" name="${modalWindowElement.elementName}" class="${modalWindowElement.elementClass}">`;
+                formElem.append(elementWrapper);
             } else if (modalWindowElement.elementType === ModalWindowElementType.PasswordInput) {
-                elementWrapper.innerHTML = `<input type="password" name="${modalWindowElement.elementName}" class="${modalWindowElement.elementClass}">`;
-                mainAreaElem.append(elementWrapper);
+                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="password" name="${modalWindowElement.elementName}" class="${modalWindowElement.elementClass}">`;
+                formElem.append(elementWrapper);
             } else if (modalWindowElement.elementType === ModalWindowElementType.Textarea) {
-                elementWrapper.innerHTML = `<textarea rows="5" name="${modalWindowElement.elementName}" class="${modalWindowElement.elementClass}"></textarea>`;
-                mainAreaElem.append(elementWrapper);
+                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><textarea rows="5" name="${modalWindowElement.elementName}" class="${modalWindowElement.elementClass}"></textarea>`;
+                formElem.append(elementWrapper);
             } else {
-                throw Error("Unknown Element Type.");
+                throw new Error("Unknown Element Type.");
             }
         });
-
-        // --- Attach events ---
-        this.modalWindowElem.querySelector(".close-button").addEventListener("click", () => this.dispose());
-        this.initFooterButtons();
-
-
-
     }
 
+
+    /**
+     * @private
+     */
     initWindowUi() {
         const modalWindowElem = document.createElement("div");
         modalWindowElem.classList.add("modal-window");
@@ -104,6 +122,11 @@ export class ModalWindow {
         const mainAreaElem = document.createElement("div");
         mainAreaElem.classList.add("modal-main-area");
         modalWindowElem.append(mainAreaElem);
+
+        const infoAreaElem = document.createElement("div");
+        infoAreaElem.classList.add("modal-info-area");
+        infoAreaElem.append(document.createElement("div"));
+        modalWindowElem.append(infoAreaElem);
 
         const footerElem = document.createElement("div");
         footerElem.classList.add("modal-footer");
@@ -119,13 +142,16 @@ export class ModalWindow {
      */
     initFooterButtons() {
         const footerElem = this.modalWindowElem.querySelector(".modal-footer");
+        const formElem = this.modalWindowElem.querySelector("form");
 
         if (this.dialogType === DialogTypes.Ok && this.callbacks.length === 1) {
             const okButtonElem = this.createFooterButton("Ok");
             footerElem.append(okButtonElem);
 
             okButtonElem.addEventListener("click", () => {
-                // TODO: gather data from fields
+                const formData = new FormData(formElem);
+                console.log(formData);
+
                 this.callbacks[0]();
                 this.dispose();
             });
@@ -138,12 +164,22 @@ export class ModalWindow {
             footerElem.append(cancelButtonElem);
 
             okButtonElem.addEventListener("click", () => {
-                // TODO: gather data from fields
-                this.callbacks[0]();
-                this.dispose();
+                const formData = new FormData(formElem);
+                const json = JSON.stringify(Object.fromEntries(formData));
+
+                const operationResultCallback = (data) => {
+                    if (data.error) {
+                        this.setDialogMessage(data.error);
+                        setTimeout(() => {this.dispose()}, 5000);
+                    } else {
+                        this.dispose();
+                    }
+                };
+                this.callbacks[0](json, operationResultCallback);
+
             });
             cancelButtonElem.addEventListener("click", () => {
-                // TODO: gather data from fields
+
                 this.callbacks[1]();
                 this.dispose();
             });
@@ -189,7 +225,7 @@ export class ModalWindow {
                 this.dispose();
             });
         } else {
-            throw Error("Unknown Dialog Type.");
+            throw new Error("Unknown Dialog Type.");
         }
     }
 
@@ -206,7 +242,16 @@ export class ModalWindow {
         return buttonElem;
     }
 
-
+    /**
+     * @private
+     * @param {string} message
+     */
+    setDialogMessage(message) {
+        const modalInfoElem = this.modalWindowElem.querySelector(".modal-info-area");
+        const messagePlaceholder = modalInfoElem.querySelector("div");
+        messagePlaceholder.innerText = message;
+        modalInfoElem.style.display = "block";
+    }
 
 
     show() {
@@ -218,6 +263,7 @@ export class ModalWindow {
      * @private
      */
     dispose() {
+        this.modalWindowElem.style.display = "none";
         this.modalWindowElem.remove();
     }
 
