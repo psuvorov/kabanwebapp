@@ -54,7 +54,7 @@
                 }
 
                 .user-area {
-                    .create-board, .notifications, .profile {
+                    .boards-list, .create-board, .notifications, .profile {
                         margin-right: 10px;
                     }
                 }
@@ -66,8 +66,17 @@
         .main-content-row {
 
             .content-area {
+                display: flex;
+                flex-flow: column nowrap;
+
+                .board-header {
+                    flex: 0 1 auto;
+                    border: 1px solid;
+                    margin-bottom: 5px;
+                }
 
                 .lists-container {
+                    flex: 1 1 auto;
                     display: flex;
                     align-items: flex-start;
 
@@ -149,19 +158,29 @@
                         width: 200px;
                         border: 1px solid;
                         margin: 5px;
-                        padding: 5px;
                         cursor: pointer;
 
                         .title {
                             flex: 0 1 auto;
+                            border-bottom: 1px dashed;
+
+                            div {
+                                margin: 2px;
+                            }
                         }
 
                         .description {
                             flex: 1 1 auto;
                             overflow: auto;
+                            margin: 2px;
+                            font-size: 14px;
+                            color: #222;
                         }
 
+                    }
 
+                    .board-item:first-child {
+                        margin-left: 0px;
                     }
 
                 }
@@ -203,6 +222,7 @@
 
     .modal-window {
         border: 1px solid;
+        background-color: white;
         position: fixed;
         top: 100px;
         left: 50%;
