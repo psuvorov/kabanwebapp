@@ -7,16 +7,10 @@ export class AuthenticateUserDto {
      * @param {string} password
      */
     constructor(email, password) {
-        this._email = email;
-        this._password = password;
-    }
-
-    get email() {
-        return this._email;
-    }
-
-    get password() {
-        return this._password;
+        /** @readonly */
+        this.Email = email;
+        /** @readonly */
+        this.Password = password;
     }
 }
 
@@ -27,42 +21,25 @@ export class AuthenticatedUserDto {
      * @param {number} id
      * @param {string} firstName
      * @param {string} lastName
-     * @param {string} userName
+     * @param {string} username
      * @param {string} email
      * @param {string} token
      */
-    constructor(id, firstName, lastName, userName, email, token) {
-        this._id = id;
-        this._firstName = firstName;
-        this._lastName = lastName;
-        this._userName = userName;
-        this._email = email;
-        this._token = token;
+    constructor(id, firstName, lastName, username, email, token) {
+        /** @readonly */
+        this.id = id;
+        /** @readonly */
+        this.firstName = firstName;
+        /** @readonly */
+        this.lastName = lastName;
+        /** @readonly */
+        this.username = username;
+        /** @readonly */
+        this.email = email;
+        /** @readonly */
+        this.token = token;
     }
 
-    get id() {
-        return this._id;
-    }
-
-    get firstName() {
-        return this._firstName;
-    }
-
-    get lastName() {
-        return this._lastName;
-    }
-
-    get userName() {
-        return this._userName;
-    }
-
-    get email() {
-        return this._email;
-    }
-
-    get token() {
-        return this._token;
-    }
 }
 
 export class RegisterUserDto {
@@ -71,36 +48,21 @@ export class RegisterUserDto {
      *
      * @param {string} firstName
      * @param {string} lastName
-     * @param {string} userName
+     * @param {string} username
      * @param {string} email
      * @param {string} password
      */
-    constructor(firstName, lastName, userName, email, password) {
-        this._firstName = firstName;
-        this._lastName = lastName;
-        this._userName = userName;
-        this._email = email;
-        this._password = password;
-    }
-
-    get firstName() {
-        return this._firstName;
-    }
-
-    get lastName() {
-        return this._lastName;
-    }
-
-    get userName() {
-        return this._userName;
-    }
-
-    get email() {
-        return this._email;
-    }
-
-    get password() {
-        return this._password;
+    constructor(firstName, lastName, username, email, password) {
+        /** @readonly */
+        this.firstName = firstName;
+        /** @readonly */
+        this.lastName = lastName;
+        /** @readonly */
+        this.username = username;
+        /** @readonly */
+        this.email = email;
+        /** @readonly */
+        this.password = password;
     }
 
 }
@@ -111,31 +73,18 @@ export class UpdateUserDto {
      *
      * @param {string} firstName
      * @param {string} lastName
-     * @param {string} userName
+     * @param {string} username
      * @param {string} password
      */
-    constructor(firstName, lastName, userName, password) {
-
-        this._firstName = firstName;
-        this._lastName = lastName;
-        this._userName = userName;
-        this._password = password;
-    }
-
-    get firstName() {
-        return this._firstName;
-    }
-
-    get lastName() {
-        return this._lastName;
-    }
-
-    get userName() {
-        return this._userName;
-    }
-
-    get password() {
-        return this._password;
+    constructor(firstName, lastName, username, password) {
+        /** @readonly */
+        this.firstName = firstName;
+        /** @readonly */
+        this.lastName = lastName;
+        /** @readonly */
+        this.username = username;
+        /** @readonly */
+        this.password = password;
     }
 }
 
@@ -146,30 +95,17 @@ export class UserDto {
      * @param {number} id
      * @param {string} firstName
      * @param {string} lastName
-     * @param {string} userName
+     * @param {string} username
      */
-    constructor(id, firstName, lastName, userName) {
-
-        this._id = id;
-        this._firstName = firstName;
-        this._lastName = lastName;
-        this._userName = userName;
-    }
-
-    get id() {
-        return this._id;
-    }
-
-    get firstName() {
-        return this._firstName;
-    }
-
-    get lastName() {
-        return this._lastName;
-    }
-
-    get userName() {
-        return this._userName;
+    constructor(id, firstName, lastName, username) {
+        /** @readonly */
+        this.id = id;
+        /** @readonly */
+        this.firstName = firstName;
+        /** @readonly */
+        this.lastName = lastName;
+        /** @readonly */
+        this.username = username;
     }
 
 }

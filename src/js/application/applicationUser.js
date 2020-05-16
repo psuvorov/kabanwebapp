@@ -1,4 +1,5 @@
-import {LocalStorageKeys} from "../helper";
+import {LocalStorageKeys} from "../constants";
+import {AuthenticateUserDto, AuthenticatedUserDto} from "../dtos/users";
 
 export class ApplicationUser {
 
@@ -7,42 +8,36 @@ export class ApplicationUser {
      * @param {number} id
      * @param {string} firstName
      * @param {string} lastName
-     * @param {string} userName
+     * @param {string} username
      * @param {string} email
      * @param {string} token
      */
-    constructor(id, firstName, lastName, userName, email, token) {
+    constructor(id, firstName, lastName, username, email, token) {
 
-        this._id = id;
-        this._firstName = firstName;
-        this._lastName = lastName;
-        this._userName = userName;
-        this._email = email;
-        this._token = token;
+        /** @readonly */
+        this.id = id;
+        /** @readonly */
+        this.firstName = firstName;
+        /** @readonly */
+        this.lastName = lastName;
+        /** @readonly */
+        this.username = username;
+        /** @readonly */
+        this.email = email;
+        /** @readonly */
+        this.token = token;
     }
 
-    get id() {
-        return this._id;
-    }
+    /**
+     *
+     * @param {AuthenticatedUserDto} authenticatedUserDto
+     */
+    static fromAuthenticatedUserDto(authenticatedUserDto) {
+        if (this.checkFields(authenticatedUserDto) === false)
+            return null;
 
-    get firstName() {
-        return this._firstName;
-    }
-
-    get lastName() {
-        return this._lastName;
-    }
-
-    get userName() {
-        return this._userName;
-    }
-
-    get email() {
-        return this._email;
-    }
-
-    get token() {
-        return this._token;
+        return new ApplicationUser(authenticatedUserDto.id, authenticatedUserDto.firstName,
+            authenticatedUserDto.lastName, authenticatedUserDto.username, authenticatedUserDto.email, authenticatedUserDto.token);
     }
 
     /**
@@ -52,20 +47,28 @@ export class ApplicationUser {
     static getApplicationUserFromStorage() {
         const currentUserRaw = localStorage.getItem(LocalStorageKeys.currentUser);
         if (!currentUserRaw)
-            throw new Error("Please sign in first.");
+            return null;
 
         const currentUserParsed = JSON.parse(currentUserRaw);
 
-        if (!currentUserParsed.hasOwnProperty("_id") ||
-            !currentUserParsed.hasOwnProperty("_firstName") ||
-            !currentUserParsed.hasOwnProperty("_lastName") ||
-            !currentUserParsed.hasOwnProperty("_userName") ||
-            !currentUserParsed.hasOwnProperty("_email") ||
-            !currentUserParsed.hasOwnProperty("_token")
-        )
-            throw new Error("Stored current user is corrupted.");
+        if (this.checkFields(currentUserParsed) === false)
+            return null;
 
-        return new ApplicationUser(parseInt(currentUserParsed._id), currentUserParsed._firstName,
-            currentUserParsed._lastName, currentUserParsed._userName, currentUserParsed._email, currentUserParsed._token);
+        return new ApplicationUser(parseInt(currentUserParsed.id), currentUserParsed.firstName,
+            currentUserParsed.lastName, currentUserParsed.username, currentUserParsed.email, currentUserParsed.token);
+    }
+
+    /**
+     * @private
+     * @param userObject
+     * @return {boolean|boolean}
+     */
+    static checkFields(userObject) {
+        return (userObject.hasOwnProperty("id") &&
+            userObject.hasOwnProperty("firstName") &&
+            userObject.hasOwnProperty("lastName") &&
+            userObject.hasOwnProperty("username") &&
+            userObject.hasOwnProperty("email") &&
+            userObject.hasOwnProperty("token"));
     }
 }

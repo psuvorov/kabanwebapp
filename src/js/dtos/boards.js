@@ -8,26 +8,28 @@ export class BoardDto {
      * @param {number} userId
      */
     constructor(id, name, description, userId) {
-        this._id = id;
-        this._name = name;
-        this._description = description;
-        this._userId = userId;
+        /** @readonly */
+        this.id = id;
+        /** @readonly */
+        this.name = name;
+        /** @readonly */
+        this.description = description;
+        /** @readonly */
+        this.userId = userId;
     }
+}
 
+export class CreateBoardDto {
 
-    get id() {
-        return this._id;
-    }
-
-    get name() {
-        return this._name;
-    }
-
-    get description() {
-        return this._description;
-    }
-
-    get userId() {
-        return this._userId;
+    /**
+     *
+     * @param {string} name
+     * @param {string} description
+     */
+    constructor(name, description) {
+        /** @readonly */
+        this.name = name;
+        /** @readonly */
+        this.description = description;
     }
 }

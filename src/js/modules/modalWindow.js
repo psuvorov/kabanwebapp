@@ -21,25 +21,18 @@ export class ModalWindowElement {
      * @param {ModalWindowElementType} elementType
      * @param {string} elementName
      * @param {string} elementLabel
+     * @param {string} defaultValue
      */
-    constructor(elementType, elementName, elementLabel) {
-        this._elementType = elementType;
-        this._elementName = elementName;
-        this._elementLabel = elementLabel;
+    constructor(elementType, elementName, elementLabel, defaultValue) {
+        /** @readonly */
+        this.elementType = elementType;
+        /** @readonly */
+        this.elementName = elementName;
+        /** @readonly */
+        this.elementLabel = elementLabel;
+        /** @readonly */
+        this.defaultValue = defaultValue;
     }
-
-    get elementType() {
-        return this._elementType;
-    }
-
-    get elementName() {
-        return this._elementName;
-    }
-
-    get elementLabel() {
-        return this._elementLabel;
-    }
-
 }
 
 export class ModalWindow {
@@ -91,13 +84,16 @@ export class ModalWindow {
             elementWrapper.classList.add("element-wrapper");
 
             if (modalWindowElement.elementType === ModalWindowElementType.Input) {
-                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="text" name="${modalWindowElement.elementName}" class="${modalWindowElement.elementClass}">`;
+                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="text" name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;
                 formElem.append(elementWrapper);
             } else if (modalWindowElement.elementType === ModalWindowElementType.PasswordInput) {
-                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="password" name="${modalWindowElement.elementName}" class="${modalWindowElement.elementClass}">`;
+                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="password" name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;
                 formElem.append(elementWrapper);
             } else if (modalWindowElement.elementType === ModalWindowElementType.Textarea) {
-                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><textarea rows="5" name="${modalWindowElement.elementName}" class="${modalWindowElement.elementClass}"></textarea>`;
+                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><textarea rows="5" name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}"></textarea>`;
+                formElem.append(elementWrapper);
+            } else if (modalWindowElement.elementType === ModalWindowElementType.Label) {
+                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="text" disabled name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;
                 formElem.append(elementWrapper);
             } else {
                 throw new Error("Unknown Element Type.");
@@ -168,10 +164,19 @@ export class ModalWindow {
                 const json = JSON.stringify(Object.fromEntries(formData));
 
                 const operationResultCallback = (data) => {
+                    if (!data) {
+                        this.dispose();
+                        return;
+                    }
+
                     if (data.error) {
-                        this.setDialogMessage(data.error);
+                        this.setDialogErrorMessage(data.error);
+                        //setTimeout(() => {this.dispose()}, 5000);
+                    } else if (data.message) {
+                        this.setDialogInformationMessage(data.message);
                         setTimeout(() => {this.dispose()}, 5000);
-                    } else {
+                    }
+                    else {
                         this.dispose();
                     }
                 };
@@ -246,10 +251,21 @@ export class ModalWindow {
      * @private
      * @param {string} message
      */
-    setDialogMessage(message) {
+    setDialogErrorMessage(message) {
         const modalInfoElem = this.modalWindowElem.querySelector(".modal-info-area");
         const messagePlaceholder = modalInfoElem.querySelector("div");
-        messagePlaceholder.innerText = message;
+        messagePlaceholder.innerHTML = `<span style="color: #a1180c">${message}</span>`;
+        modalInfoElem.style.display = "block";
+    }
+
+    /**
+     * @private
+     * @param {string} message
+     */
+    setDialogInformationMessage(message) {
+        const modalInfoElem = this.modalWindowElem.querySelector(".modal-info-area");
+        const messagePlaceholder = modalInfoElem.querySelector("div");
+        messagePlaceholder.innerHTML = `<span style="color: #175910">${message}</span>`;
         modalInfoElem.style.display = "block";
     }
 
