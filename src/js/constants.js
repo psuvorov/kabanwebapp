@@ -8,5 +8,5 @@ export const LocalStorageKeys = Object.freeze({
 export const ApplicationPageUrls = Object.freeze({
     homePage: "/",
     dashboardPage: "/dashboard.html",
-    boardPage: "board.html"
+    boardPage: "/board.html"
 });

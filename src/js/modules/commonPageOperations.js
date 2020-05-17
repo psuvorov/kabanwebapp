@@ -1,7 +1,7 @@
-import {ModalWindow, DialogTypes, ModalWindowElementType, ModalWindowElement} from "./modalWindow";
+import {ModalWindow, DialogTypes, ModalWindowElementType, ModalWindowElement} from "../components/modalWindow";
 import {ServerBaseApiUrl, LocalStorageKeys, ApplicationPageUrls} from "../constants";
 import {AuthenticatedUserDto, AuthenticateUserDto} from "../dtos/users";
-import BoardService from "../services/boardService";
+import BoardsService from "../services/boardsService";
 import {CreateBoardDto} from "../dtos/boards";
 import {ApplicationUser} from "../application/applicationUser";
 import AuthService from "../services/authService";
@@ -18,9 +18,9 @@ export class CommonPageOperations {
 
         /**
          * @private
-         * @type {BoardService}
+         * @type {BoardsService}
          */
-        this.boardService = new BoardService();
+        this.boardService = new BoardsService();
     }
 
     /**

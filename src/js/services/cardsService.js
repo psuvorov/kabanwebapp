@@ -1,24 +1,27 @@
 import {ApplicationUser} from "../application/applicationUser";
 import {ServerBaseApiUrl} from "../constants";
+import {BoardDto, CreateBoardDto, UpdateBoardDto} from "../dtos/boards";
+import {ListDto, CreateListDto, UpdateListDto} from "../dtos/lists";
+import {CardDto, CreateCardDto, UpdateCardDto} from "../dtos/cards";
 
-export default class BoardService {
+export default class CardsService {
 
     /**
      *
-     * @param {string} createBoardDtoSerialized
-     * @param {function} onSuccess
-     * @param {function} onError
+     * @param {CreateCardDto} createCardDto
+     * @param onSuccess
+     * @param onError
      */
-    createBoard(createBoardDtoSerialized, onSuccess, onError) {
+    createCard(createCardDto, onSuccess, onError) {
         const applicationUser = ApplicationUser.getApplicationUserFromStorage();
 
-        fetch(ServerBaseApiUrl + `/boards`, {
+        fetch(ServerBaseApiUrl + `/lists/${createCardDto.listId}/cards`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + applicationUser.token,
                 "Content-Type": "application/json"
             },
-            body: createBoardDtoSerialized
+            body: JSON.stringify(createCardDto)
         }).then(res => {
             if (res.status === 201 || res.status === 400) {
                 return res.json();
@@ -29,12 +32,11 @@ export default class BoardService {
             if (res.hasOwnProperty("message")) {
                 onError(res.message);
             } else {
-                onSuccess({boardId: res.boardId});
+                onSuccess({cardId: res.cardId});
             }
         }).catch(error => {
             onError(error);
         });
     }
-
 
 }

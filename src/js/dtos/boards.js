@@ -33,3 +33,18 @@ export class CreateBoardDto {
         this.description = description;
     }
 }
+
+export class UpdateBoardDto {
+
+    /**
+     *
+     * @param {string} name
+     * @param {string} description
+     */
+    constructor(name, description) {
+        /** @readonly */
+        this.name = name;
+        /** @readonly */
+        this.description = description;
+    }
+}

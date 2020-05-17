@@ -171,12 +171,10 @@ export class ModalWindow {
 
                     if (data.error) {
                         this.setDialogErrorMessage(data.error);
-                        //setTimeout(() => {this.dispose()}, 5000);
                     } else if (data.message) {
                         this.setDialogInformationMessage(data.message);
                         setTimeout(() => {this.dispose()}, 5000);
-                    }
-                    else {
+                    } else {
                         this.dispose();
                     }
                 };

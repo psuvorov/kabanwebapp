@@ -2,22 +2,25 @@ import {LocalStorageKeys, ServerBaseApiUrl, ApplicationPageUrls} from "../../con
 import {ApplicationUser} from "../../application/applicationUser";
 import {AuthenticatedUserDto} from "../../dtos/users";
 import {BoardDto} from "../../dtos/boards";
-import DashboardService from "../../services/dashboardService";
-import {ModalWindow, DialogTypes, ModalWindowElementType, ModalWindowElement} from "../modalWindow";
+import BoardsService from "../../services/boardsService";
+import {ModalWindow, DialogTypes, ModalWindowElementType, ModalWindowElement} from "../../components/modalWindow";
+import utils from "../../utils";
 
 export class DashboardPage {
 
     constructor() {
-        if (ApplicationUser.getApplicationUserFromStorage() === null) {
+        /** @private */
+        this.applicationUser = ApplicationUser.getApplicationUserFromStorage();
+        if (!utils.isInit(this.applicationUser)) {
             window.location = ApplicationPageUrls.homePage;
             return;
         }
 
         /**
          * @private
-         * @type {DashboardService}
+         * @type {BoardsService}
          */
-        this.dashboardService = new DashboardService();
+        this.boardsService = new BoardsService();
 
 
 
@@ -34,7 +37,9 @@ export class DashboardPage {
 
     initBoardsList() {
 
-        this.dashboardService.getUserBoards((boards) => {
+
+
+        this.boardsService.getAllUserBoards(this.applicationUser.id, (boards) => {
                 this.initUserBoards(boards);
             },
             (error) => {
