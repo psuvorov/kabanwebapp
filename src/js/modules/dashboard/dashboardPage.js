@@ -3,7 +3,13 @@ import {ApplicationUser} from "../../application/applicationUser";
 import {AuthenticatedUserDto} from "../../dtos/users";
 import {BoardDto} from "../../dtos/boards";
 import BoardsService from "../../services/boardsService";
-import {ModalWindow, DialogTypes, ModalWindowElementType, ModalWindowElement} from "../../components/modalWindow";
+import {
+    ModalWindow,
+    DialogTypes,
+    ModalWindowElementType,
+    ModalWindowElement,
+    ModalWindowFactory
+} from "../../components/modalWindow";
 import utils from "../../utils";
 
 export class DashboardPage {
@@ -43,9 +49,7 @@ export class DashboardPage {
                 this.initUserBoards(boards);
             },
             (error) => {
-                new ModalWindow("Error of getting user boards", DialogTypes.Ok, [() => {
-                    window.location = ApplicationPageUrls.homePage;
-                }], [new ModalWindowElement(ModalWindowElementType.Label, "error", "Error", error)]).show();
+                ModalWindowFactory.showErrorOkMessage("Error occurred", "Error of getting user boards");
             });
     }
 
