@@ -146,7 +146,7 @@ export class ModalWindow {
 
             okButtonElem.addEventListener("click", () => {
                 const formData = new FormData(formElem);
-                console.log(formData);
+                const json = JSON.stringify(Object.fromEntries(formData));
 
                 this.callbacks[0]();
                 this.dispose();
@@ -282,8 +282,62 @@ export class ModalWindow {
     }
 
 
+}
 
+export class ModalWindowFactory {
 
+    /**
+     *
+     * @param {string} title
+     * @param {string} text
+     * @param [okCallback]
+     */
+    static showErrorOkMessage(title, text, okCallback) {
+        const callbacks = [];
+        callbacks.push(okCallback ? okCallback : () => {});
+
+        const windowElements = [
+            new ModalWindowElement(ModalWindowElementType.Label, "label", "Error", text),
+        ];
+
+        new ModalWindow(title, DialogTypes.Ok, callbacks, windowElements).show();
+    }
+
+    /**
+     *
+     * @param {string} title
+     * @param {string} text
+     * @param [okCallback]
+     */
+    static showInfoOkMessage(title, text, okCallback) {
+        const callbacks = [];
+        callbacks.push(okCallback ? okCallback : () => {});
+
+        const windowElements = [
+            new ModalWindowElement(ModalWindowElementType.Label, "label", "Information", text),
+        ];
+
+        new ModalWindow(title, DialogTypes.Ok, callbacks, windowElements).show();
+    }
+
+    /**
+     *
+     * @param {string} title
+     * @param {string} text
+     * @param [yesCallback]
+     * @param [noCallback]
+     */
+    static showYesNoQuestion(title, text, yesCallback, noCallback) {
+        const callbacks = [];
+        callbacks.push(yesCallback ? yesCallback : () => {});
+        callbacks.push(noCallback ? noCallback : () => {});
+
+        const windowElements = [
+            new ModalWindowElement(ModalWindowElementType.Label, "label", "Question", text),
+        ];
+
+        new ModalWindow(title, DialogTypes.YesNo, callbacks, windowElements).show();
+    }
 
 }
 
