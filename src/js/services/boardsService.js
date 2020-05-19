@@ -31,7 +31,8 @@ export default class BoardsService {
             } else {
                 const boards = [];
                 for (let i = 0; i < res.length; i++) {
-                    const board = new BoardDto(res[i].id, res[i].name, res[i].description, parseInt(res[i].userId));
+                    const board = new BoardDto(res[i].id, res[i].name, res[i].description, parseInt(res[i].userId),
+                        parseInt(res[i].listsTotal), parseInt(res[i].cardsTotal), parseInt(res[i].filesAttachedTotal), parseInt(res[i].tagsTotal));
                     boards.push(board);
                 }
                 onSuccess(boards);
@@ -68,7 +69,8 @@ export default class BoardsService {
             } else {
                 const boards = [];
                 for (let i = 0; i < res.length; i++) {
-                    const board = new BoardDto(res[i].id, res[i].name, res[i].description, parseInt(res[i].userId));
+                    const board = new BoardDto(res[i].id, res[i].name, res[i].description, parseInt(res[i].userId),
+                        parseInt(res[i].listsTotal), parseInt(res[i].cardsTotal), parseInt(res[i].filesAttachedTotal), parseInt(res[i].tagsTotal));
                     boards.push(board);
                 }
                 onSuccess(boards);
@@ -80,7 +82,7 @@ export default class BoardsService {
 
     /**
      * @param {number} userId
-     * @param {number} boardId
+     * @param {string} boardId
      * @param {function} onSuccess
      * @param {function} onError
      */
@@ -103,7 +105,8 @@ export default class BoardsService {
             if (res.hasOwnProperty("message")) {
                 onError({message: res.message});
             } else {
-                const board = new BoardDto(res.id, res.name, res.description, parseInt(res.userId));
+                const board = new BoardDto(res.id, res.name, res.description, parseInt(res.userId),
+                    parseInt(res.listsTotal), parseInt(res.cardsTotal), parseInt(res.filesAttachedTotal), parseInt(res.tagsTotal));
                 onSuccess(board);
             }
         }).catch(error => {

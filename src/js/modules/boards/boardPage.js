@@ -1,10 +1,16 @@
 import {ApplicationUser} from "../../application/applicationUser";
 import {ApplicationPageUrls} from "../../constants";
-import {DialogTypes, ModalWindow, ModalWindowElement, ModalWindowElementType} from "../../components/modalWindow";
+import {
+    DialogTypes,
+    ModalWindow,
+    ModalWindowElement,
+    ModalWindowElementType,
+    ModalWindowFactory
+} from "../../components/modalWindow";
 import BoardsService from "../../services/boardsService";
 import ListsService from "../../services/listsService";
 import CardsService from "../../services/cardsService";
-import {CreateBoardDto} from "../../dtos/boards";
+import {BoardDto, CreateBoardDto} from "../../dtos/boards";
 import utils from "../../utils";
 import {CreateListDto} from "../../dtos/lists";
 import {CreateCardDto} from "../../dtos/cards";
@@ -55,9 +61,43 @@ export class BoardPage {
 
 
     initialize() {
+        this.setBoardInfo();
         this.drawBoard();
         this.setupInteractions();
 
+    }
+
+    /**
+     * @private
+     */
+    setBoardInfo() {
+        const boardHeaderElem = document.querySelector(".board-header");
+        /** @type HTMLElement */
+        const boardTitleElem = boardHeaderElem.querySelector(".board-title");
+        /** @type HTMLElement */
+        const boardDescriptionElem = boardHeaderElem.querySelector(".board-description");
+        /** @type HTMLElement */
+        const listsTotalElem = boardHeaderElem.querySelector(".lists-total");
+        /** @type HTMLElement */
+        const cardsTotalElem = boardHeaderElem.querySelector(".cards-total");
+        /** @type HTMLElement */
+        const filesAttachedElem = boardHeaderElem.querySelector(".files-attached-total");
+        /** @type HTMLElement */
+        const tagsTotalElem = boardHeaderElem.querySelector(".tags-total");
+
+        this.boardsService.getUserBoard(this.applicationUser.id, this.currentBoardId,
+            /** @param {BoardDto} board */
+            (board) => {
+                boardTitleElem.innerText = board.name;
+                boardDescriptionElem.innerText = board.description;
+                listsTotalElem.innerText = board.listsTotal;
+                cardsTotalElem.innerText = board.cardsTotal;
+                filesAttachedElem.innerText = board.filesAttachedTotal;
+                tagsTotalElem.innerText = board.tagsTotal;
+            },
+            () => {
+                ModalWindowFactory.showErrorOkMessage("Error occurred", "Error of getting board information");
+            });
     }
 
     /**
@@ -85,7 +125,7 @@ export class BoardPage {
 
             },
             () => {
-
+                ModalWindowFactory.showErrorOkMessage("Error occurred", "Error of getting user boards");
             });
 
     }
@@ -213,6 +253,7 @@ export class BoardPage {
         const listContainerElem = document.querySelector(".lists-container");
         const fakeListElem = document.querySelector(".fake-list");
         listContainerElem.insertBefore(newList, fakeListElem);
+        this.setBoardInfo();
     }
 
     /**
@@ -275,6 +316,8 @@ export class BoardPage {
         listCard.append(cardTitle);
 
         listCards.append(listCard);
+
+        this.setBoardInfo();
     }
 
 

@@ -73,6 +73,38 @@
                     flex: 0 1 auto;
                     border: 1px solid;
                     margin-bottom: 5px;
+                    display: flex;
+
+                    .board-title {
+                        flex: 0 1 auto;
+                        border: 1px solid;
+                        white-space: nowrap;
+                        display: flex;
+                        align-items: center;
+                        font-size: 18px;
+                        margin-right: 20px;
+                    }
+
+                    .board-details {
+                        flex: 1 1 auto;
+                        border: 1px solid;
+                        display: flex;
+                        flex-flow: column nowrap;
+
+                        .board-description {
+                            border: 1px solid;
+                            flex: 0 1 auto;
+                        }
+
+                        .board-statistics {
+                            border: 1px solid;
+                            flex: 1 1 auto;
+
+                            span {
+
+                            }
+                        }
+                    }
                 }
 
                 .lists-container {
