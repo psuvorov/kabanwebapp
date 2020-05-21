@@ -1,3 +1,7 @@
+@list-background-color: #ebecf0;
+@background-color-of-hovered-element: #d1d1d5;
+@list-font-foreground-color: #172b4d;
+
 
 
 .page-container {
@@ -112,81 +116,168 @@
                 }
 
                 .lists-container {
-                    flex: 1 1 auto;
-                    display: flex;
-                    align-items: flex-start;
-                    overflow: auto;
+                    position: absolute;
+                    top: 130px;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    user-select: none;
+                    white-space: nowrap;
+                    margin-bottom: 8px;
+                    overflow-x: auto;
+                    overflow-y: hidden;
+                    padding-bottom: 8px;
 
-                    .list {
-                        border: 1px solid;
-                        width: 240px;
-                        padding: 5px;
+                    .list-wrapper {
+                        height: 100%;
+                        box-sizing: border-box;
+                        display: inline-block;
+                        vertical-align: top;
+                        white-space: nowrap;
                         margin-left: 5px;
                         margin-right: 5px;
-                        flex: 0 1 240px;
-                        min-width: 240px;
 
-                        .list-header {
+                        .list {
+                            border: 1px solid;
+                            background-color: @list-background-color;
+                            border-radius: 3px;
+                            box-sizing: border-box;
                             display: flex;
-                            justify-content: space-between;
-                            height: 30px;
+                            flex-direction: column;
+                            max-height: 100%;
+                            position: relative;
+                            white-space: normal;
+                            width: 270px;
 
-                            .list-caption {
-                                flex: 0 1 auto;
-                            }
+                            .list-header {
+                                display: flex;
+                                padding: 10px 8px;
+                                position: relative;
 
-                            .list-menu {
-                                flex: 0 1 auto;
-                            }
+                                .list-caption {
+                                    width: 232px;
 
-                            .list-menu {
+                                    input {
+                                        width: 216px;
+                                        font-size: 16px;
+                                        background-color: #ebecf0;
+                                        border-width: 0;
+                                        padding-left: 4px;
+                                        height: 21px;
+                                        font-weight: 600;
+                                        color: @list-font-foreground-color;
+                                        cursor: pointer;
+                                    }
 
-                                span {
-                                    cursor: pointer;
+                                    input:focus {
+                                        cursor: text;
+                                    }
                                 }
 
+                                .list-menu-button {
+                                    width: 24px;
+                                    height: 24px;
+                                    cursor: pointer;
+                                    border-radius: 3px;
+                                }
+                                .list-menu-button:hover {
+                                    background-color: @background-color-of-hovered-element;
+                                }
+
+
+                            }
+
+                            .list-cards {
+                                flex: 1 1 auto;
+                                overflow-y: auto;
+                                overflow-x: hidden;
+                                margin: 0 4px;
+                                padding: 0 4px;
+                                z-index: 1;
+                                min-height: 0;
+
+                                .list-card {
+                                    background-color: #fff;
+                                    border-radius: 3px;
+                                    box-shadow: 0 1px 0 rgba(9,30,66,.25);
+                                    cursor: pointer;
+                                    display: block;
+                                    margin-bottom: 8px;
+                                    max-width: 300px;
+                                    position: relative;
+                                    text-decoration: none;
+                                    z-index: 0;
+                                    padding: 5px;
+
+                                    span {
+                                        color: @list-font-foreground-color;
+                                    }
+                                }
+
+                                .list-card:last-child {
+                                    margin-bottom: 1px;
+                                }
+                            }
+
+                            .card-composer {
+                                height: 38px;
+                                display: flex;
+                                cursor: pointer;
+                                border: 4px solid @list-background-color;
+                                border-radius: 3px;
+                                box-sizing: border-box;
+                                margin: 0 4px;
+
+                                span {
+                                    margin-left: 4px;
+                                    color: #5e6c84;
+                                    line-height: 32px;
+                                }
+                            }
+                            .card-composer:hover{
+                                background-color: @background-color-of-hovered-element;
+
+                                span {
+                                    color: @list-font-foreground-color;
+                                }
                             }
                         }
 
-                        .list-cards {
-                            max-height: 400px;
-                            overflow-y: auto;
-
-                            .list-card {
-                                border: 1px solid;
-                                margin-bottom: 5px;
-                            }
-                            .list-card:last-child {
-                                margin-bottom: 0px;
-                            }
-                        }
-
-                        .card-composer {
-                            margin-top: 10px;
-                            height: 16px;
+                        .fake-list {
+                            height: 50px;
+                            cursor: pointer;
+                            border-left: 8px solid @list-background-color;
+                            border-right: 8px solid @list-background-color;
+                            border-top: 4px solid @list-background-color;
+                            border-bottom: 4px solid @list-background-color;
+                            border-radius: 3px;
+                            box-sizing: border-box;
 
                             span {
-                                cursor: pointer;
+                                margin-left: 4px;
+                                color: #5e6c84;
+                                line-height: 44px;
                             }
                         }
+                        .fake-list:hover {
+                            background-color: @background-color-of-hovered-element;
 
-                    }
-
-                    .list:first-child {
-                        margin-left: 0px;
-                    }
-
-                    .list:last-child {
-                        margin-right: 0px;
-                    }
-
-                    .fake-list {
-                        height: 18px;
-
-                        span {
-                            cursor: pointer;
+                            span {
+                                color: @list-font-foreground-color;
+                            }
                         }
                     }
+
+                    .list-wrapper:first-child {
+                        margin-left: 10px;
+                    }
+
+                    .list-wrapper:last-child {
+                        margin-right: 10px;
+                    }
+
+
+
 
                 }
 
@@ -224,7 +315,7 @@
                     }
 
                     .board-item:first-child {
-                        margin-left: 0px;
+                        margin-left: 0;
                     }
 
                 }

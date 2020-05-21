@@ -104,7 +104,10 @@ export class BoardPage {
      * @private
      */
     drawBoard() {
+        /** @type HTMLElement */
         const listContainerElem = document.querySelector(".lists-container");
+
+        const currentListContainerHeight = parseFloat(getComputedStyle(listContainerElem, null).height.replace("px", ""));
 
         // Retrieve all boards data (lists and related cards)
         this.listsService.getAllBoardLists(this.currentBoardId,
@@ -144,21 +147,30 @@ export class BoardPage {
 
         let timeoutId = null;
         listContainerElem.addEventListener("keyup", (e) => {
-            if (e.target && e.target.parentElement && e.target.parentElement.classList.contains("list-title")){
+            if (e.target && e.target.parentElement && e.target.parentElement.classList.contains("list-caption")){
                 clearTimeout(timeoutId);
 
                 timeoutId = setTimeout(() => {
                     let listId = e.target.parentElement.parentElement.parentElement.getAttribute("data-list-id");
                     console.log(listId + " " + e.target.value);
+                    e.target.blur();
                 }, 1000);
             }
         });
 
         // "Add a card" link click handler
         listContainerElem.addEventListener("click", (e) => {
-            if (e.target && e.target.parentElement && e.target.parentElement.classList.contains("card-composer")) {
-                this.createNewCard(e.target.parentElement.parentElement);
+            let listElem = null;
+            if (e.target && e.target.classList.contains("card-composer")) {
+                listElem = e.target.parentElement;
+            } else if (e.target && e.target.parentElement && e.target.parentElement.classList.contains("card-composer")) {
+                listElem = e.target.parentElement.parentElement;
             }
+
+            if (listElem) {
+                this.createNewCard(listElem);
+            }
+
         });
 
         listContainerElem.addEventListener("dragstart", (e) => {
@@ -236,23 +248,26 @@ export class BoardPage {
         newList.setAttribute("data-list-id", listId);
         newList.innerHTML = `
                 <div class="list-header">
-                    <div class="list-title">
+                    <div class="list-caption">
                         <input type="text" value="${listName}" >
                     </div>
-                    <div class="list-menu">
-                        <span>***</span>
+                    <div class="list-menu-button">
                     </div>
                 </div>
                 <div class="list-cards">
                 </div>
                 <div class="card-composer">
-                    <span>+ Add a card</span>
+                    <span>Add a card</span>
                 </div>
             `;
 
+        const listWrapper = document.createElement("div");
+        listWrapper.classList.add("list-wrapper");
+        listWrapper.append(newList);
+
         const listContainerElem = document.querySelector(".lists-container");
-        const fakeListElem = document.querySelector(".fake-list");
-        listContainerElem.insertBefore(newList, fakeListElem);
+        const fakeListWrapperElem = document.querySelector(".fake-list").parentElement;
+        listContainerElem.insertBefore(listWrapper, fakeListWrapperElem);
         this.setBoardInfo();
     }
 
