@@ -88,12 +88,12 @@ export class BoardPage {
         this.boardsService.getUserBoard(this.applicationUser.id, this.currentBoardId,
             /** @param {BoardDto} board */
             (board) => {
-                boardTitleElem.innerText = board.name;
-                boardDescriptionElem.innerText = board.description;
-                listsTotalElem.innerText = board.listsTotal;
-                cardsTotalElem.innerText = board.cardsTotal;
-                filesAttachedElem.innerText = board.filesAttachedTotal;
-                tagsTotalElem.innerText = board.tagsTotal;
+                boardTitleElem.value = board.name;
+                // boardDescriptionElem.innerText = board.description;
+                // listsTotalElem.innerText = board.listsTotal;
+                // cardsTotalElem.innerText = board.cardsTotal;
+                // filesAttachedElem.innerText = board.filesAttachedTotal;
+                // tagsTotalElem.innerText = board.tagsTotal;
             },
             () => {
                 ModalWindowFactory.showErrorOkMessage("Error occurred", "Error of getting board information");

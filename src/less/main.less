@@ -78,46 +78,52 @@
                 flex-grow: 1;
 
                 .board-header {
-                    flex: 0 1 auto;
-                    border: 1px solid;
-                    margin-bottom: 25px;
                     display: flex;
+                    justify-content: space-between;
 
-                    .board-title {
+                    input.board-title {
                         flex: 0 1 auto;
-                        border: 1px solid;
-                        white-space: nowrap;
                         display: flex;
-                        align-items: center;
-                        font-size: 18px;
-                        margin-right: 20px;
+                        font-size: 20px;
+                        border-width: 0;
+                        font-weight: 600;
+                        color: @list-font-foreground-color;
+                        cursor: pointer;
+                        width: calc(100% - 89px);
                     }
 
-                    .board-details {
-                        flex: 1 1 auto;
+                    input.board-title:focus {
+                        cursor: text;
+                    }
+
+
+                    .board-menu {
+                        flex: 0 1 auto;
+                        height: 30px;
                         border: 1px solid;
-                        display: flex;
-                        flex-flow: column nowrap;
+                        cursor: pointer;
+                        border-radius: 3px;
+                        background-color: @list-background-color;
+                        width: 87px;
 
-                        .board-description {
-                            border: 1px solid;
-                            flex: 0 1 auto;
-                        }
 
-                        .board-statistics {
-                            border: 1px solid;
-                            flex: 1 1 auto;
-
-                            span {
-
-                            }
+                        span {
+                            color: @list-font-foreground-color;
+                            line-height: 32px;
+                            margin-left: 4px;
+                            margin-right: 4px;
                         }
                     }
+
+                    .board-menu:hover {
+                        background-color: @background-color-of-hovered-element;
+                    }
+
                 }
 
                 .lists-container {
                     position: absolute;
-                    top: 130px;
+                    top: 110px;
                     right: 0;
                     bottom: 0;
                     left: 0;
