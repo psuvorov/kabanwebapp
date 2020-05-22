@@ -140,7 +140,7 @@ export class BoardPage {
         const listContainerElem = document.querySelector(".lists-container");
 
         // "Add a list" link click handler
-        const addListLink = document.querySelector(".fake-list span");
+        const addListLink = document.querySelector(".add-list-button");
         addListLink.addEventListener("click", () => {
             this.createNewList();
         });

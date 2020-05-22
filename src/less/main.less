@@ -254,28 +254,34 @@ body {
                             }
 
                             .fake-list {
-                                height: 50px;
-                                cursor: pointer;
-                                border-left: 8px solid @list-background-color;
-                                border-right: 8px solid @list-background-color;
-                                border-top: 4px solid @list-background-color;
-                                border-bottom: 4px solid @list-background-color;
-                                border-radius: 3px;
-                                box-sizing: border-box;
+                                border: 1px solid @border-color;
 
-                                span {
-                                    margin-left: 4px;
-                                    color: #5e6c84;
-                                    line-height: 44px;
+                                .add-list-button {
+                                    height: 50px;
+                                    cursor: pointer;
+                                    border-left: 8px solid @list-background-color;
+                                    border-right: 8px solid @list-background-color;
+                                    border-top: 4px solid @list-background-color;
+                                    border-bottom: 4px solid @list-background-color;
+                                    border-radius: 3px;
+                                    box-sizing: border-box;
+
+                                    span {
+                                        margin-left: 4px;
+                                        color: #5e6c84;
+                                        line-height: 44px;
+                                    }
+                                }
+
+                                .add-list-button:hover {
+                                    background-color: @background-color-of-hovered-element;
+
+                                    span {
+                                        color: @list-font-foreground-color;
+                                    }
                                 }
                             }
-                            .fake-list:hover {
-                                background-color: @background-color-of-hovered-element;
 
-                                span {
-                                    color: @list-font-foreground-color;
-                                }
-                            }
                         }
 
                         .list-wrapper:first-child {
