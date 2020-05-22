@@ -205,25 +205,34 @@ export class BoardPage {
      * @private
      */
     createNewList() {
+
+        /** @type ModalWindow */
+        let modalWindow = null;
+
         const callbacks = [
-            (gatheredElementsData, operationCallback) => {
+            /**
+             *
+             * @param {string} serializedFormData
+             */
+            (serializedFormData) => {
                 // Ok pressed
 
-                const createListDtoRaw = JSON.parse(gatheredElementsData);
+                const createListDtoRaw = JSON.parse(serializedFormData);
                 const createListDto = new CreateListDto(createListDtoRaw.name, parseInt(createListDtoRaw.orderNumber), this.currentBoardId);
 
                 this.listsService.createList(createListDto,
                     (data) => {
-                        operationCallback(); // Simply close the dialog
                         this.addListToBoard(data.listId, createListDto.name);
+                        modalWindow.close();
                     },
                     (error) => {
-                        operationCallback({error: error});
+                        modalWindow.close();
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new list. Reason: ${error}`);
                     });
             },
             () => {
                 // Cancel pressed
-
+                modalWindow.close();
             }
         ];
 
@@ -232,7 +241,8 @@ export class BoardPage {
             new ModalWindowElement(ModalWindowElementType.Input, "orderNumber", "Order number", "1")
         ];
 
-        new ModalWindow("Create new list", DialogTypes.OkCancel, callbacks, windowElements).show();
+        modalWindow = new ModalWindow("Create new list", DialogTypes.OkCancel, callbacks, windowElements);
+        modalWindow.show();
     }
 
 
@@ -280,24 +290,33 @@ export class BoardPage {
         /** @type {string} */
         const listId = listElem.getAttribute("data-list-id");
 
+        /** @type ModalWindow */
+        let modalWindow = null;
+
         const callbacks = [
-            (gatheredElementsData, operationCallback) => {
+            /**
+             *
+             * @param {string} serializedFormData
+             */
+            (serializedFormData) => {
                 // Ok pressed
 
-                const createCardDtoRaw = JSON.parse(gatheredElementsData);
+                const createCardDtoRaw = JSON.parse(serializedFormData);
                 const createCardDto = new CreateCardDto(createCardDtoRaw.name, createCardDtoRaw.description, parseInt(createCardDtoRaw.orderNumber), listId);
 
                 this.cardsService.createCard(createCardDto,
                     (data) => {
-                        operationCallback(); // Simply close the dialog
                         this.addCardToList(listElem, data.cardId, createCardDto.name);
+                        modalWindow.close();
                     },
                     (error) => {
-                        operationCallback({error: error});
+                        modalWindow.close();
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new card. Reason: ${error}`);
                     });
             },
             () => {
                 // Cancel pressed
+                modalWindow.close();
 
             }
         ];
@@ -308,7 +327,8 @@ export class BoardPage {
             new ModalWindowElement(ModalWindowElementType.Input, "orderNumber", "Order number", "1")
         ];
 
-        new ModalWindow("Create new card", DialogTypes.OkCancel, callbacks, windowElements).show();
+        modalWindow = new ModalWindow("Create new card", DialogTypes.OkCancel, callbacks, windowElements);
+        modalWindow.show();
     }
 
     /**

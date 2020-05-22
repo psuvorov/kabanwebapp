@@ -1,7 +1,7 @@
 import {LocalStorageKeys, ServerBaseApiUrl, ApplicationPageUrls} from "../constants";
 import {ApplicationUser} from "../application/applicationUser";
 import {AuthenticatedUserDto} from "../dtos/users";
-import {BoardDto} from "../dtos/boards";
+import {BoardDto, CreateBoardDto} from "../dtos/boards";
 import BoardsService from "../services/boardsService";
 import {
     ModalWindow,
@@ -36,6 +36,7 @@ export class DashboardPage {
 
     initialize() {
         this.initBoardsList();
+        this.setupInteractions();
 
     }
 
@@ -43,13 +44,11 @@ export class DashboardPage {
 
     initBoardsList() {
 
-
-
         this.boardsService.getAllUserBoards(this.applicationUser.id, (boards) => {
                 this.initUserBoards(boards);
             },
             (error) => {
-                ModalWindowFactory.showErrorOkMessage("Error occurred", "Error of getting user boards");
+                ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting user boards. Reason: ${error}`);
             });
     }
 
@@ -59,6 +58,9 @@ export class DashboardPage {
      */
     initUserBoards(boards) {
         const boardsContainerElem = document.querySelector(".boards-container");
+        while (boardsContainerElem.firstChild) {
+            boardsContainerElem.removeChild(boardsContainerElem.lastChild);
+        }
 
         boards.forEach(board => {
             const boardItemElem = document.createElement("div");
@@ -81,6 +83,54 @@ export class DashboardPage {
         });
     }
 
+    /**
+     * @private
+     */
+    setupInteractions() {
+        const rightItemsAreaElem = document.querySelector(".right-items-area");
+
+        const createBoardElem = rightItemsAreaElem.querySelector(".create-board");
+
+        createBoardElem.addEventListener("click", () => {
+            /** @type ModalWindow */
+            let modalWindow = null;
+
+            const callbacks = [
+                /**
+                 *
+                 * @param {string} serializedFormData
+                 */
+                (serializedFormData) => {
+                    // Ok pressed
+
+                    const createBoardDtoRaw = JSON.parse(serializedFormData);
+                    const createBoardDto = new CreateBoardDto(createBoardDtoRaw.name, createBoardDtoRaw.description);
+                    this.boardsService.createBoard(createBoardDto,
+                        () => {
+                            modalWindow.close();
+                            this.initBoardsList();
+                        },
+                        (error) => {
+                            modalWindow.close();
+                            ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new board. Reason: ${error}`);
+                        });
+                },
+                () => {
+                    // Cancel pressed
+                    modalWindow.close();
+                }
+            ];
+
+            const windowElements = [
+                new ModalWindowElement(ModalWindowElementType.Input, "name", "Board name", ""),
+                new ModalWindowElement(ModalWindowElementType.Input, "description", "Board description", "")
+            ];
+
+            modalWindow = new ModalWindow("Create new board", DialogTypes.OkCancel, callbacks, windowElements);
+            modalWindow.show();
+
+        });
+    }
 
 
 }

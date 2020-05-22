@@ -1,6 +1,12 @@
-import {ModalWindow, DialogTypes, ModalWindowElementType, ModalWindowElement} from "../components/modalWindow";
+import {
+    ModalWindow,
+    DialogTypes,
+    ModalWindowElementType,
+    ModalWindowElement,
+    ModalWindowFactory
+} from "../components/modalWindow";
 import {ServerBaseApiUrl, LocalStorageKeys, ApplicationPageUrls} from "../constants";
-import {AuthenticatedUserDto, AuthenticateUserDto} from "../dtos/users";
+import {AuthenticatedUserDto, AuthenticateUserDto, RegisterUserDto} from "../dtos/users";
 import BoardsService from "../services/boardsService";
 import {CreateBoardDto} from "../dtos/boards";
 import {ApplicationUser} from "../application/applicationUser";
@@ -16,11 +22,14 @@ export class CommonPageOperations {
          */
         this.authService = new AuthService();
 
-        /**
-         * @private
-         * @type {BoardsService}
-         */
-        this.boardService = new BoardsService();
+
+    }
+
+    initialize() {
+        this.initTopLeftItems();
+        this.initTopRightItems();
+
+
     }
 
     /**
@@ -38,7 +47,133 @@ export class CommonPageOperations {
      */
     initTopRightItems() {
         // --- Set visibility of specific elements ---
+        this.setupTopElementsVisibility();
 
+        // --- Attach event handlers ---
+        const rightItemsAreaElem = document.querySelector(".right-items-area");
+        const boardsListElem = rightItemsAreaElem.querySelector(".boards-list");
+        const notificationsElem = rightItemsAreaElem.querySelector(".notifications");
+        const profileElem = rightItemsAreaElem.querySelector(".profile");
+        const signInLinkElem = rightItemsAreaElem.querySelector(".sign-in");
+        const signUpLinkElem = rightItemsAreaElem.querySelector(".sign-up");
+        const signOutLinkElem = rightItemsAreaElem.querySelector(".sign-out");
+
+
+        boardsListElem.addEventListener("click", () => {
+            location.href = "/dashboard.html";
+        });
+
+
+
+        notificationsElem.addEventListener("click", () => {
+
+        });
+
+        profileElem.addEventListener("click", () => {
+
+        });
+
+        signInLinkElem.addEventListener("click", () => {
+
+            /** @type ModalWindow */
+            let modalWindow = null;
+
+            const callbacks = [
+
+                /**
+                 *
+                 * @param {string} serializedFormData
+                 */
+                (serializedFormData) => {
+                    // Ok pressed
+
+                    const authenticateUserDtoRaw = JSON.parse(serializedFormData);
+                    const authenticateUserDto = new AuthenticateUserDto(authenticateUserDtoRaw.email, authenticateUserDtoRaw.password);
+
+                    this.authService.authenticate(authenticateUserDto, (authenticatedUserDto) => {
+                        const applicationUser = ApplicationUser.fromAuthenticatedUserDto(authenticatedUserDto);
+                        localStorage.setItem(LocalStorageKeys.currentUser, JSON.stringify(applicationUser));
+                        window.location = ApplicationPageUrls.dashboardPage;
+
+                        modalWindow.close();
+
+                    }, (error) => {
+                        modalWindow.close();
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of signing in. Reason: ${error}`);
+                    });
+                },
+                () => {
+                    // Cancel pressed
+                    modalWindow.close();
+                }
+            ];
+
+            const windowElements = [
+                new ModalWindowElement(ModalWindowElementType.Input, "email", "Email", ""),
+                new ModalWindowElement(ModalWindowElementType.PasswordInput, "password", "Password", "")
+            ];
+
+            modalWindow = new ModalWindow("Sign In", DialogTypes.OkCancel, callbacks, windowElements);
+            modalWindow.show();
+
+        });
+
+        signUpLinkElem.addEventListener("click", () => {
+
+            /** @type ModalWindow */
+            let modalWindow = null;
+
+            const callbacks = [
+                /**
+                 * @param {string} serializedFormData
+                 */
+                (serializedFormData) => {
+                    // Ok pressed
+
+                    const registerUserDtoRaw = JSON.parse(serializedFormData);
+                    const registerUserDto = new RegisterUserDto(registerUserDtoRaw.firstName, registerUserDtoRaw.lastName,
+                        registerUserDtoRaw.username, registerUserDtoRaw.email, registerUserDtoRaw.password);
+
+                    this.authService.register(registerUserDto, (userId) => {
+                        modalWindow.close();
+                        ModalWindowFactory.showInfoOkMessage("User created", "User has been successfully created");
+
+                    }, (error) => {
+                        modalWindow.close();
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of signing up. Reason: ${error}`);
+                    });
+
+                },
+                () => {
+                    // Cancel pressed
+                    modalWindow.close();
+                }
+            ];
+
+            const windowElements = [
+                new ModalWindowElement(ModalWindowElementType.Input, "FirstName", "FirstName", ""),
+                new ModalWindowElement(ModalWindowElementType.Input, "LastName", "LastName", ""),
+                new ModalWindowElement(ModalWindowElementType.Input, "Username", "Username", ""),
+                new ModalWindowElement(ModalWindowElementType.Input, "Email", "Email", ""),
+                new ModalWindowElement(ModalWindowElementType.PasswordInput, "Password", "Password", "")
+            ];
+
+            modalWindow = new ModalWindow("Sign Up", DialogTypes.OkCancel, callbacks, windowElements);
+            modalWindow.show();
+        });
+
+        signOutLinkElem.addEventListener("click", () => {
+            localStorage.removeItem(LocalStorageKeys.currentUser);
+            location.href = "/";
+        });
+
+
+    }
+
+    /**
+     * @private
+     */
+    setupTopElementsVisibility() {
         const rightItemsAreaElem = document.querySelector(".right-items-area");
         const authWrapperElem = rightItemsAreaElem.querySelector(".auth-wrapper");
         const userAreaElem = rightItemsAreaElem.querySelector(".user-area");
@@ -57,139 +192,10 @@ export class CommonPageOperations {
             authWrapperElem.classList.add("hidden");
             userAreaElem.classList.remove("hidden");
         }
-
-
-        // --- Attach event handlers ---
-
-        const boardsListElem = rightItemsAreaElem.querySelector(".boards-list");
-        const createBoardElem = rightItemsAreaElem.querySelector(".create-board");
-        const notificationsElem = rightItemsAreaElem.querySelector(".notifications");
-        const profileElem = rightItemsAreaElem.querySelector(".profile");
-        const signInLinkElem = rightItemsAreaElem.querySelector(".sign-in");
-        const signUpLinkElem = rightItemsAreaElem.querySelector(".sign-up");
-        const signOutLinkElem = rightItemsAreaElem.querySelector(".sign-out");
-
-
-        boardsListElem.addEventListener("click", () => {
-            location.href = "/dashboard.html";
-        });
-
-        createBoardElem.addEventListener("click", () => {
-
-            const callbacks = [
-                (gatheredElementsData, operationCallback) => {
-                    // Ok pressed
-
-                    this.boardService.createBoard(gatheredElementsData,
-                        () => {
-                            operationCallback(); // Simply close the dialog
-                            window.location.reload();
-                        },
-                        (error) => {
-                            operationCallback({error: error});
-                        });
-                },
-                () => {
-                    // Cancel pressed
-
-                }
-            ];
-
-            const windowElements = [
-                new ModalWindowElement(ModalWindowElementType.Input, "name", "Board name", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "description", "Board description", "")
-            ];
-
-            new ModalWindow("Create new board", DialogTypes.OkCancel, callbacks, windowElements).show();
-
-        });
-
-        notificationsElem.addEventListener("click", () => {
-
-        });
-
-        profileElem.addEventListener("click", () => {
-
-        });
-
-        signInLinkElem.addEventListener("click", () => {
-
-            const callbacks = [
-
-                (gatheredElementsData, operationCallback) => {
-                    // Ok pressed
-
-                    this.authService.authenticate(gatheredElementsData, (authenticatedUserDto) => {
-                        const applicationUser = ApplicationUser.fromAuthenticatedUserDto(authenticatedUserDto);
-                        localStorage.setItem(LocalStorageKeys.currentUser, JSON.stringify(applicationUser));
-
-                        operationCallback(); // Simply close the dialog
-                        window.location = ApplicationPageUrls.dashboardPage;
-
-                    }, (error) => {
-                        operationCallback({error: error});
-                    });
-                },
-                () => {
-                    // Cancel pressed
-
-                }
-            ];
-
-            const windowElements = [
-                new ModalWindowElement(ModalWindowElementType.Input, "email", "Email", ""),
-                new ModalWindowElement(ModalWindowElementType.PasswordInput, "password", "Password", "")
-            ];
-
-            new ModalWindow("Sign In", DialogTypes.OkCancel, callbacks, windowElements).show();
-
-        });
-
-        signUpLinkElem.addEventListener("click", () => {
-
-            const callbacks = [
-                (gatheredElementsData, operationCallback) => {
-                    // Ok pressed
-
-                    this.authService.register(gatheredElementsData, (userId) => {
-                        operationCallback({message: "User has been successfully created"});
-                    }, (error) => {
-                        operationCallback({error: error});
-                    });
-
-                },
-                () => {
-                    // Cancel pressed
-
-                }
-            ];
-
-            const windowElements = [
-                new ModalWindowElement(ModalWindowElementType.Input, "FirstName", "FirstName", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "LastName", "LastName", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "Username", "Username", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "Email", "Email", ""),
-                new ModalWindowElement(ModalWindowElementType.PasswordInput, "Password", "Password", "")
-            ];
-
-            new ModalWindow("Sign Up", DialogTypes.OkCancel, callbacks, windowElements).show();
-        });
-
-        signOutLinkElem.addEventListener("click", () => {
-            localStorage.removeItem(LocalStorageKeys.currentUser);
-            location.href = "/";
-        });
-
-
     }
 
 
-    initialize() {
-        this.initTopLeftItems();
-        this.initTopRightItems();
 
-
-    }
 
 }
 

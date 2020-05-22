@@ -61,7 +61,7 @@ export class ModalWindow {
         this.initWindowElements();
 
         // --- Attach events ---
-        this.modalWindowElem.querySelector(".close-button").addEventListener("click", () => this.dispose());
+        this.modalWindowElem.querySelector(".close-button").addEventListener("click", () => this.close());
         this.initFooterButtons();
     }
 
@@ -119,11 +119,6 @@ export class ModalWindow {
         mainAreaElem.classList.add("modal-main-area");
         modalWindowElem.append(mainAreaElem);
 
-        const infoAreaElem = document.createElement("div");
-        infoAreaElem.classList.add("modal-info-area");
-        infoAreaElem.append(document.createElement("div"));
-        modalWindowElem.append(infoAreaElem);
-
         const footerElem = document.createElement("div");
         footerElem.classList.add("modal-footer");
         modalWindowElem.append(footerElem);
@@ -146,10 +141,8 @@ export class ModalWindow {
 
             okButtonElem.addEventListener("click", () => {
                 const formData = new FormData(formElem);
-                const json = JSON.stringify(Object.fromEntries(formData));
-
-                this.callbacks[0]();
-                this.dispose();
+                const serializedFormData = JSON.stringify(Object.fromEntries(formData));
+                this.callbacks[0](serializedFormData);
             });
 
 
@@ -161,30 +154,12 @@ export class ModalWindow {
 
             okButtonElem.addEventListener("click", () => {
                 const formData = new FormData(formElem);
-                const json = JSON.stringify(Object.fromEntries(formData));
-
-                const operationResultCallback = (data) => {
-                    if (!data) {
-                        this.dispose();
-                        return;
-                    }
-
-                    if (data.error) {
-                        this.setDialogErrorMessage(data.error);
-                    } else if (data.message) {
-                        this.setDialogInformationMessage(data.message);
-                        setTimeout(() => {this.dispose()}, 5000);
-                    } else {
-                        this.dispose();
-                    }
-                };
-                this.callbacks[0](json, operationResultCallback);
-
+                const serializedFormData = JSON.stringify(Object.fromEntries(formData));
+                this.callbacks[0](serializedFormData);
             });
-            cancelButtonElem.addEventListener("click", () => {
 
+            cancelButtonElem.addEventListener("click", () => {
                 this.callbacks[1]();
-                this.dispose();
             });
 
         } else if (this.dialogType === DialogTypes.YesNo && this.callbacks.length === 2) {
@@ -194,14 +169,12 @@ export class ModalWindow {
             footerElem.append(noButtonElem);
 
             yesButtonElem.addEventListener("click", () => {
-                // TODO: gather data from fields
-                this.callbacks[0]();
-                this.dispose();
+                const formData = new FormData(formElem);
+                const serializedFormData = JSON.stringify(Object.fromEntries(formData));
+                this.callbacks[0](serializedFormData);
             });
             noButtonElem.addEventListener("click", () => {
-                // TODO: gather data from fields
                 this.callbacks[1]();
-                this.dispose();
             });
 
         } else if (this.dialogType === DialogTypes.YesNoCancel && this.callbacks.length === 3) {
@@ -215,17 +188,17 @@ export class ModalWindow {
             yesButtonElem.addEventListener("click", () => {
                 // TODO: gather data from fields
                 this.callbacks[0]();
-                this.dispose();
+                this.close();
             });
             noButtonElem.addEventListener("click", () => {
                 // TODO: gather data from fields
                 this.callbacks[1]();
-                this.dispose();
+                this.close();
             });
             cancelButtonElem.addEventListener("click", () => {
                 // TODO: gather data from fields
                 this.callbacks[2]();
-                this.dispose();
+                this.close();
             });
         } else {
             throw new Error("Unknown Dialog Type.");
@@ -245,38 +218,14 @@ export class ModalWindow {
         return buttonElem;
     }
 
-    /**
-     * @private
-     * @param {string} message
-     */
-    setDialogErrorMessage(message) {
-        const modalInfoElem = this.modalWindowElem.querySelector(".modal-info-area");
-        const messagePlaceholder = modalInfoElem.querySelector("div");
-        messagePlaceholder.innerHTML = `<span style="color: #a1180c">${message}</span>`;
-        modalInfoElem.style.display = "block";
-    }
-
-    /**
-     * @private
-     * @param {string} message
-     */
-    setDialogInformationMessage(message) {
-        const modalInfoElem = this.modalWindowElem.querySelector(".modal-info-area");
-        const messagePlaceholder = modalInfoElem.querySelector("div");
-        messagePlaceholder.innerHTML = `<span style="color: #175910">${message}</span>`;
-        modalInfoElem.style.display = "block";
-    }
-
 
     show() {
         this.modalWindowElem.classList.add("animated", "fadeIn");
         this.modalWindowElem.style.display = "flex";
     }
 
-    /**
-     * @private
-     */
-    dispose() {
+
+    close() {
         this.modalWindowElem.style.display = "none";
         this.modalWindowElem.remove();
     }
@@ -293,14 +242,18 @@ export class ModalWindowFactory {
      * @param [okCallback]
      */
     static showErrorOkMessage(title, text, okCallback) {
+        /** @type ModalWindow */
+        let modalWindow = null;
+
         const callbacks = [];
-        callbacks.push(okCallback ? okCallback : () => {});
+        callbacks.push(okCallback ? okCallback : () => {modalWindow.close();});
 
         const windowElements = [
             new ModalWindowElement(ModalWindowElementType.Label, "label", "Error", text),
         ];
 
-        new ModalWindow(title, DialogTypes.Ok, callbacks, windowElements).show();
+        modalWindow = new ModalWindow(title, DialogTypes.Ok, callbacks, windowElements);
+        modalWindow.show();
     }
 
     /**
@@ -310,14 +263,18 @@ export class ModalWindowFactory {
      * @param [okCallback]
      */
     static showInfoOkMessage(title, text, okCallback) {
+        /** @type ModalWindow */
+        let modalWindow = null;
+
         const callbacks = [];
-        callbacks.push(okCallback ? okCallback : () => {});
+        callbacks.push(okCallback ? okCallback : () => {modalWindow.close();});
 
         const windowElements = [
             new ModalWindowElement(ModalWindowElementType.Label, "label", "Information", text),
         ];
 
-        new ModalWindow(title, DialogTypes.Ok, callbacks, windowElements).show();
+        modalWindow = new ModalWindow(title, DialogTypes.Ok, callbacks, windowElements);
+        modalWindow.show();
     }
 
     /**
@@ -328,15 +285,19 @@ export class ModalWindowFactory {
      * @param [noCallback]
      */
     static showYesNoQuestion(title, text, yesCallback, noCallback) {
+        /** @type ModalWindow */
+        let modalWindow = null;
+
         const callbacks = [];
-        callbacks.push(yesCallback ? yesCallback : () => {});
-        callbacks.push(noCallback ? noCallback : () => {});
+        callbacks.push(yesCallback ? yesCallback : () => {modalWindow.close();});
+        callbacks.push(noCallback ? noCallback : () => {modalWindow.close();});
 
         const windowElements = [
             new ModalWindowElement(ModalWindowElementType.Label, "label", "Question", text),
         ];
 
-        new ModalWindow(title, DialogTypes.YesNo, callbacks, windowElements).show();
+        modalWindow = new ModalWindow(title, DialogTypes.YesNo, callbacks, windowElements);
+        modalWindow.show();
     }
 
 }
