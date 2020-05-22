@@ -30,7 +30,9 @@ export default class ListsService {
             }
         }).then(res => {
             if (res.hasOwnProperty("message")) {
-                onError({message: res.message});
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 const lists = [];
                 for (let i = 0; i < res.length; i++) {
@@ -69,6 +71,8 @@ export default class ListsService {
         }).then(res => {
             if (res.hasOwnProperty("message")) {
                 onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 onSuccess({listId: res.listId});
             }
@@ -105,6 +109,8 @@ export default class ListsService {
         }).then(res => {
             if (res.hasOwnProperty("message")) {
                 onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 onSuccess();
             }

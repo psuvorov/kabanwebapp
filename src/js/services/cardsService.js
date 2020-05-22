@@ -31,6 +31,8 @@ export default class CardsService {
         }).then(res => {
             if (res.hasOwnProperty("message")) {
                 onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 onSuccess({cardId: res.cardId});
             }

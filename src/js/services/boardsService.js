@@ -27,7 +27,9 @@ export default class BoardsService {
             }
         }).then(res => {
             if (res.hasOwnProperty("message")) {
-                onError({message: res.message});
+                onError(res.message);
+            }  else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 const boards = [];
                 for (let i = 0; i < res.length; i++) {
@@ -65,7 +67,9 @@ export default class BoardsService {
             }
         }).then(res => {
             if (res.hasOwnProperty("message")) {
-                onError({message: res.message});
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 const boards = [];
                 for (let i = 0; i < res.length; i++) {
@@ -103,7 +107,9 @@ export default class BoardsService {
             }
         }).then(res => {
             if (res.hasOwnProperty("message")) {
-                onError({message: res.message});
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 const board = new BoardDto(res.id, res.name, res.description, parseInt(res.userId),
                     parseInt(res.listsTotal), parseInt(res.cardsTotal), parseInt(res.filesAttachedTotal), parseInt(res.tagsTotal));
@@ -139,6 +145,8 @@ export default class BoardsService {
         }).then(res => {
             if (res.hasOwnProperty("message")) {
                 onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 onSuccess({boardId: res.boardId});
             }
@@ -150,7 +158,7 @@ export default class BoardsService {
     /**
      *
      * @param {string} boardId
-     * @param {UpdateBoardDto} createBoardDto
+     * @param {UpdateBoardDto} updateBoardDto
      * @param {function} onSuccess
      * @param {function} onError
      */
@@ -173,6 +181,8 @@ export default class BoardsService {
         }).then(res => {
             if (res.hasOwnProperty("message")) {
                 onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 onSuccess({boardId: res.boardId});
             }

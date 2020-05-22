@@ -8,18 +8,18 @@ export default class AuthService {
 
     /**
      *
-     * @param {string} authenticateUserDtoSerialized
+     * @param {AuthenticateUserDto} authenticateUserDto
      * @param {function} onSuccess
      * @param {function} onError
      */
-    authenticate(authenticateUserDtoSerialized, onSuccess, onError) {
+    authenticate(authenticateUserDto, onSuccess, onError) {
 
         fetch(ServerBaseApiUrl + "/users/authenticate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: authenticateUserDtoSerialized
+            body: JSON.stringify(authenticateUserDto)
         }).then(res => {
             if (res.status === 200 || res.status === 400) {
                 return res.json();
@@ -29,6 +29,8 @@ export default class AuthService {
         }).then(res => {
             if (res.hasOwnProperty("message")) {
                 onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 const currentUser = new AuthenticatedUserDto(parseInt(res.id), res.firstName, res.lastName, res.username, res.email, res.token);
                 onSuccess(currentUser);
@@ -40,20 +42,22 @@ export default class AuthService {
 
     /**
      *
-     * @param {string} registerUserDtoSerialized
+     * @param {RegisterUserDto} registerUserDto
      * @param {function} onSuccess
      * @param {function} onError
      */
-    register(registerUserDtoSerialized, onSuccess, onError) {
+    register(registerUserDto, onSuccess, onError) {
         fetch(ServerBaseApiUrl + "/users/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: registerUserDtoSerialized
+            body: JSON.stringify(registerUserDto)
         }).then(res => {
             if (res.status === 201 || res.status === 400) {
                 return res.json();
+            }  else if (res.hasOwnProperty("title")) {
+                onError(res.title);
             } else {
                 throw new Error(res.status + " " + res.statusText);
             }
