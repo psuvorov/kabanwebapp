@@ -252,6 +252,7 @@ export class BoardPage {
                         <input type="text" value="${listName}" >
                     </div>
                     <div class="list-menu-button">
+                        <i class="fas fa-ellipsis-h"></i>
                     </div>
                 </div>
                 <div class="list-cards">

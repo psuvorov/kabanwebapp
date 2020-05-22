@@ -4,7 +4,7 @@
 @normal-foreground-color: #172b4d;
 @border-color: #aaabaf;
 @list-border-color: #aaabaf;
-
+@list-util-foreground-color: #5e6c84;
 
 input,
 body {
@@ -193,6 +193,13 @@ body {
                                         height: 24px;
                                         cursor: pointer;
                                         border-radius: 3px;
+                                        display: flex;
+
+                                        i {
+                                            font-size: 12px;
+                                            margin: auto;
+                                            color: @list-util-foreground-color;
+                                        }
                                     }
                                     .list-menu-button:hover {
                                         background-color: @background-color-of-hovered-element;
@@ -244,7 +251,7 @@ body {
 
                                     span {
                                         margin-left: 4px;
-                                        color: #5e6c84;
+                                        color: @list-util-foreground-color;
                                         line-height: 32px;
                                     }
                                 }
@@ -272,7 +279,7 @@ body {
 
                                     span {
                                         margin-left: 4px;
-                                        color: #5e6c84;
+                                        color: @list-util-foreground-color;
                                         line-height: 44px;
                                     }
                                 }
