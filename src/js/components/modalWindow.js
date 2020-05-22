@@ -112,7 +112,7 @@ export class ModalWindow {
 
         const titleElem = document.createElement("div");
         titleElem.classList.add("modal-title");
-        titleElem.innerHTML = `<div class="title">${this.title}</div><div class="close-button"><span>x</span></div>`;
+        titleElem.innerHTML = `<div class="title">${this.title}</div><div class="close-button"><i class="fas fa-times"></i></div>`;
         modalWindowElem.append(titleElem);
 
         const mainAreaElem = document.createElement("div");

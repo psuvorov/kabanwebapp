@@ -10,7 +10,8 @@
 	display: none;
 	flex-flow: column nowrap;
 	width: 400px;
-	min-height: 300px;
+	padding: 2px;
+	border-radius: @border-radius;
 
 	-webkit-box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
 	-moz-box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
@@ -32,13 +33,13 @@
 
 		.close-button {
 			cursor: pointer;
+			display: flex;
+			width: 20px;
 
-			span {
-
-				font-size: 20px;
-				font-weight: 600;
-				margin-right: 4px;
-				margin-left: 4px;
+			i {
+				font-size: 14px;
+				margin: auto;
+				color: @list-util-foreground-color;
 
 			}
 		}
@@ -52,31 +53,34 @@
 
 		.element-wrapper {
 			flex: 0 1 auto;
-			margin: 5px;
+			margin-left: 5px;
+			margin-right: 5px;
+			margin-bottom: 8px;
+
+			label {
+				font-size: 13px;
+			}
 
 			input,
 			textarea {
 				width: 100%;
 				box-sizing: border-box;
+				border: 1px solid @border-color;
+				padding: 2px;
+				font-size: 14px;
 
 			}
 
 			textarea {
 				resize: none;
 			}
-
 		}
-	}
 
-	.modal-info-area {
-		height: 46px;
-		flex: 0 1 auto;
-		border-top: 1px dashed @border-color;
-		display: none;
-
-		div {
-			margin: 2px 4px;
+		.element-wrapper:first-child {
+			margin-top: 8px;
 		}
+
+
 	}
 
 	.modal-footer {
@@ -85,6 +89,7 @@
 		flex: 0 1 auto;
 		display: flex;
 		justify-content: flex-end;
+		padding-top: 4px;
 
 		.button {
 			width: 60px;
@@ -96,6 +101,7 @@
 			justify-content: center;
 			align-content: center;
 			cursor: pointer;
+			border-radius: @border-radius;
 		}
 
 		.ok-button {
