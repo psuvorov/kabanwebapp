@@ -81,6 +81,18 @@ export class DashboardPage {
 
             boardsContainerElem.append(boardItemElem);
         });
+
+        /** @type HTMLElement */
+        const dashboardTopDescriptionElem = document.querySelector(".dashboard-top-description");
+        if (boards.length === 0) {
+            dashboardTopDescriptionElem.innerHTML = `There is no any board, but you can <span class="highlight link">create one</span>`;
+            const createOneLink = dashboardTopDescriptionElem.querySelector("span");
+            createOneLink.addEventListener("click", this.createBoardEventHandler);
+        } else {
+            dashboardTopDescriptionElem.innerText = `Here is all your boards:`;
+        }
+
+
     }
 
     /**
@@ -91,45 +103,46 @@ export class DashboardPage {
 
         const createBoardElem = rightItemsAreaElem.querySelector(".create-board");
 
-        createBoardElem.addEventListener("click", () => {
-            /** @type ModalWindow */
-            let modalWindow = null;
+        createBoardElem.addEventListener("click", this.createBoardEventHandler);
+    }
 
-            const callbacks = [
-                /**
-                 *
-                 * @param {string} serializedFormData
-                 */
+    createBoardEventHandler(event) {
+        /** @type ModalWindow */
+        let modalWindow = null;
+
+        const callbacks = [
+            /**
+             *
+             * @param {string} serializedFormData
+             */
                 (serializedFormData) => {
-                    // Ok pressed
+                // Ok pressed
 
-                    const createBoardDtoRaw = JSON.parse(serializedFormData);
-                    const createBoardDto = new CreateBoardDto(createBoardDtoRaw.name, createBoardDtoRaw.description);
-                    this.boardsService.createBoard(createBoardDto,
-                        () => {
-                            modalWindow.close();
-                            this.initBoardsList();
-                        },
-                        (error) => {
-                            modalWindow.close();
-                            ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new board. Reason: ${error}`);
-                        });
-                },
-                () => {
-                    // Cancel pressed
-                    modalWindow.close();
-                }
-            ];
+                const createBoardDtoRaw = JSON.parse(serializedFormData);
+                const createBoardDto = new CreateBoardDto(createBoardDtoRaw.name, createBoardDtoRaw.description);
+                this.boardsService.createBoard(createBoardDto,
+                    () => {
+                        modalWindow.close();
+                        this.initBoardsList();
+                    },
+                    (error) => {
+                        modalWindow.close();
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new board. Reason: ${error}`);
+                    });
+            },
+            () => {
+                // Cancel pressed
+                modalWindow.close();
+            }
+        ];
 
-            const windowElements = [
-                new ModalWindowElement(ModalWindowElementType.Input, "name", "Board name", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "description", "Board description", "")
-            ];
+        const windowElements = [
+            new ModalWindowElement(ModalWindowElementType.Input, "name", "Board name", ""),
+            new ModalWindowElement(ModalWindowElementType.Input, "description", "Board description", "")
+        ];
 
-            modalWindow = new ModalWindow("Create new board", DialogTypes.OkCancel, callbacks, windowElements);
-            modalWindow.show();
-
-        });
+        modalWindow = new ModalWindow("Create new board", DialogTypes.OkCancel, callbacks, windowElements);
+        modalWindow.show();
     }
 
 
