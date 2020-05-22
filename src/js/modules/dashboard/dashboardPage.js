@@ -66,7 +66,7 @@ export class DashboardPage {
             boardItemElem.setAttribute("data-board-id", `${board.id}`);
             boardItemElem.innerHTML = ` 
                 <div class="title">
-                    <div>${board.name}</div>
+                    ${board.name}
                 </div>
                 <div class="description">
                     ${board.description}

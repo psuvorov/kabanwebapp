@@ -94,6 +94,7 @@ body {
                             color: @list-font-foreground-color;
                             cursor: pointer;
                             width: calc(100% - 124px);
+                            padding-left: 4px;
                         }
 
                         input.board-title:focus {
@@ -291,10 +292,10 @@ body {
                         .list-wrapper:last-child {
                             margin-right: 10px;
                         }
+                    }
 
-
-
-
+                    .dashboard-top-description {
+                        margin-bottom: 10px;
                     }
 
                     .boards-container {
@@ -302,30 +303,24 @@ body {
                         flex-flow: row wrap;
 
                         .board-item {
-                            flex: 0 1 auto;
-                            display: flex;
-                            flex-flow: column nowrap;
                             height: 100px;
                             width: 200px;
                             border: 1px solid @border-color;
                             margin: 5px;
                             cursor: pointer;
+                            border-radius: 3px;
 
                             .title {
-                                flex: 0 1 auto;
-                                border-bottom: 1px dashed @border-color;
-
-                                div {
-                                    margin: 2px;
-                                }
+                                color: @list-font-foreground-color;
+                                overflow: hidden;
+                                margin: 4px;
                             }
 
                             .description {
-                                flex: 1 1 auto;
                                 overflow: auto;
-                                margin: 2px;
-                                font-size: 14px;
-                                color: #222;
+                                margin: 4px;
+                                font-size: 13px;
+                                color: @list-font-foreground-color;
                             }
 
                         }
