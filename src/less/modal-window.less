@@ -1,0 +1,122 @@
+@import "constants.less";
+
+.modal-window {
+	border: 1px solid @border-color;
+	background-color: white;
+	position: fixed;
+	top: 100px;
+	left: 50%;
+	transform: translate(-50%);
+	display: none;
+	flex-flow: column nowrap;
+	width: 400px;
+	min-height: 300px;
+
+	-webkit-box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
+	-moz-box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
+	box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
+
+	.modal-title {
+		display: flex;
+		height: 20px;
+		border-bottom: 1px dashed @border-color;
+		flex: 0 1 auto;
+
+
+
+		.title {
+			flex: 1 1 auto;
+			margin-left: 4px;
+			margin-top: 2px;
+		}
+
+		.close-button {
+			cursor: pointer;
+
+			span {
+
+				font-size: 20px;
+				font-weight: 600;
+				margin-right: 4px;
+				margin-left: 4px;
+
+			}
+		}
+
+	}
+
+	.modal-main-area {
+		flex: 1 1 auto;
+		display: flex;
+		flex-flow: column nowrap;
+
+		.element-wrapper {
+			flex: 0 1 auto;
+			margin: 5px;
+
+			input,
+			textarea {
+				width: 100%;
+				box-sizing: border-box;
+
+			}
+
+			textarea {
+				resize: none;
+			}
+
+		}
+	}
+
+	.modal-info-area {
+		height: 46px;
+		flex: 0 1 auto;
+		border-top: 1px dashed @border-color;
+		display: none;
+
+		div {
+			margin: 2px 4px;
+		}
+	}
+
+	.modal-footer {
+		height: 36px;
+		border-top: 1px dashed @border-color;
+		flex: 0 1 auto;
+		display: flex;
+		justify-content: flex-end;
+
+		.button {
+			width: 60px;
+			height: 26px;
+			margin: 4px;
+			border: 1px solid @border-color;
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: center;
+			align-content: center;
+			cursor: pointer;
+		}
+
+		.ok-button {
+
+		}
+
+		.cancel-button {
+
+		}
+
+		.yes-button {
+
+		}
+
+		.no-button {
+
+		}
+
+
+	}
+
+
+
+}

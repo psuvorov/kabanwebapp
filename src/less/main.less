@@ -1,504 +1,107 @@
-@background-color-of-element: #f0f1f5;
-@background-color-of-hovered-element: #e5e6ea;
-@background-color-of-list-card: #fff;
-@normal-foreground-color: #172b4d;
-@border-color: #aaabaf;
-@list-border-color: #aaabaf;
-@list-util-foreground-color: #5e6c84;
-
-input,
-body {
-    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;
-
-    .page-container {
-        display: flex;
-        flex-flow: column nowrap;
-        height: 100vh;
-
-
-        .page-item {
-            margin: 5px;
-            padding: 5px;
-            flex: 0 1 auto;
-
-            .top-menu-row {
-                display: flex;
-                height: 40px;
-                justify-content: space-between;
-                border: 1px solid @border-color;
-                border-radius: 3px;
-
-
-                .top-menu-item {
-                    margin: 5px;
-                    flex: 0 1 auto;
-                }
-
-                .left-items-area {
-                    display: inline-flex;
-                    align-items: center;
-                    cursor: pointer;
-
-                    .logo {
-                        width: 32px;
-                        height: 32px;
-                        cursor: pointer;
-                    }
-
-                    h3 {
-                        margin-left: 10px;
-                        font-size: 18px;
-                        font-weight: 600;
-                    }
-
-
-                }
-
-                .right-items-area {
-                    display: inline-flex;
-                    align-items: center;
-
-                    .auth-wrapper {
-                        .sign-in {
-                            margin-right: 10px;
-                        }
-                    }
-
-                    .user-area {
-                        .boards-list, .create-board, .notifications, .profile {
-                            margin-right: 10px;
-                        }
-                    }
-                }
-
-
-            }
-
-            .main-content-row {
-                display: flex;
-                height: 100%;
-                flex-flow: column;
-
-                .content-area {
-                    display: flex;
-                    flex-flow: column nowrap;
-                    flex-grow: 1;
-
-                    .board-header {
-                        display: flex;
-                        justify-content: space-between;
-
-                        input.board-title {
-                            flex: 0 1 auto;
-                            display: flex;
-                            font-size: 20px;
-                            border-width: 0;
-                            font-weight: 600;
-                            color: @normal-foreground-color;
-                            cursor: pointer;
-                            width: calc(100% - 124px);
-                            padding-left: 4px;
-                        }
-
-                        input.board-title:focus {
-                            cursor: text;
-                        }
-
-
-                        .board-details-button {
-                            flex: 0 1 auto;
-                            height: 32px;
-                            border: 1px solid @border-color;
-                            cursor: pointer;
-                            border-radius: 3px;
-                            background-color: @background-color-of-element;
-                            width: 122px;
-                            text-align: center;
-
-                            span {
-                                color: @normal-foreground-color;
-                                line-height: 32px;
-                                margin-left: 4px;
-                                margin-right: 4px;
-                            }
-                        }
-
-                        .board-details-button:hover {
-                            background-color: @background-color-of-hovered-element;
-                        }
-
-                    }
-
-                    .lists-container {
-                        position: absolute;
-                        top: 112px;
-                        right: 0;
-                        bottom: 0;
-                        left: 0;
-                        user-select: none;
-                        white-space: nowrap;
-                        margin-bottom: 8px;
-                        overflow-x: auto;
-                        overflow-y: hidden;
-                        padding-bottom: 8px;
-
-                        .list-wrapper {
-                            height: 100%;
-                            box-sizing: border-box;
-                            display: inline-block;
-                            vertical-align: top;
-                            white-space: nowrap;
-                            margin-left: 5px;
-                            margin-right: 5px;
-
-                            .list {
-                                border: 1px solid @list-border-color;
-                                background-color: @background-color-of-element;
-                                border-radius: 3px;
-                                box-sizing: border-box;
-                                display: flex;
-                                flex-direction: column;
-                                max-height: 100%;
-                                position: relative;
-                                white-space: normal;
-                                width: 270px;
-
-                                .list-header {
-                                    display: flex;
-                                    padding: 10px 8px;
-                                    position: relative;
-
-                                    .list-caption {
-                                        width: 232px;
-
-                                        input {
-                                            width: 216px;
-                                            font-size: 16px;
-                                            background-color: @background-color-of-element;
-                                            border-width: 0;
-                                            padding-left: 4px;
-                                            height: 21px;
-                                            font-weight: 600;
-                                            color: @normal-foreground-color;
-                                            cursor: pointer;
-                                        }
-
-                                        input:focus {
-                                            cursor: text;
-                                        }
-                                    }
-
-                                    .list-menu-button {
-                                        width: 24px;
-                                        height: 24px;
-                                        cursor: pointer;
-                                        border-radius: 3px;
-                                        display: flex;
-
-                                        i {
-                                            font-size: 12px;
-                                            margin: auto;
-                                            color: @list-util-foreground-color;
-                                        }
-                                    }
-                                    .list-menu-button:hover {
-                                        background-color: @background-color-of-hovered-element;
-                                    }
-
-
-                                }
-
-                                .list-cards {
-                                    flex: 1 1 auto;
-                                    overflow-y: auto;
-                                    overflow-x: hidden;
-                                    margin: 0 4px;
-                                    padding: 0 4px;
-                                    z-index: 1;
-                                    min-height: 0;
-
-                                    .list-card {
-                                        background-color: @background-color-of-list-card;
-                                        border-radius: 3px;
-                                        box-shadow: 0 1px 0 rgba(9,30,66,.25);
-                                        cursor: pointer;
-                                        display: block;
-                                        margin-bottom: 8px;
-                                        max-width: 300px;
-                                        position: relative;
-                                        text-decoration: none;
-                                        z-index: 0;
-                                        padding: 5px;
-
-                                        span {
-                                            color: @normal-foreground-color;
-                                        }
-                                    }
-
-                                    .list-card:last-child {
-                                        margin-bottom: 1px;
-                                    }
-                                }
-
-                                .card-composer {
-                                    height: 38px;
-                                    display: flex;
-                                    cursor: pointer;
-                                    border: 4px solid @background-color-of-element;
-                                    border-radius: 3px;
-                                    box-sizing: border-box;
-                                    margin: 0 4px;
-
-                                    span {
-                                        margin-left: 4px;
-                                        color: @list-util-foreground-color;
-                                        line-height: 32px;
-                                    }
-                                }
-                                .card-composer:hover{
-                                    background-color: @background-color-of-hovered-element;
-
-                                    span {
-                                        color: @normal-foreground-color;
-                                    }
-                                }
-                            }
-
-                            .fake-list {
-                                border: 1px solid @list-border-color;
-
-                                .add-list-button {
-                                    height: 50px;
-                                    cursor: pointer;
-                                    border-left: 8px solid @background-color-of-element;
-                                    border-right: 8px solid @background-color-of-element;
-                                    border-top: 4px solid @background-color-of-element;
-                                    border-bottom: 4px solid @background-color-of-element;
-                                    border-radius: 3px;
-                                    box-sizing: border-box;
-
-                                    span {
-                                        margin-left: 4px;
-                                        color: @list-util-foreground-color;
-                                        line-height: 44px;
-                                    }
-                                }
-
-                                .add-list-button:hover {
-                                    background-color: @background-color-of-hovered-element;
-
-                                    span {
-                                        color: @normal-foreground-color;
-                                    }
-                                }
-                            }
-
-                        }
-
-                        .list-wrapper:first-child {
-                            margin-left: 10px;
-                        }
-
-                        .list-wrapper:last-child {
-                            margin-right: 10px;
-                        }
-                    }
-
-                    .dashboard-top-description {
-                        margin-bottom: 10px;
-                    }
-
-                    .boards-container {
-                        display: flex;
-                        flex-flow: row wrap;
-
-                        .board-item {
-                            height: 100px;
-                            width: 200px;
-                            border: 1px solid @border-color;
-                            margin: 5px;
-                            cursor: pointer;
-                            border-radius: 3px;
-
-                            .title {
-                                color: @normal-foreground-color;
-                                overflow: hidden;
-                                margin: 4px;
-                            }
-
-                            .description {
-                                overflow: auto;
-                                margin: 4px;
-                                font-size: 13px;
-                                color: @normal-foreground-color;
-                            }
-
-                        }
-
-                        .board-item:first-child {
-                            margin-left: 0;
-                        }
-
-                    }
-
-                }
-
-            }
-
-            .bottom-menu-row {
-                display: flex;
-                height: 40px;
-                justify-content: space-between;
-                border: 1px solid @border-color;
-
-                .bottom-menu-item {
-                    margin: 5px;
-                    flex: 0 1 auto;
-                }
-
-            }
-
-        }
-
-        .page-item:nth-child(2) {
-            flex: 1 1 auto;
-        }
-
-        .link {
-            cursor: pointer;
-        }
-
-        .link:hover {
-            border-bottom: 1px dotted #000;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .modal-window {
-            border: 1px solid @border-color;
-            background-color: white;
-            position: fixed;
-            top: 100px;
-            left: 50%;
-            transform: translate(-50%);
-            display: none;
-            flex-flow: column nowrap;
-            width: 400px;
-            min-height: 300px;
-
-            -webkit-box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
-            -moz-box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
-            box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
-
-            .modal-title {
-                display: flex;
-                height: 20px;
-                border-bottom: 1px dashed @border-color;
-                flex: 0 1 auto;
-
-
-
-                .title {
-                    flex: 1 1 auto;
-                    margin-left: 4px;
-                    margin-top: 2px;
-                }
-
-                .close-button {
-                    cursor: pointer;
-
-                    span {
-
-                        font-size: 20px;
-                        font-weight: 600;
-                        margin-right: 4px;
-                        margin-left: 4px;
-
-                    }
-                }
-
-            }
-
-            .modal-main-area {
-                flex: 1 1 auto;
-                display: flex;
-                flex-flow: column nowrap;
-
-                .element-wrapper {
-                    flex: 0 1 auto;
-                    margin: 5px;
-
-                    input,
-                    textarea {
-                        width: 100%;
-                        box-sizing: border-box;
-
-                    }
-
-                    textarea {
-                        resize: none;
-                    }
-
-                }
-            }
-
-            .modal-info-area {
-                height: 46px;
-                flex: 0 1 auto;
-                border-top: 1px dashed @border-color;
-                display: none;
-
-                div {
-                    margin: 2px 4px;
-                }
-            }
-
-            .modal-footer {
-                height: 36px;
-                border-top: 1px dashed @border-color;
-                flex: 0 1 auto;
-                display: flex;
-                justify-content: flex-end;
-
-                .button {
-                    width: 60px;
-                    height: 26px;
-                    margin: 4px;
-                    border: 1px solid @border-color;
-                    display: flex;
-                    flex-flow: row wrap;
-                    justify-content: center;
-                    align-content: center;
-                    cursor: pointer;
-                }
-
-                .ok-button {
-
-                }
-
-                .cancel-button {
-
-                }
-
-                .yes-button {
-
-                }
-
-                .no-button {
-
-                }
-
-
-            }
-
-
-
-        }
-
-    }
+@import "constants.less";
+@import "default.less";
+@import "modal-window.less";
+
+
+.page-container {
+	display: flex;
+	flex-flow: column nowrap;
+	height: 100vh;
+
+
+	.page-item {
+		margin: 5px;
+		padding: 5px;
+		flex: 0 1 auto;
+
+		.top-menu-row {
+			display: flex;
+			height: 40px;
+			justify-content: space-between;
+			border: 1px solid @border-color;
+			border-radius: 3px;
+
+
+			.top-menu-item {
+				margin: 5px;
+				flex: 0 1 auto;
+			}
+
+			.left-items-area {
+				display: inline-flex;
+				align-items: center;
+				cursor: pointer;
+
+				.logo {
+					width: 32px;
+					height: 32px;
+					cursor: pointer;
+				}
+
+				h3 {
+					margin-left: 10px;
+					font-size: 18px;
+					font-weight: 600;
+				}
+
+
+			}
+
+			.right-items-area {
+				display: inline-flex;
+				align-items: center;
+
+				.auth-wrapper {
+					.sign-in {
+						margin-right: 10px;
+					}
+				}
+
+				.user-area {
+					.boards-list, .create-board, .notifications, .profile {
+						margin-right: 10px;
+					}
+				}
+			}
+		}
+
+		.main-content-row {
+			display: flex;
+			height: 100%;
+			flex-flow: column;
+
+			.content-area {
+				display: flex;
+				flex-flow: column nowrap;
+				flex-grow: 1;
+
+				@import "dashboard.less";
+				@import "board.less";
+			}
+		}
+
+		.bottom-menu-row {
+			display: flex;
+			height: 40px;
+			justify-content: space-between;
+			border: 1px solid @border-color;
+
+			.bottom-menu-item {
+				margin: 5px;
+				flex: 0 1 auto;
+			}
+
+		}
+
+	}
+
+	.page-item:nth-child(2) {
+		flex: 1 1 auto;
+	}
+
+
 
 }
+
 
 
