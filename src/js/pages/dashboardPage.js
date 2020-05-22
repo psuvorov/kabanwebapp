@@ -1,16 +1,16 @@
-import {LocalStorageKeys, ServerBaseApiUrl, ApplicationPageUrls} from "../../constants";
-import {ApplicationUser} from "../../application/applicationUser";
-import {AuthenticatedUserDto} from "../../dtos/users";
-import {BoardDto} from "../../dtos/boards";
-import BoardsService from "../../services/boardsService";
+import {LocalStorageKeys, ServerBaseApiUrl, ApplicationPageUrls} from "../constants";
+import {ApplicationUser} from "../application/applicationUser";
+import {AuthenticatedUserDto} from "../dtos/users";
+import {BoardDto} from "../dtos/boards";
+import BoardsService from "../services/boardsService";
 import {
     ModalWindow,
     DialogTypes,
     ModalWindowElementType,
     ModalWindowElement,
     ModalWindowFactory
-} from "../../components/modalWindow";
-import utils from "../../utils";
+} from "../components/modalWindow";
+import utils from "../utils";
 
 export class DashboardPage {
 

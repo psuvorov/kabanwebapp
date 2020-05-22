@@ -1,19 +1,19 @@
-import {ApplicationUser} from "../../application/applicationUser";
-import {ApplicationPageUrls} from "../../constants";
+import {ApplicationUser} from "../application/applicationUser";
+import {ApplicationPageUrls} from "../constants";
 import {
     DialogTypes,
     ModalWindow,
     ModalWindowElement,
     ModalWindowElementType,
     ModalWindowFactory
-} from "../../components/modalWindow";
-import BoardsService from "../../services/boardsService";
-import ListsService from "../../services/listsService";
-import CardsService from "../../services/cardsService";
-import {BoardDto, CreateBoardDto} from "../../dtos/boards";
-import utils from "../../utils";
-import {CreateListDto} from "../../dtos/lists";
-import {CreateCardDto} from "../../dtos/cards";
+} from "../components/modalWindow";
+import BoardsService from "../services/boardsService";
+import ListsService from "../services/listsService";
+import CardsService from "../services/cardsService";
+import {BoardDto, CreateBoardDto} from "../dtos/boards";
+import utils from "../utils";
+import {CreateListDto} from "../dtos/lists";
+import {CreateCardDto} from "../dtos/cards";
 
 export class BoardPage {
 
