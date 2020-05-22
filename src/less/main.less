@@ -1,7 +1,9 @@
-@list-background-color: #ebecf0;
-@background-color-of-hovered-element: #d1d1d5;
-@list-font-foreground-color: #172b4d;
-@border-color: #172b4d;
+@background-color-of-element: #f0f1f5;
+@background-color-of-hovered-element: #e5e6ea;
+@background-color-of-list-card: #fff;
+@normal-foreground-color: #172b4d;
+@border-color: #aaabaf;
+@list-border-color: #aaabaf;
 
 
 input,
@@ -24,6 +26,7 @@ body {
                 height: 40px;
                 justify-content: space-between;
                 border: 1px solid @border-color;
+                border-radius: 3px;
 
 
                 .top-menu-item {
@@ -91,7 +94,7 @@ body {
                             font-size: 20px;
                             border-width: 0;
                             font-weight: 600;
-                            color: @list-font-foreground-color;
+                            color: @normal-foreground-color;
                             cursor: pointer;
                             width: calc(100% - 124px);
                             padding-left: 4px;
@@ -108,12 +111,12 @@ body {
                             border: 1px solid @border-color;
                             cursor: pointer;
                             border-radius: 3px;
-                            background-color: @list-background-color;
+                            background-color: @background-color-of-element;
                             width: 122px;
                             text-align: center;
 
                             span {
-                                color: @list-font-foreground-color;
+                                color: @normal-foreground-color;
                                 line-height: 32px;
                                 margin-left: 4px;
                                 margin-right: 4px;
@@ -149,8 +152,8 @@ body {
                             margin-right: 5px;
 
                             .list {
-                                border: 1px solid @border-color;
-                                background-color: @list-background-color;
+                                border: 1px solid @list-border-color;
+                                background-color: @background-color-of-element;
                                 border-radius: 3px;
                                 box-sizing: border-box;
                                 display: flex;
@@ -171,12 +174,12 @@ body {
                                         input {
                                             width: 216px;
                                             font-size: 16px;
-                                            background-color: #ebecf0;
+                                            background-color: @background-color-of-element;
                                             border-width: 0;
                                             padding-left: 4px;
                                             height: 21px;
                                             font-weight: 600;
-                                            color: @list-font-foreground-color;
+                                            color: @normal-foreground-color;
                                             cursor: pointer;
                                         }
 
@@ -208,7 +211,7 @@ body {
                                     min-height: 0;
 
                                     .list-card {
-                                        background-color: #fff;
+                                        background-color: @background-color-of-list-card;
                                         border-radius: 3px;
                                         box-shadow: 0 1px 0 rgba(9,30,66,.25);
                                         cursor: pointer;
@@ -221,7 +224,7 @@ body {
                                         padding: 5px;
 
                                         span {
-                                            color: @list-font-foreground-color;
+                                            color: @normal-foreground-color;
                                         }
                                     }
 
@@ -234,7 +237,7 @@ body {
                                     height: 38px;
                                     display: flex;
                                     cursor: pointer;
-                                    border: 4px solid @list-background-color;
+                                    border: 4px solid @background-color-of-element;
                                     border-radius: 3px;
                                     box-sizing: border-box;
                                     margin: 0 4px;
@@ -249,21 +252,21 @@ body {
                                     background-color: @background-color-of-hovered-element;
 
                                     span {
-                                        color: @list-font-foreground-color;
+                                        color: @normal-foreground-color;
                                     }
                                 }
                             }
 
                             .fake-list {
-                                border: 1px solid @border-color;
+                                border: 1px solid @list-border-color;
 
                                 .add-list-button {
                                     height: 50px;
                                     cursor: pointer;
-                                    border-left: 8px solid @list-background-color;
-                                    border-right: 8px solid @list-background-color;
-                                    border-top: 4px solid @list-background-color;
-                                    border-bottom: 4px solid @list-background-color;
+                                    border-left: 8px solid @background-color-of-element;
+                                    border-right: 8px solid @background-color-of-element;
+                                    border-top: 4px solid @background-color-of-element;
+                                    border-bottom: 4px solid @background-color-of-element;
                                     border-radius: 3px;
                                     box-sizing: border-box;
 
@@ -278,7 +281,7 @@ body {
                                     background-color: @background-color-of-hovered-element;
 
                                     span {
-                                        color: @list-font-foreground-color;
+                                        color: @normal-foreground-color;
                                     }
                                 }
                             }
@@ -311,7 +314,7 @@ body {
                             border-radius: 3px;
 
                             .title {
-                                color: @list-font-foreground-color;
+                                color: @normal-foreground-color;
                                 overflow: hidden;
                                 margin: 4px;
                             }
@@ -320,7 +323,7 @@ body {
                                 overflow: auto;
                                 margin: 4px;
                                 font-size: 13px;
-                                color: @list-font-foreground-color;
+                                color: @normal-foreground-color;
                             }
 
                         }
