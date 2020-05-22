@@ -33,8 +33,7 @@ export default class BoardsService {
             } else {
                 const boards = [];
                 for (let i = 0; i < res.length; i++) {
-                    const board = new BoardDto(res[i].id, res[i].name, res[i].description, parseInt(res[i].userId),
-                        parseInt(res[i].listsTotal), parseInt(res[i].cardsTotal), parseInt(res[i].filesAttachedTotal), parseInt(res[i].tagsTotal));
+                    const board = new BoardDto(res[i].id, res[i].name, res[i].description, parseInt(res[i].userId));
                     boards.push(board);
                 }
                 onSuccess(boards);
@@ -73,8 +72,7 @@ export default class BoardsService {
             } else {
                 const boards = [];
                 for (let i = 0; i < res.length; i++) {
-                    const board = new BoardDto(res[i].id, res[i].name, res[i].description, parseInt(res[i].userId),
-                        parseInt(res[i].listsTotal), parseInt(res[i].cardsTotal), parseInt(res[i].filesAttachedTotal), parseInt(res[i].tagsTotal));
+                    const board = new BoardDto(res[i].id, res[i].name, res[i].description, parseInt(res[i].userId));
                     boards.push(board);
                 }
                 onSuccess(boards);
@@ -111,8 +109,7 @@ export default class BoardsService {
             } else if (res.hasOwnProperty("title")) {
                 onError(res.title);
             } else {
-                const board = new BoardDto(res.id, res.name, res.description, parseInt(res.userId),
-                    parseInt(res.listsTotal), parseInt(res.cardsTotal), parseInt(res.filesAttachedTotal), parseInt(res.tagsTotal));
+                const board = new BoardDto(res.id, res.name, res.description, parseInt(res.userId));
                 onSuccess(board);
             }
         }).catch(error => {

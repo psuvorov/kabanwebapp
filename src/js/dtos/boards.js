@@ -6,7 +6,7 @@ export class BoardDto {
      * @param {string} description
      * @param {number} userId
      */
-    constructor(id, name, description, userId, listsTotal, cardsTotal, filesAttachedTotal, tagsTotal) {
+    constructor(id, name, description, userId) {
         /** @readonly */
         this.id = id;
         /** @readonly */
@@ -15,15 +15,6 @@ export class BoardDto {
         this.description = description;
         /** @readonly */
         this.userId = userId;
-        /** @readonly */
-        this.listsTotal = listsTotal;
-        /** @readonly */
-        this.cardsTotal = cardsTotal;
-        /** @readonly */
-        this.filesAttachedTotal = filesAttachedTotal;
-        /** @readonly */
-        this.tagsTotal = tagsTotal;
-
     }
 }
 

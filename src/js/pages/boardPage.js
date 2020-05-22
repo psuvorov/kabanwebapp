@@ -74,26 +74,12 @@ export class BoardPage {
         const boardHeaderElem = document.querySelector(".board-header");
         /** @type HTMLElement */
         const boardTitleElem = boardHeaderElem.querySelector(".board-title");
-        /** @type HTMLElement */
-        const boardDescriptionElem = boardHeaderElem.querySelector(".board-description");
-        /** @type HTMLElement */
-        const listsTotalElem = boardHeaderElem.querySelector(".lists-total");
-        /** @type HTMLElement */
-        const cardsTotalElem = boardHeaderElem.querySelector(".cards-total");
-        /** @type HTMLElement */
-        const filesAttachedElem = boardHeaderElem.querySelector(".files-attached-total");
-        /** @type HTMLElement */
-        const tagsTotalElem = boardHeaderElem.querySelector(".tags-total");
 
         this.boardsService.getUserBoard(this.applicationUser.id, this.currentBoardId,
             /** @param {BoardDto} board */
             (board) => {
                 boardTitleElem.value = board.name;
-                // boardDescriptionElem.innerText = board.description;
-                // listsTotalElem.innerText = board.listsTotal;
-                // cardsTotalElem.innerText = board.cardsTotal;
-                // filesAttachedElem.innerText = board.filesAttachedTotal;
-                // tagsTotalElem.innerText = board.tagsTotal;
+
             },
             () => {
                 ModalWindowFactory.showErrorOkMessage("Error occurred", "Error of getting board information");
@@ -106,8 +92,6 @@ export class BoardPage {
     drawBoard() {
         /** @type HTMLElement */
         const listContainerElem = document.querySelector(".lists-container");
-
-        const currentListContainerHeight = parseFloat(getComputedStyle(listContainerElem, null).height.replace("px", ""));
 
         // Retrieve all boards data (lists and related cards)
         this.listsService.getAllBoardLists(this.currentBoardId,
