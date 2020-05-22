@@ -219,36 +219,3 @@
 		margin-right: 10px;
 	}
 }
-
-.boards-container {
-	display: flex;
-	flex-flow: row wrap;
-
-	.board-item {
-		height: 100px;
-		width: 200px;
-		border: 1px solid @border-color;
-		margin: 5px;
-		cursor: pointer;
-		border-radius: 3px;
-
-		.title {
-			color: @normal-foreground-color;
-			overflow: hidden;
-			margin: 4px;
-		}
-
-		.description {
-			overflow: auto;
-			margin: 4px;
-			font-size: 13px;
-			color: @normal-foreground-color;
-		}
-
-	}
-
-	.board-item:first-child {
-		margin-left: 0;
-	}
-
-}
