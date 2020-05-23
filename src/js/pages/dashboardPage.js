@@ -87,7 +87,7 @@ export class DashboardPage {
         if (boards.length === 0) {
             dashboardTopDescriptionElem.innerHTML = `There is no any board, but you can <span class="highlight link">create one</span>`;
             const createOneLink = dashboardTopDescriptionElem.querySelector("span");
-            createOneLink.addEventListener("click", this.createBoardEventHandler);
+            createOneLink.addEventListener("click", this.createBoardEventHandler.bind(this));
         } else {
             dashboardTopDescriptionElem.innerText = `Here is all your boards:`;
         }
@@ -103,7 +103,7 @@ export class DashboardPage {
 
         const createBoardElem = rightItemsAreaElem.querySelector(".create-board");
 
-        createBoardElem.addEventListener("click", this.createBoardEventHandler);
+        createBoardElem.addEventListener("click", this.createBoardEventHandler.bind(this));
     }
 
     createBoardEventHandler(event) {
@@ -119,6 +119,7 @@ export class DashboardPage {
                 // Ok pressed
 
                 const createBoardDtoRaw = JSON.parse(serializedFormData);
+                /** @type CreateBoardDto */
                 const createBoardDto = new CreateBoardDto(createBoardDtoRaw.name, createBoardDtoRaw.description);
                 this.boardsService.createBoard(createBoardDto,
                     () => {
@@ -137,8 +138,8 @@ export class DashboardPage {
         ];
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementType.Input, "name", "Board name", ""),
-            new ModalWindowElement(ModalWindowElementType.Input, "description", "Board description", "")
+            new ModalWindowElement(ModalWindowElementType.Input, "name", "Board name", "My board"),
+            new ModalWindowElement(ModalWindowElementType.Textarea, "description", "Board description", "My board description")
         ];
 
         modalWindow = new ModalWindow("Create new board", DialogTypes.OkCancel, callbacks, windowElements);

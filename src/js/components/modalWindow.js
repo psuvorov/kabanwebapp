@@ -90,7 +90,7 @@ export class ModalWindow {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="password" name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;
                 formElem.append(elementWrapper);
             } else if (modalWindowElement.elementType === ModalWindowElementType.Textarea) {
-                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><textarea rows="5" name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}"></textarea>`;
+                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><textarea rows="5" name="${modalWindowElement.elementName}" >${modalWindowElement.defaultValue}</textarea>`;
                 formElem.append(elementWrapper);
             } else if (modalWindowElement.elementType === ModalWindowElementType.Label) {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="text" disabled name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;

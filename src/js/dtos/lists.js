@@ -5,7 +5,7 @@ export class CreateListDto {
     /**
      *
      * @param {string} name
-     * @param {number} [orderNumber]
+     * @param {number} orderNumber
      * @param {string} boardId
      */
     constructor(name, orderNumber, boardId) {

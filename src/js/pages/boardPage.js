@@ -75,6 +75,8 @@ export class BoardPage {
         /** @type HTMLElement */
         const boardTitleElem = boardHeaderElem.querySelector(".board-title");
 
+        // TODO: Rework this method. Here we need to obtain only specific board statistics and that's it.
+
         this.boardsService.getUserBoard(this.applicationUser.id, this.currentBoardId,
             /** @param {BoardDto} board */
             (board) => {
@@ -97,13 +99,13 @@ export class BoardPage {
         this.listsService.getAllBoardLists(this.currentBoardId,
             /** @param {ListDto[]} lists */
             (lists) => {
-                lists.forEach(list => {
-                    this.addListToBoard(list.id, list.name);
+                lists.forEach(/** @type ListDto */list => {
+                    this.addListToBoard(list.id, list.name, list.orderNumber);
 
                     /** @type HTMLElement */
                     const justAddedListElem = listContainerElem.querySelector(`[data-list-id="${list.id}"]`);
-                    list.cards.forEach(card => {
-                        this.addCardToList(justAddedListElem, card.id, card.name);
+                    list.cards.forEach(/** @type CardDto */card => {
+                        this.addCardToList(justAddedListElem, card.id, card.name, card.orderNumber);
                     });
 
                 });
@@ -195,18 +197,22 @@ export class BoardPage {
 
         const callbacks = [
             /**
-             *
              * @param {string} serializedFormData
              */
             (serializedFormData) => {
                 // Ok pressed
 
+                const lastListOrderNumber = this.getListLastOrderNumber();
+
                 const createListDtoRaw = JSON.parse(serializedFormData);
-                const createListDto = new CreateListDto(createListDtoRaw.name, parseInt(createListDtoRaw.orderNumber), this.currentBoardId);
+
+                /** @type CreateListDto */
+                const createListDto = new CreateListDto(createListDtoRaw.name, lastListOrderNumber + 1, this.currentBoardId);
 
                 this.listsService.createList(createListDto,
                     (data) => {
-                        this.addListToBoard(data.listId, createListDto.name);
+
+                        this.addListToBoard(data.listId, createListDto.name, createListDto.orderNumber);
                         modalWindow.close();
                     },
                     (error) => {
@@ -222,7 +228,6 @@ export class BoardPage {
 
         const windowElements = [
             new ModalWindowElement(ModalWindowElementType.Input, "name", "List name", "My list"),
-            new ModalWindowElement(ModalWindowElementType.Input, "orderNumber", "Order number", "1")
         ];
 
         modalWindow = new ModalWindow("Create new list", DialogTypes.OkCancel, callbacks, windowElements);
@@ -234,12 +239,14 @@ export class BoardPage {
      * @private
      * @param {string} listId
      * @param {string} listName
+     * @param {number} orderNumber
      */
-    addListToBoard(listId, listName) {
+    addListToBoard(listId, listName, orderNumber) {
 
         const newList = document.createElement("div");
         newList.classList.add("animated", "fadeIn", "list");
         newList.setAttribute("data-list-id", listId);
+        newList.setAttribute("data-order-number", orderNumber.toString());
         newList.innerHTML = `
                 <div class="list-header">
                     <div class="list-caption">
@@ -263,7 +270,6 @@ export class BoardPage {
         const listContainerElem = document.querySelector(".lists-container");
         const fakeListWrapperElem = document.querySelector(".fake-list").parentElement;
         listContainerElem.insertBefore(listWrapper, fakeListWrapperElem);
-        this.setBoardInfo();
     }
 
     /**
@@ -284,13 +290,15 @@ export class BoardPage {
              */
             (serializedFormData) => {
                 // Ok pressed
-
+                const lastCardNumber = this.getCardLastOrderNumber(listElem);
                 const createCardDtoRaw = JSON.parse(serializedFormData);
-                const createCardDto = new CreateCardDto(createCardDtoRaw.name, createCardDtoRaw.description, parseInt(createCardDtoRaw.orderNumber), listId);
+
+                /** @type CreateCardDto */
+                const createCardDto = new CreateCardDto(createCardDtoRaw.name, createCardDtoRaw.description, lastCardNumber + 1, listId);
 
                 this.cardsService.createCard(createCardDto,
                     (data) => {
-                        this.addCardToList(listElem, data.cardId, createCardDto.name);
+                        this.addCardToList(listElem, data.cardId, createCardDto.name, createCardDto.orderNumber);
                         modalWindow.close();
                     },
                     (error) => {
@@ -307,8 +315,7 @@ export class BoardPage {
 
         const windowElements = [
             new ModalWindowElement(ModalWindowElementType.Input, "name", "Card name", "My card"),
-            new ModalWindowElement(ModalWindowElementType.Input, "description", "Card description", "My card description"),
-            new ModalWindowElement(ModalWindowElementType.Input, "orderNumber", "Order number", "1")
+            new ModalWindowElement(ModalWindowElementType.Textarea, "description", "Card description", "My card description")
         ];
 
         modalWindow = new ModalWindow("Create new card", DialogTypes.OkCancel, callbacks, windowElements);
@@ -320,24 +327,60 @@ export class BoardPage {
      * @param {HTMLElement} listElem
      * @param {string} cardId
      * @param {string} cardName
+     * @param {number} orderNumber
      */
-    addCardToList(listElem, cardId, cardName) {
+    addCardToList(listElem, cardId, cardName, orderNumber) {
         const listCards = listElem.querySelector(".list-cards");
 
         const listCard = document.createElement("div");
         listCard.classList.add("animated", "fadeIn", "list-card");
         listCard.setAttribute("draggable", "true");
         //listCard.setAttribute("ondragstart", "drag(event)");
-        // TODO: set id after successful write to db
         listCard.setAttribute("data-card-id", cardId);
+        listCard.setAttribute("data-order-number", orderNumber.toString());
 
         const cardTitle = document.createElement("span");
         cardTitle.textContent = cardName;
         listCard.append(cardTitle);
 
         listCards.append(listCard);
+    }
 
-        this.setBoardInfo();
+    /**
+     * @return number
+     */
+    getListLastOrderNumber() {
+        const listsContainerElem = document.querySelector(".lists-container");
+        /** @type NodeListOf */
+        const allListWrappers = listsContainerElem.querySelectorAll(".list-wrapper");
+
+        if (allListWrappers.length === 0) {
+            return 0;
+        }
+
+        /** @type HTMLElement */
+        const lastListWrapperElem = allListWrappers[allListWrappers.length - 1];
+        const orderNumberRaw = lastListWrapperElem.lastElementChild.getAttribute("data-order-number");
+
+        if (orderNumberRaw) {
+            return parseInt(orderNumberRaw);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * @param {HTMLElement} listId
+     * @return number
+     */
+    getCardLastOrderNumber(listElem) {
+        const lastCardElem = listElem.querySelector(".list-cards").lastElementChild;
+
+        if (lastCardElem) {
+            return parseInt(lastCardElem.getAttribute("data-order-number"));
+        }
+
+        return 0;
     }
 
 

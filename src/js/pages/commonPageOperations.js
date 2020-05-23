@@ -88,6 +88,7 @@ export class CommonPageOperations {
                     // Ok pressed
 
                     const authenticateUserDtoRaw = JSON.parse(serializedFormData);
+                    /** @type AuthenticateUserDto */
                     const authenticateUserDto = new AuthenticateUserDto(authenticateUserDtoRaw.email, authenticateUserDtoRaw.password);
 
                     this.authService.authenticate(authenticateUserDto, (authenticatedUserDto) => {
@@ -131,6 +132,7 @@ export class CommonPageOperations {
                     // Ok pressed
 
                     const registerUserDtoRaw = JSON.parse(serializedFormData);
+                    /** @type RegisterUserDto */
                     const registerUserDto = new RegisterUserDto(registerUserDtoRaw.firstName, registerUserDtoRaw.lastName,
                         registerUserDtoRaw.username, registerUserDtoRaw.email, registerUserDtoRaw.password);
 
