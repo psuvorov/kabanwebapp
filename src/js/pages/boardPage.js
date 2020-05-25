@@ -25,6 +25,12 @@ export class BoardPage {
             return;
         }
 
+        /** @private */
+        this.transferredData = null;
+
+        /** @private */
+        this.currentElementPlaceholderData = null;
+
         /**
          * @private
          * @readonly
@@ -126,8 +132,8 @@ export class BoardPage {
         const listContainerElem = document.querySelector(".lists-container");
 
         // "Add a list" link click handler
-        const addListLink = document.querySelector(".add-list-button");
-        addListLink.addEventListener("click", () => {
+        const addListLinkElem = document.querySelector(".add-list-button");
+        addListLinkElem.addEventListener("click", () => {
             this.createNewList();
         });
 
@@ -152,6 +158,7 @@ export class BoardPage {
             } else if (e.target && e.target.parentElement && e.target.parentElement.classList.contains("card-composer")) {
                 listElem = e.target.parentElement.parentElement;
             }
+            // TODO: use closest()
 
             if (listElem) {
                 this.createNewCard(listElem);
@@ -159,28 +166,156 @@ export class BoardPage {
 
         });
 
+
+
+
+
         listContainerElem.addEventListener("dragstart", (e) => {
+            this.transferredData = null;
+            this.clearPlaceholderData();
+
             if (e.target.classList.contains("list-card")) {
-                // List card started dragging
-                //e.dataTransfer.setData("text", e.target.id);
+                // --- Card started dragging ---
+
+                /** @type HTMLElement */
+                const listCardElem = e.target;
+
+                /** @type HTMLElement */
+                const targetListElem = listCardElem.closest(".list");
+
+                this.transferredData = {
+                    elementType: "card",
+                    listId: targetListElem.getAttribute("data-list-id"),
+                    cardId: listCardElem.getAttribute("data-card-id"),
+                    cardHeight: listCardElem.offsetHeight
+                };
+                e.dataTransfer.setData("text", JSON.stringify(this.transferredData));
+
+            } else if (e.target.classList.contains("list")) {
+                // --- List started dragging ---
+
+                this.transferredData = {
+                    elementType: "list",
+                    // listId: this.transferredData.listRef.getAttribute("data-list-id"),
+                };
+                e.dataTransfer.setData("text", JSON.stringify(this.transferredData));
 
             }
+
+
         });
 
         listContainerElem.addEventListener("dragover", (e) => {
             e.preventDefault();
-        });
 
-        listContainerElem.addEventListener("drop", (e) => {
-            e.preventDefault();
+            /** @type HTMLElement */
+            const currentDragoverElem = e.target;
+            const transferredData = this.transferredData;
 
-            const targetList = e.target.closest(".list");
-            if (targetList) {
-                // console.log(targetList);
-                // var data = e.dataTransfer.getData("text");
-                // console.log(data);
+
+            // const dragoverElem = document.elementFromPoint(e.clientX, e.clientY);
+            const dragoverElem = currentDragoverElem
+
+
+            const listHeaderElem = dragoverElem.closest(".list-header");
+            const listCardsElem = dragoverElem.closest(".list-cards"); // ???
+            const cardComposerElem = dragoverElem.closest(".card-composer");
+            const listWrapperElem = dragoverElem.closest(".list-wrapper");
+
+            if (listHeaderElem) {
+                console.log("- listHeader Elem");
+
+                // Remove previously created card placeholder
+                this.clearPlaceholderData();
+
+                // Create a new one
+                this.addCardPlaceHolderToList(listHeaderElem.parentElement, "begin");
+
+            } else if (listCardsElem) {
+                const listCardElem = dragoverElem.closest(".list-card");
+                if (listCardElem) {
+                    console.log("- listCards Elem +++ listCard Elem " + listCardElem.getAttribute("data-card-id"));
+
+                    // Remove previously created card placeholder
+                    this.clearPlaceholderData();
+
+                    this.addCardPlaceHolderAfterCard(listCardElem);
+
+                } else {
+                    console.log("- listCards Elem --- listCard Elem");
+
+                    if (listCardsElem.children.length === 0) {
+                        // Remove previously created card placeholder
+                        this.clearPlaceholderData();
+
+                        // Create a new one
+                        this.addCardPlaceHolderToList(listHeaderElem.parentElement, "begin");
+                    } else {
+                        const placedElem = document.elementFromPoint(e.clientX, e.clientY - 8);
+                        const listCardElem = placedElem.closest(".list-card");
+
+                        if (listCardElem === null) {
+
+                        } else {
+                            // Remove previously created card placeholder
+                            this.clearPlaceholderData();
+
+                            this.addCardPlaceHolderAfterCard(listCardElem);
+                        }
+
+                    }
+
+
+
+                }
+
+
+
+
+
+
+            } else if (cardComposerElem) {
+                console.log("- cardComposer Elem");
+
+                // Remove previously created card placeholder
+                this.clearPlaceholderData();
+
+                // Create a new one
+                this.addCardPlaceHolderToList(cardComposerElem.parentElement, "end");
+
+            } else if (listWrapperElem) {
+                console.log("- listWrapper Elem");
+                // Remove previously created card placeholder
+                this.clearPlaceholderData();
+
+                // Create a new one
+                this.addCardPlaceHolderToList(listWrapperElem.lastElementChild, "end");
             }
 
+        });
+
+        listContainerElem.addEventListener("drop", (e, target) => {
+            e.preventDefault();
+
+            const targetCardElem = e.target.closest(".list-card");
+
+            console.log("qwe");
+
+            // const targetList = e.target.closest(".list");
+            // if (targetList) {
+            //     console.log(targetList);
+            //     var data = e.dataTransfer.getData("text");
+            //     console.log(data);
+            // }
+
+
+            this.transferredData = null;
+            if (this.currentElementPlaceholderData) {
+                this.currentElementPlaceholderData.elementType = null;
+                this.currentElementPlaceholderData.ref.remove();
+                this.currentElementPlaceholderData.position = null;
+                this.currentElementPlaceholderData.placeholderHeight = null;
+            }
 
         });
     }
@@ -347,6 +482,7 @@ export class BoardPage {
     }
 
     /**
+     * @private
      * @return number
      */
     getListLastOrderNumber() {
@@ -370,7 +506,8 @@ export class BoardPage {
     }
 
     /**
-     * @param {HTMLElement} listId
+     * @private
+     * @param {HTMLElement} listElem
      * @return number
      */
     getCardLastOrderNumber(listElem) {
@@ -381,6 +518,67 @@ export class BoardPage {
         }
 
         return 0;
+    }
+
+    /**
+     * @private
+     * @param {Element} listElem
+     * @param {string} position
+     */
+    addCardPlaceHolderToList(listElem, position) {
+        const cardPlaceholderElem = document.createElement("div");
+        cardPlaceholderElem.classList.add("list-card-placeholder");
+        cardPlaceholderElem.style.height = this.transferredData.cardHeight + "px";
+
+        const listCardsElem = listElem.children[1]; // list-cards elem
+
+        this.currentElementPlaceholderData = {
+            elementType: "card",
+            ref: cardPlaceholderElem,
+            placeholderHeight: this.transferredData.cardHeight
+        };
+
+        if (position === "begin") {
+            listCardsElem.prepend(cardPlaceholderElem);
+            this.currentElementPlaceholderData.position = 1;
+
+        } else if (position === "end") {
+            if (listCardsElem.lastElementChild) {
+                listCardsElem.insertBefore(cardPlaceholderElem, listCardsElem.lastElementChild.nextSibling);
+            } else {
+                listCardsElem.append(cardPlaceholderElem);
+            }
+            this.currentElementPlaceholderData.position = listCardsElem.children.length + 1;
+        }
+
+    }
+
+    /**
+     * @private
+     * @param {Element} cardElem
+     */
+    addCardPlaceHolderAfterCard(cardElem) {
+        const cardPlaceholderElem = document.createElement("div");
+        cardPlaceholderElem.classList.add("list-card-placeholder");
+        cardPlaceholderElem.style.height = this.transferredData.cardHeight + "px";
+
+        cardElem.after(cardPlaceholderElem);
+
+        this.currentElementPlaceholderData = {
+            elementType: "card",
+            ref: cardPlaceholderElem,
+            position: parseInt(cardElem.getAttribute("data-order-number")) + 1,
+            placeholderHeight: this.transferredData.cardHeight
+        };
+    }
+
+    clearPlaceholderData() {
+        if (this.currentElementPlaceholderData) {
+            this.currentElementPlaceholderData.elementType = null;
+            this.currentElementPlaceholderData.ref.remove();
+            this.currentElementPlaceholderData.position = null;
+            this.currentElementPlaceholderData.placeholderHeight = null;
+        }
     }
 
 

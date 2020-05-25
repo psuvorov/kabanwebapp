@@ -144,7 +144,6 @@
 					max-width: 300px;
 					position: relative;
 					text-decoration: none;
-					z-index: 0;
 					padding: 5px;
 
 					span {
@@ -155,6 +154,15 @@
 				.list-card:last-child {
 					margin-bottom: 1px;
 				}
+
+				.list-card-placeholder {
+					background-color: @background-color-of-hovered-element;
+					border-radius: @border-radius;
+					display: block;
+					margin-bottom: 8px;
+					max-width: 300px;
+					position: relative;
+				}
 			}
 
 			.card-composer {
@@ -164,7 +172,7 @@
 				border: 4px solid @background-color-of-element;
 				border-radius: @border-radius;
 				box-sizing: border-box;
-				margin: 0 4px;
+				padding: 0 4px;
 
 				span {
 					margin-left: 4px;
