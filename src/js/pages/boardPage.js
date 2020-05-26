@@ -29,7 +29,7 @@ export class BoardPage {
         this.transferredData = null;
 
         /** @private */
-        this.currentElementPlaceholderData = null;
+        this.currentPlaceholderData = null;
 
         /**
          * @private
@@ -62,9 +62,6 @@ export class BoardPage {
 
 
     }
-
-
-
 
     initialize() {
         this.setBoardInfo();
@@ -129,6 +126,7 @@ export class BoardPage {
      * @private
      */
     setupInteractions() {
+        const pageContainerElem = document.querySelector(".page-container");
         const listContainerElem = document.querySelector(".lists-container");
 
         // "Add a list" link click handler
@@ -168,13 +166,9 @@ export class BoardPage {
 
 
 
-        listContainerElem.addEventListener("dragstart", (e) => {
+        pageContainerElem.addEventListener("dragstart", (e) => {
             this.transferredData = null;
             this.clearPlaceholderData();
-
-            // ----------------------------------
-            // TODO: mark current draggable element
-            // ----------------------------------
 
             if (e.target.classList.contains("list-card")) {
                 // --- Card started dragging ---
@@ -189,55 +183,46 @@ export class BoardPage {
 
                 this.transferredData = {
                     elementType: "card",
-                    listId: targetListElem.getAttribute("data-list-id"),
-                    cardId: listCardElem.getAttribute("data-card-id"),
-                    cardHeight: listCardElem.offsetHeight
+                    listRef: targetListElem,
+                    cardRef: listCardElem
                 };
-                e.dataTransfer.setData("text", JSON.stringify(this.transferredData));
 
             } else if (e.target.classList.contains("list")) {
                 // --- List started dragging ---
 
                 this.transferredData = {
                     elementType: "list",
-                    // listId: this.transferredData.listRef.getAttribute("data-list-id"),
                 };
-                e.dataTransfer.setData("text", JSON.stringify(this.transferredData));
 
             }
-
-
         });
 
-        listContainerElem.addEventListener("dragover", (e) => {
+        pageContainerElem.addEventListener("dragover", (e) => {
             e.preventDefault();
 
             /** @type HTMLElement */
             const dragoverElem = e.target;
 
             const listHeaderElem = dragoverElem.closest(".list-header");
-            const listCardsElem = dragoverElem.closest(".list-cards"); // ???
+            const listCardsElem = dragoverElem.closest(".list-cards");
             const cardComposerElem = dragoverElem.closest(".card-composer");
             const listWrapperElem = dragoverElem.closest(".list-wrapper");
 
             if (listHeaderElem) {
-                console.log("- listHeader Elem");
-
+                // Put a placeholder to the beginning of the list
                 this.addCardPlaceHolderToList(listHeaderElem.parentElement, "begin");
             } else if (listCardsElem) {
                 const listCardElem = dragoverElem.closest(".list-card");
 
                 if (listCardElem) {
-                    console.log("- listCards Elem +++ listCard Elem " + listCardElem.getAttribute("data-card-id"));
-
+                    // If a draggable card is dragging over right above some card, put a placeholder right after this card
                     this.addCardPlaceHolderAfterCard(listCardElem);
                 } else {
-                    console.log("- listCards Elem --- listCard Elem");
-
                     if (listCardsElem.children.length === 0) {
-
+                        // If dragover list has no cards, put a placeholder to the beginning
                         this.addCardPlaceHolderToList(listHeaderElem.parentElement, "begin");
                     } else {
+                        // If a draggable card is dragging over free space between two cards, put a placeholder right after the first one
                         const placedElem = document.elementFromPoint(e.clientX, e.clientY - 8);
                         const listCardElem = placedElem.closest(".list-card");
 
@@ -247,39 +232,48 @@ export class BoardPage {
                     }
                 }
             } else if (cardComposerElem) {
-                console.log("- cardComposer Elem");
-
+                // Put a placeholder to the end of the list
                 this.addCardPlaceHolderToList(cardComposerElem.parentElement, "end");
 
             } else if (listWrapperElem) {
-                console.log("- listWrapper Elem");
-
+                // Put a placeholder to the end of the list
                 this.addCardPlaceHolderToList(listWrapperElem.lastElementChild, "end");
             }
-
         });
 
+        pageContainerElem.addEventListener("dragend", (e) => {
+            if (!this.transferredData)
+                return;
 
-        listContainerElem.addEventListener("drop", (e) => {
+            // If a card is a card is dropped somewhere other than a list, cancel dragging
+            const draggedCardElem = this.transferredData.cardRef;
+            draggedCardElem.classList.remove("hide");
+        });
+
+        pageContainerElem.addEventListener("drop", (e) => {
             e.preventDefault();
 
-            if (this.transferredData.elementType === "card") {
-                const draggedCardElem = document.querySelector(`.list-card[data-card-id="${this.transferredData.cardId}"]`);
+            if (!this.transferredData || !this.currentPlaceholderData)
+                return;
 
-                const placeholderElem = this.currentElementPlaceholderData.ref;
+            if (this.transferredData.elementType === "card") {
+                /** @type Element */
+                const draggedCardElem = this.transferredData.cardRef;
+
+                // Place dragged card into allocated placeholder
+                const placeholderElem = this.currentPlaceholderData.placeholderRef;
                 placeholderElem.parentElement.replaceChild(draggedCardElem, placeholderElem);
                 draggedCardElem.classList.remove("hide");
 
+                // Renumber all cards in new order for the list in which the card was placed
+                this.renumberAllCardsInList(this.currentPlaceholderData.listElemRef);
+
+                // Renumber all cards in new order for the list from which the card was taken
+                this.renumberAllCardsInList(this.transferredData.listRef);
             }
 
             this.transferredData = null;
-            if (this.currentElementPlaceholderData) {
-                this.currentElementPlaceholderData.elementType = null;
-                this.currentElementPlaceholderData.ref.remove();
-                this.currentElementPlaceholderData.position = null;
-                this.currentElementPlaceholderData.placeholderHeight = null;
-            }
-
+            this.clearPlaceholderData();
         });
     }
 
@@ -485,43 +479,47 @@ export class BoardPage {
 
     /**
      * @private
+     * @return {HTMLDivElement}
+     */
+    createCardPlaceholderElem() {
+        const cardPlaceholderElem = document.createElement("div");
+        cardPlaceholderElem.classList.add("list-card-placeholder");
+        cardPlaceholderElem.style.height = this.transferredData.cardRef.offsetHeight + "px";
+
+        return cardPlaceholderElem;
+    }
+
+    /**
+     * @private
      * @param {Element} listElem
      * @param {string} position
      */
     addCardPlaceHolderToList(listElem, position) {
-        if (this.currentElementPlaceholderData &&
-            this.currentElementPlaceholderData.listElemRef === listElem &&
-            this.currentElementPlaceholderData.position === position)
+        if (this.currentPlaceholderData &&
+            this.currentPlaceholderData.listElemRef === listElem &&
+            this.currentPlaceholderData.position === position)
             return;
 
         // Remove previously created card placeholder
         this.clearPlaceholderData();
 
-        const cardPlaceholderElem = document.createElement("div");
-        cardPlaceholderElem.classList.add("list-card-placeholder");
-        cardPlaceholderElem.style.height = this.transferredData.cardHeight + "px";
+        const cardPlaceholderElem = this.createCardPlaceholderElem();
 
-        const listCardsElem = listElem.children[1]; // list-cards elem
-
-        this.currentElementPlaceholderData = {
+        this.currentPlaceholderData = {
             elementType: "card",
-            ref: cardPlaceholderElem,
+            placeholderRef: cardPlaceholderElem,
             listElemRef: listElem,
             position: position,
-            placeholderHeight: this.transferredData.cardHeight
+            placeholderHeight: this.transferredData.cardRef.offsetHeight
         };
+
+        const listCardsElem = listElem.children[1]; // list-cards elem
 
         if (position === "begin") {
             listCardsElem.prepend(cardPlaceholderElem);
         } else if (position === "end") {
-            if (listCardsElem.lastElementChild) {
-                listCardsElem.insertBefore(cardPlaceholderElem, listCardsElem.lastElementChild.nextSibling);
-            } else {
-                listCardsElem.append(cardPlaceholderElem);
-            }
+            listCardsElem.append(cardPlaceholderElem);
         }
-        this.currentElementPlaceholderData.position = position;
-
     }
 
     /**
@@ -529,25 +527,23 @@ export class BoardPage {
      * @param {Element} cardElem
      */
     addCardPlaceHolderAfterCard(cardElem) {
-        if (this.currentElementPlaceholderData && this.currentElementPlaceholderData.listElemRef === cardElem.parentElement.parentElement &&
-            this.currentElementPlaceholderData.position === parseInt(cardElem.getAttribute("data-order-number")) + 1)
+        if (this.currentPlaceholderData && this.currentPlaceholderData.listElemRef === cardElem.parentElement.parentElement &&
+            this.currentPlaceholderData.position === parseInt(cardElem.getAttribute("data-order-number")) + 1)
             return;
 
         // Remove previously created card placeholder
         this.clearPlaceholderData();
 
-        const cardPlaceholderElem = document.createElement("div");
-        cardPlaceholderElem.classList.add("list-card-placeholder");
-        cardPlaceholderElem.style.height = this.transferredData.cardHeight + "px";
+        const cardPlaceholderElem = this.createCardPlaceholderElem();
 
         cardElem.after(cardPlaceholderElem);
 
-        this.currentElementPlaceholderData = {
+        this.currentPlaceholderData = {
             elementType: "card",
-            ref: cardPlaceholderElem,
+            placeholderRef: cardPlaceholderElem,
             listElemRef: cardElem.parentElement.parentElement,
             position: parseInt(cardElem.getAttribute("data-order-number")) + 1,
-            placeholderHeight: this.transferredData.cardHeight
+            placeholderHeight: this.transferredData.cardRef.offsetHeight
         };
     }
 
@@ -555,14 +551,20 @@ export class BoardPage {
      * @private
      */
     clearPlaceholderData() {
-        if (this.currentElementPlaceholderData) {
-            this.currentElementPlaceholderData.elementType = null;
-            this.currentElementPlaceholderData.ref.remove();
-            this.currentElementPlaceholderData.listElemRef = null;
-            this.currentElementPlaceholderData.position = null;
-            this.currentElementPlaceholderData.placeholderHeight = null;
+        if (this.currentPlaceholderData) {
+            this.currentPlaceholderData.placeholderRef.remove();
+            this.currentPlaceholderData = null;
         }
     }
 
-
+    /**
+     * @private
+     * @param {HTMLElement} listElem
+     */
+    renumberAllCardsInList(listElem) {
+        const listCardsElem = listElem.querySelector(":scope > .list-cards");
+        listCardsElem.children.forEach((cardElem, idx) => {
+            cardElem.setAttribute("data-order-number", (idx + 1).toString());
+        });
+    }
 }
