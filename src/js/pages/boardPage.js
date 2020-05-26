@@ -168,12 +168,9 @@ export class BoardPage {
 
 
 
-
-
         listContainerElem.addEventListener("dragstart", (e) => {
             this.transferredData = null;
             this.clearPlaceholderData();
-
 
             // ----------------------------------
             // TODO: mark current draggable element
@@ -182,10 +179,12 @@ export class BoardPage {
             if (e.target.classList.contains("list-card")) {
                 // --- Card started dragging ---
 
-                /** @type HTMLElement */
                 const listCardElem = e.target;
 
-                /** @type HTMLElement */
+                requestAnimationFrame(() => {
+                    listCardElem.classList.add("hide");
+                });
+
                 const targetListElem = listCardElem.closest(".list");
 
                 this.transferredData = {
@@ -261,20 +260,17 @@ export class BoardPage {
         });
 
 
-        listContainerElem.addEventListener("drop", (e, target) => {
+        listContainerElem.addEventListener("drop", (e) => {
             e.preventDefault();
 
-            const targetCardElem = e.target.closest(".list-card");
+            if (this.transferredData.elementType === "card") {
+                const draggedCardElem = document.querySelector(`.list-card[data-card-id="${this.transferredData.cardId}"]`);
 
-            console.log("qwe");
+                const placeholderElem = this.currentElementPlaceholderData.ref;
+                placeholderElem.parentElement.replaceChild(draggedCardElem, placeholderElem);
+                draggedCardElem.classList.remove("hide");
 
-            // const targetList = e.target.closest(".list");
-            // if (targetList) {
-            //     console.log(targetList);
-            //     var data = e.dataTransfer.getData("text");
-            //     console.log(data);
-            // }
-
+            }
 
             this.transferredData = null;
             if (this.currentElementPlaceholderData) {
