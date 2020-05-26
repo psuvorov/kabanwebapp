@@ -174,6 +174,11 @@ export class BoardPage {
             this.transferredData = null;
             this.clearPlaceholderData();
 
+
+            // ----------------------------------
+            // TODO: mark current draggable element
+            // ----------------------------------
+
             if (e.target.classList.contains("list-card")) {
                 // --- Card started dragging ---
 
@@ -209,13 +214,7 @@ export class BoardPage {
             e.preventDefault();
 
             /** @type HTMLElement */
-            const currentDragoverElem = e.target;
-            const transferredData = this.transferredData;
-
-
-            // const dragoverElem = document.elementFromPoint(e.clientX, e.clientY);
-            const dragoverElem = currentDragoverElem
-
+            const dragoverElem = e.target;
 
             const listHeaderElem = dragoverElem.closest(".list-header");
             const listCardsElem = dragoverElem.closest(".list-cards"); // ???
@@ -225,74 +224,42 @@ export class BoardPage {
             if (listHeaderElem) {
                 console.log("- listHeader Elem");
 
-                // Remove previously created card placeholder
-                this.clearPlaceholderData();
-
-                // Create a new one
                 this.addCardPlaceHolderToList(listHeaderElem.parentElement, "begin");
-
             } else if (listCardsElem) {
                 const listCardElem = dragoverElem.closest(".list-card");
+
                 if (listCardElem) {
                     console.log("- listCards Elem +++ listCard Elem " + listCardElem.getAttribute("data-card-id"));
 
-                    // Remove previously created card placeholder
-                    this.clearPlaceholderData();
-
                     this.addCardPlaceHolderAfterCard(listCardElem);
-
                 } else {
                     console.log("- listCards Elem --- listCard Elem");
 
                     if (listCardsElem.children.length === 0) {
-                        // Remove previously created card placeholder
-                        this.clearPlaceholderData();
 
-                        // Create a new one
                         this.addCardPlaceHolderToList(listHeaderElem.parentElement, "begin");
                     } else {
                         const placedElem = document.elementFromPoint(e.clientX, e.clientY - 8);
                         const listCardElem = placedElem.closest(".list-card");
 
-                        if (listCardElem === null) {
-
-                        } else {
-                            // Remove previously created card placeholder
-                            this.clearPlaceholderData();
-
+                        if (listCardElem) {
                             this.addCardPlaceHolderAfterCard(listCardElem);
                         }
-
                     }
-
-
-
                 }
-
-
-
-
-
-
             } else if (cardComposerElem) {
                 console.log("- cardComposer Elem");
 
-                // Remove previously created card placeholder
-                this.clearPlaceholderData();
-
-                // Create a new one
                 this.addCardPlaceHolderToList(cardComposerElem.parentElement, "end");
 
             } else if (listWrapperElem) {
                 console.log("- listWrapper Elem");
-                // Remove previously created card placeholder
-                this.clearPlaceholderData();
 
-                // Create a new one
                 this.addCardPlaceHolderToList(listWrapperElem.lastElementChild, "end");
             }
 
         });
+
 
         listContainerElem.addEventListener("drop", (e, target) => {
             e.preventDefault();
@@ -526,6 +493,14 @@ export class BoardPage {
      * @param {string} position
      */
     addCardPlaceHolderToList(listElem, position) {
+        if (this.currentElementPlaceholderData &&
+            this.currentElementPlaceholderData.listElemRef === listElem &&
+            this.currentElementPlaceholderData.position === position)
+            return;
+
+        // Remove previously created card placeholder
+        this.clearPlaceholderData();
+
         const cardPlaceholderElem = document.createElement("div");
         cardPlaceholderElem.classList.add("list-card-placeholder");
         cardPlaceholderElem.style.height = this.transferredData.cardHeight + "px";
@@ -535,21 +510,21 @@ export class BoardPage {
         this.currentElementPlaceholderData = {
             elementType: "card",
             ref: cardPlaceholderElem,
+            listElemRef: listElem,
+            position: position,
             placeholderHeight: this.transferredData.cardHeight
         };
 
         if (position === "begin") {
             listCardsElem.prepend(cardPlaceholderElem);
-            this.currentElementPlaceholderData.position = 1;
-
         } else if (position === "end") {
             if (listCardsElem.lastElementChild) {
                 listCardsElem.insertBefore(cardPlaceholderElem, listCardsElem.lastElementChild.nextSibling);
             } else {
                 listCardsElem.append(cardPlaceholderElem);
             }
-            this.currentElementPlaceholderData.position = listCardsElem.children.length + 1;
         }
+        this.currentElementPlaceholderData.position = position;
 
     }
 
@@ -558,6 +533,13 @@ export class BoardPage {
      * @param {Element} cardElem
      */
     addCardPlaceHolderAfterCard(cardElem) {
+        if (this.currentElementPlaceholderData && this.currentElementPlaceholderData.listElemRef === cardElem.parentElement.parentElement &&
+            this.currentElementPlaceholderData.position === parseInt(cardElem.getAttribute("data-order-number")) + 1)
+            return;
+
+        // Remove previously created card placeholder
+        this.clearPlaceholderData();
+
         const cardPlaceholderElem = document.createElement("div");
         cardPlaceholderElem.classList.add("list-card-placeholder");
         cardPlaceholderElem.style.height = this.transferredData.cardHeight + "px";
@@ -567,15 +549,20 @@ export class BoardPage {
         this.currentElementPlaceholderData = {
             elementType: "card",
             ref: cardPlaceholderElem,
+            listElemRef: cardElem.parentElement.parentElement,
             position: parseInt(cardElem.getAttribute("data-order-number")) + 1,
             placeholderHeight: this.transferredData.cardHeight
         };
     }
 
+    /**
+     * @private
+     */
     clearPlaceholderData() {
         if (this.currentElementPlaceholderData) {
             this.currentElementPlaceholderData.elementType = null;
             this.currentElementPlaceholderData.ref.remove();
+            this.currentElementPlaceholderData.listElemRef = null;
             this.currentElementPlaceholderData.position = null;
             this.currentElementPlaceholderData.placeholderHeight = null;
         }
