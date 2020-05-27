@@ -58,6 +58,17 @@
 	overflow-y: hidden;
 	padding-bottom: 8px;
 
+	.list-container-head {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		width: 130px;
+		user-select: none;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+
 	.fake-list-wrapper,
 	.list-wrapper {
 		height: 100%;
@@ -84,6 +95,7 @@
 				display: flex;
 				padding: 10px 8px;
 				position: relative;
+				cursor: move;
 
 				.list-caption {
 					width: 232px;
@@ -189,6 +201,14 @@
 			}
 		}
 
+		.list-placeholder {
+			background-color: @background-color-of-hovered-element;
+			border-radius: @border-radius;
+			display: flex;
+			width: 270px;
+			position: relative;
+		}
+
 		.fake-list {
 			border: 1px solid @border-color;
 
@@ -228,7 +248,11 @@
 		margin-right: 10px;
 	}
 
-	.hide {
+	.hidden-dragging-card {
 		transform: translateX(-9999px);
+	}
+
+	.hidden-dragging-list {
+		opacity: 0.5;
 	}
 }
