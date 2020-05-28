@@ -50,25 +50,43 @@ export class ModalWindow {
         this.callbacks = callbacks;
         this.elements = elements;
 
+        this.modalWindowElem = null;
+
         this.initialize();
+    }
+
+    show() {
+        this.modalWindowElem.classList.add("animated", "fadeIn");
+        this.modalWindowElem.style.display = "flex";
+
+        const formElem = this.modalWindowElem.querySelector("form");
+        if (this.elements.length > 0 && formElem.children[0].children[1].focus) {
+            formElem.children[0].children[1].focus();
+        }
+    }
+
+    close() {
+        this.modalWindowElem.style.display = "none";
+        this.modalWindowElem.remove();
     }
 
     /**
      * @private
      */
     initialize() {
-        this.initWindowUi();
-        this.initWindowElements();
+        this.initWindow();
+        this.initElements();
 
         // --- Attach events ---
         this.modalWindowElem.querySelector(".close-button").addEventListener("click", () => this.close());
+
         this.initFooterButtons();
     }
 
     /**
      * @private
      */
-    initWindowElements() {
+    initElements() {
         if (this.elements.length === 0)
             return;
 
@@ -77,7 +95,6 @@ export class ModalWindow {
         formElem.setAttribute("name", "modal-form");
         formElem.setAttribute("method", "post");
         mainAreaElem.append(formElem);
-
 
         this.elements.forEach(modalWindowElement => {
             const elementWrapper = document.createElement("div");
@@ -96,7 +113,7 @@ export class ModalWindow {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="text" disabled name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;
                 formElem.append(elementWrapper);
             } else {
-                throw new Error("Unknown Element Type.");
+                throw new Error("Unknown Element Type");
             }
         });
     }
@@ -105,7 +122,7 @@ export class ModalWindow {
     /**
      * @private
      */
-    initWindowUi() {
+    initWindow() {
         const modalWindowElem = document.createElement("div");
         modalWindowElem.classList.add("modal-window");
         this.modalWindowElem = modalWindowElem;
@@ -206,7 +223,7 @@ export class ModalWindow {
     }
 
     /**
-     *
+     * @private
      * @param {string} buttonType
      * @return {HTMLElement}
      */
@@ -217,19 +234,6 @@ export class ModalWindow {
 
         return buttonElem;
     }
-
-
-    show() {
-        this.modalWindowElem.classList.add("animated", "fadeIn");
-        this.modalWindowElem.style.display = "flex";
-    }
-
-
-    close() {
-        this.modalWindowElem.style.display = "none";
-        this.modalWindowElem.remove();
-    }
-
 
 }
 
