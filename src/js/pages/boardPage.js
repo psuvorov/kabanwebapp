@@ -443,7 +443,7 @@ export class BoardPage {
                 const createCardDtoRaw = JSON.parse(serializedFormData);
 
                 /** @type CreateCardDto */
-                const createCardDto = new CreateCardDto(createCardDtoRaw.name, createCardDtoRaw.description, lastCardNumber + 1, listId);
+                const createCardDto = new CreateCardDto(createCardDtoRaw.name, "", lastCardNumber + 1, listId);
 
                 this.cardsService.createCard(createCardDto,
                     (data) => {
@@ -463,8 +463,7 @@ export class BoardPage {
         ];
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementType.Input, "name", "Card name", "My card"),
-            new ModalWindowElement(ModalWindowElementType.Textarea, "description", "Card description", "My card description")
+            new ModalWindowElement(ModalWindowElementType.Input, "name", "Card name", "My card")
         ];
 
         modalWindow = new ModalWindow("Create new card", DialogTypes.OkCancel, callbacks, windowElements);
