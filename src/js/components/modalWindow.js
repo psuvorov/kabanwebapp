@@ -80,6 +80,33 @@ export class ModalWindow {
         // --- Attach events ---
         this.modalWindowElem.querySelector(".close-button").addEventListener("click", () => this.close());
 
+
+        let movingWindowPositionOffset = [0, 0];
+        let isMouseButtonDown = false;
+
+        const windowTitleElem = this.modalWindowElem.querySelector(".title");
+        windowTitleElem.addEventListener("mousedown", (e) => {
+            isMouseButtonDown = true;
+            movingWindowPositionOffset = [this.modalWindowElem.offsetLeft - e.clientX, this.modalWindowElem.offsetTop - e.clientY];
+
+        }, {capture: true});
+
+        document.addEventListener("mouseup", (e) => {
+            isMouseButtonDown = false;
+
+        }, {capture: true});
+
+        document.addEventListener("mousemove", (e) => {
+            e.preventDefault();
+            if (isMouseButtonDown) {
+                this.modalWindowElem.style.left = (e.clientX + movingWindowPositionOffset[0]) + "px";
+                this.modalWindowElem.style.top = (e.clientY + movingWindowPositionOffset[1]) + "px";
+            }
+
+        }, {capture: true});
+
+
+
         document.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 e.preventDefault();
