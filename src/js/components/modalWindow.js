@@ -80,6 +80,41 @@ export class ModalWindow {
         // --- Attach events ---
         this.modalWindowElem.querySelector(".close-button").addEventListener("click", () => this.close());
 
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+
+                /** @type HTMLElement */
+                let buttonElem = null;
+
+                if (this.dialogType === DialogTypes.Ok || this.dialogType === DialogTypes.OkCancel) {
+                    buttonElem = this.modalWindowElem.querySelector(".ok-button");
+                } else if (this.dialogType === DialogTypes.YesNo || this.dialogType === DialogTypes.YesNoCancel) {
+                    buttonElem = this.modalWindowElem.querySelector(".yes-button");
+                }
+                if (buttonElem)
+                    buttonElem.dispatchEvent(new Event("click"));
+
+            } else if (e.key === "Escape") {
+                e.preventDefault();
+
+                /** @type HTMLElement */
+                let buttonElem = null;
+
+                if (this.dialogType === DialogTypes.Ok) {
+                    this.close();
+                } else if (this.dialogType === DialogTypes.OkCancel) {
+                    buttonElem = this.modalWindowElem.querySelector(".cancel-button");
+                } else if (this.dialogType === DialogTypes.YesNo) {
+                    buttonElem = this.modalWindowElem.querySelector(".no-button");
+                } else if (this.dialogType === DialogTypes.YesNoCancel) {
+                    buttonElem = this.modalWindowElem.querySelector(".cancel-button");
+                }
+                if (buttonElem)
+                    buttonElem.dispatchEvent(new Event("click"));
+            }
+        });
+
         this.initFooterButtons();
     }
 
