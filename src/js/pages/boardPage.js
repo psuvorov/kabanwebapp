@@ -7,6 +7,7 @@ import {
     ModalWindowElementType,
     ModalWindowFactory
 } from "../components/modalWindow";
+import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/popupMenu";
 import BoardsService from "../services/boardsService";
 import ListsService from "../services/listsService";
 import CardsService from "../services/cardsService";
@@ -148,20 +149,43 @@ export class BoardPage {
             }
         });
 
-        // "Add a card" link click handler
         listContainerElem.addEventListener("click", (e) => {
-            let listElem = null;
-            if (e.target && e.target.classList.contains("card-composer")) {
-                listElem = e.target.parentElement;
-            } else if (e.target && e.target.parentElement && e.target.parentElement.classList.contains("card-composer")) {
-                listElem = e.target.parentElement.parentElement;
-            }
-            // TODO: use closest()
+            if (!e.target)
+                return;
 
-            if (listElem) {
-                this.createNewCard(listElem);
+            const cardComposerElem = e.target.closest(".card-composer");
+            if (cardComposerElem) {
+                this.createNewCard(cardComposerElem.closest(".list"));
             }
 
+            const listMenuButtonElem = e.target.closest(".list-menu-button");
+            if (listMenuButtonElem) {
+                /** @type PopupMenu */
+                let popupMenu = null;
+
+                const items = [
+                    new PopupMenuItem("Add card...", () => {
+                        console.log("Add card");
+                        popupMenu.close();
+                    }),
+                    new PopupMenuItem("Copy list...",() => {
+                        console.log("Copy list");
+                        popupMenu.close();
+                    }),
+                    new PopupMenuItem("Move list...",() => {
+                        console.log("Move list");
+                        popupMenu.close();
+                    }),
+                    new PopupMenuItemSeparator(),
+                    new PopupMenuItem("Archive list...",() => {
+                        console.log("Archive list");
+                        popupMenu.close();
+                    })
+                ];
+
+                popupMenu = new PopupMenu(items, listMenuButtonElem);
+                popupMenu.show();
+            }
         });
 
 
