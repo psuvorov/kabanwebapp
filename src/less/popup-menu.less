@@ -1,0 +1,42 @@
+@import "constants.less";
+
+.popup-menu {
+	border: 1px solid @border-color;
+	background-color: white;
+	position: absolute;
+	display: none;
+	flex-flow: column nowrap;
+	padding: 2px;
+	border-radius: @border-radius;
+
+	min-width: 180px;
+
+	-webkit-box-shadow: @modal-shadow;
+	-moz-box-shadow: @modal-shadow;
+	box-shadow: @modal-shadow;
+
+	.menu-item {
+		display: flex;
+		padding: 2px 2px 2px 20px;
+		cursor: pointer;
+		line-height: 18px;
+
+		span {
+			font-size: 14px;
+		}
+	}
+	.menu-item:hover {
+		background-color: @background-color-of-hovered-element;
+	}
+
+	hr {
+		background-color: rgba(9,30,66,.13);
+		border: 0;
+		height: 1px;
+		margin: 6px 0;
+		padding: 0;
+		width: 100%;
+
+	}
+
+}
