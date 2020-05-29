@@ -45,12 +45,50 @@ export class ModalWindow {
      * @param {ModalWindowElement[]} elements
      */
     constructor(title, dialogType, callbacks, elements) {
+        /**
+         * @private
+         * @readonly
+         * @type {string}
+         */
         this.title = title;
+
+        /**
+         * @private
+         * @readonly
+         * @type {DialogTypes}
+         */
         this.dialogType = dialogType;
+
+        /**
+         * @private
+         * @readonly
+         * @type {Function[]}
+         */
         this.callbacks = callbacks;
+
+        /**
+         * @private
+         * @readonly
+         * @type {ModalWindowElement[]}
+         */
         this.elements = elements;
 
+        /**
+         * @private
+         * @type {HTMLElement}
+         */
         this.modalWindowElem = null;
+
+
+
+        /** @private */
+        this.mouseupEventHandler = null;
+
+        /** @private */
+        this.mousemoveEventHandler = null;
+
+        /** @private */
+        this.keydownEventHandler = null;
 
         this.initialize();
     }
@@ -68,6 +106,10 @@ export class ModalWindow {
     close() {
         this.modalWindowElem.style.display = "none";
         this.modalWindowElem.remove();
+
+        document.removeEventListener("mouseup", this.mouseupEventHandler);
+        document.removeEventListener("mousemove", this.mousemoveEventHandler);
+        document.removeEventListener("keydown", this.keydownEventHandler);
     }
 
     /**
@@ -80,7 +122,6 @@ export class ModalWindow {
         // --- Attach events ---
         this.modalWindowElem.querySelector(".close-button").addEventListener("click", () => this.close());
 
-
         let movingWindowPositionOffset = [0, 0];
         let isMouseButtonDown = false;
 
@@ -88,26 +129,24 @@ export class ModalWindow {
         windowTitleElem.addEventListener("mousedown", (e) => {
             isMouseButtonDown = true;
             movingWindowPositionOffset = [this.modalWindowElem.offsetLeft - e.clientX, this.modalWindowElem.offsetTop - e.clientY];
+        });
 
-        }, {capture: true});
-
-        document.addEventListener("mouseup", (e) => {
+        this.mouseupEventHandler = (e) => {
             isMouseButtonDown = false;
+        };
+        document.addEventListener("mouseup", this.mouseupEventHandler);
 
-        }, {capture: true});
-
-        document.addEventListener("mousemove", (e) => {
-            e.preventDefault();
+        this.mousemoveEventHandler = (e) => {
             if (isMouseButtonDown) {
                 this.modalWindowElem.style.left = (e.clientX + movingWindowPositionOffset[0]) + "px";
                 this.modalWindowElem.style.top = (e.clientY + movingWindowPositionOffset[1]) + "px";
             }
 
-        }, {capture: true});
+        };
+        document.addEventListener("mousemove", this.mousemoveEventHandler);
 
 
-
-        document.addEventListener("keydown", (e) => {
+        this.keydownEventHandler = (e) => {
             if (e.key === "Enter") {
                 e.preventDefault();
 
@@ -140,7 +179,8 @@ export class ModalWindow {
                 if (buttonElem)
                     buttonElem.dispatchEvent(new Event("click"));
             }
-        });
+        };
+        document.addEventListener("keydown", this.keydownEventHandler);
 
         this.initFooterButtons();
     }
