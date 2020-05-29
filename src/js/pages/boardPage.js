@@ -15,6 +15,7 @@ import {BoardDto, CreateBoardDto} from "../dtos/boards";
 import utils from "../utils";
 import {CreateListDto} from "../dtos/lists";
 import {CreateCardDto} from "../dtos/cards";
+import {LoadingScreen} from "../components/loadingScreen";
 
 export class BoardPage {
 
@@ -61,7 +62,11 @@ export class BoardPage {
          */
         this.cardsService = new CardsService();
 
-
+        /**
+         * @private
+         * @type {LoadingScreen}
+         */
+        this.loadingScreen = new LoadingScreen();
     }
 
     initialize() {
@@ -99,6 +104,8 @@ export class BoardPage {
         /** @type HTMLElement */
         const listContainerElem = document.querySelector(".lists-container");
 
+        this.loadingScreen.show();
+
         // Retrieve all boards data (lists and related cards)
         this.listsService.getAllBoardLists(this.currentBoardId,
             /** @param {ListDto[]} lists */
@@ -114,10 +121,11 @@ export class BoardPage {
 
                 });
 
-
+                this.loadingScreen.close();
 
             },
             () => {
+                this.loadingScreen.close();
                 ModalWindowFactory.showErrorOkMessage("Error occurred", "Error of getting user boards");
             });
 

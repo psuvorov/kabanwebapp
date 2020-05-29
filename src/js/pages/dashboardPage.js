@@ -11,6 +11,7 @@ import {
     ModalWindowFactory
 } from "../components/modalWindow";
 import utils from "../utils";
+import {LoadingScreen} from "../components/loadingScreen";
 
 export class DashboardPage {
 
@@ -29,9 +30,11 @@ export class DashboardPage {
         this.boardsService = new BoardsService();
 
 
-
-
-
+        /**
+         * @private
+         * @type {LoadingScreen}
+         */
+        this.loadingScreen = new LoadingScreen();
     }
 
     initialize() {
@@ -44,10 +47,13 @@ export class DashboardPage {
 
     initBoardsList() {
 
+        this.loadingScreen.show();
         this.boardsService.getAllUserBoards(this.applicationUser.id, (boards) => {
                 this.initUserBoards(boards);
+                this.loadingScreen.close();
             },
             (error) => {
+                this.loadingScreen.close();
                 ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting user boards. Reason: ${error}`);
             });
     }
