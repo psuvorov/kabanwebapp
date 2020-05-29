@@ -127,7 +127,7 @@
 					i {
 						font-size: 12px;
 						margin: auto;
-						color: @list-util-foreground-color;
+						color: @menu-button-foreground-color;
 					}
 				}
 				.list-menu-button:hover {
@@ -161,6 +161,33 @@
 					span {
 						color: @normal-foreground-color;
 					}
+
+					.card-menu-button {
+						width: 20px;
+						height: 20px;
+						cursor: pointer;
+						border-radius: 3px;
+						display: none;
+						position: absolute;
+						right: 0;
+						top: 0;
+
+						i {
+							font-size: 10px;
+							margin: auto;
+							color: @menu-button-foreground-color;
+						}
+					}
+					.card-menu-button:hover {
+						background-color: @background-color-of-hovered-element;
+					}
+				}
+
+				.list-card:hover {
+
+					.card-menu-button {
+						display: flex;
+					}
 				}
 
 				.list-card:last-child {
@@ -188,7 +215,7 @@
 
 				span {
 					margin-left: 4px;
-					color: @list-util-foreground-color;
+					color: @menu-button-foreground-color;
 					line-height: 32px;
 				}
 			}
@@ -224,7 +251,7 @@
 
 				span {
 					margin-left: 4px;
-					color: @list-util-foreground-color;
+					color: @menu-button-foreground-color;
 					line-height: 44px;
 				}
 			}

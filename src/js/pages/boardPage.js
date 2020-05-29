@@ -172,20 +172,20 @@ export class BoardPage {
                 let popupMenu = null;
 
                 const items = [
-                    new PopupMenuItem("Add card...", () => {
+                    new PopupMenuItem("Add new card", () => {
                         console.log("Add card");
                         popupMenu.close();
                     }),
-                    new PopupMenuItem("Copy list...",() => {
+                    new PopupMenuItem("Copy list",() => {
                         console.log("Copy list");
                         popupMenu.close();
                     }),
-                    new PopupMenuItem("Move list...",() => {
+                    new PopupMenuItem("Move list",() => {
                         console.log("Move list");
                         popupMenu.close();
                     }),
                     new PopupMenuItemSeparator(),
-                    new PopupMenuItem("Archive list...",() => {
+                    new PopupMenuItem("Archive list",() => {
                         console.log("Archive list");
                         popupMenu.close();
                     })
@@ -194,6 +194,32 @@ export class BoardPage {
                 popupMenu = new PopupMenu(items, listMenuButtonElem);
                 popupMenu.show();
             }
+
+            const cardMenuButtonElem = e.target.closest(".card-menu-button");
+            if (cardMenuButtonElem) {
+                /** @type PopupMenu */
+                let popupMenu = null;
+
+                const items = [
+                    new PopupMenuItem("Copy card",() => {
+                        console.log("Copy card");
+                        popupMenu.close();
+                    }),
+                    new PopupMenuItem("Move card to list",() => {
+                        console.log("Move card to list");
+                        popupMenu.close();
+                    }),
+                    new PopupMenuItemSeparator(),
+                    new PopupMenuItem("Archive card",() => {
+                        console.log("Archive card");
+                        popupMenu.close();
+                    })
+                ];
+
+                popupMenu = new PopupMenu(items, cardMenuButtonElem);
+                popupMenu.show();
+            }
+
         });
 
 
@@ -521,6 +547,11 @@ export class BoardPage {
         const cardTitleElem = document.createElement("span");
         cardTitleElem.textContent = cardName;
         listCardElem.append(cardTitleElem);
+
+        const cardMenuButtonElem = document.createElement("div");
+        cardMenuButtonElem.classList.add("card-menu-button");
+        cardMenuButtonElem.innerHTML = `<i class="fas fa-pen"></i>`;
+        listCardElem.append(cardMenuButtonElem);
 
         listCardsElem.append(listCardElem);
     }
