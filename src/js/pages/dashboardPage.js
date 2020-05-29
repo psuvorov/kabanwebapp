@@ -95,7 +95,7 @@ export class DashboardPage {
             const createOneLink = dashboardTopDescriptionElem.querySelector("span");
             createOneLink.addEventListener("click", this.createBoardEventHandler.bind(this));
         } else {
-            dashboardTopDescriptionElem.innerText = `Here is all your boards:`;
+            dashboardTopDescriptionElem.innerText = `Here are all your boards:`;
         }
 
 
