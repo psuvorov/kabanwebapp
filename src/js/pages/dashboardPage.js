@@ -12,6 +12,7 @@ import {
 } from "../components/modalWindow";
 import utils from "../utils";
 import {LoadingScreen} from "../components/loadingScreen";
+import KabanBoardService from "../services/kabanBoardService";
 
 export class DashboardPage {
 
@@ -25,10 +26,9 @@ export class DashboardPage {
 
         /**
          * @private
-         * @type {BoardsService}
+         * @type {KabanBoardService}
          */
-        this.boardsService = new BoardsService();
-
+        this.kabanBoardService = new KabanBoardService();
 
         /**
          * @private
@@ -48,11 +48,14 @@ export class DashboardPage {
     initBoardsList() {
 
         this.loadingScreen.show();
-        this.boardsService.getAllUserBoards(this.applicationUser.id, (boards) => {
+        this.kabanBoardService.getAllUserBoards(this.applicationUser.id,
+            /** @type BoardInfoDto[] */
+            (boards) => {
                 this.initUserBoards(boards);
                 this.loadingScreen.close();
             },
             (error) => {
+                console.error(error);
                 this.loadingScreen.close();
                 ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting user boards. Reason: ${error}`);
             });
@@ -60,7 +63,7 @@ export class DashboardPage {
 
     /**
      *
-     * @param {BoardDto[]} boards
+     * @param {BoardInfoDto[]} boards
      */
     initUserBoards(boards) {
         const boardsContainerElem = document.querySelector(".boards-container");
@@ -127,12 +130,13 @@ export class DashboardPage {
                 const createBoardDtoRaw = JSON.parse(serializedFormData);
                 /** @type CreateBoardDto */
                 const createBoardDto = new CreateBoardDto(createBoardDtoRaw.name, createBoardDtoRaw.description);
-                this.boardsService.createBoard(createBoardDto,
+                this.kabanBoardService.createBoard(createBoardDto,
                     () => {
                         modalWindow.close();
                         this.initBoardsList();
                     },
                     (error) => {
+                        console.error(error);
                         modalWindow.close();
                         ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new board. Reason: ${error}`);
                     });

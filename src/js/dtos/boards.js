@@ -1,18 +1,40 @@
-export class BoardDto {
+export class BoardInfoDto {
+
     /**
      *
      * @param {string} id
      * @param {string} name
      * @param {string} description
-     * @param {number} userId
      */
-    constructor(id, name, description, userId) {
+    constructor(id, name, description) {
         /** @readonly */
         this.id = id;
         /** @readonly */
         this.name = name;
         /** @readonly */
         this.description = description;
+    }
+
+}
+
+export class BoardDto {
+    /**
+     *
+     * @param {string} id
+     * @param {string} name
+     * @param {string} description
+     * @param {ListDto[]} lists
+     * @param {number} userId
+     */
+    constructor(id, name, description, lists, userId) {
+        /** @readonly */
+        this.id = id;
+        /** @readonly */
+        this.name = name;
+        /** @readonly */
+        this.description = description;
+        /** @readonly */
+        this.lists = lists;
         /** @readonly */
         this.userId = userId;
     }

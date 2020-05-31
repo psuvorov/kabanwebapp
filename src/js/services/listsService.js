@@ -122,6 +122,42 @@ export default class ListsService {
     /**
      *
      * @param {string} boardId
+     * @param {updateListOrderNumberDto[]} updateListOrderNumberDto
+     * @param onSuccess
+     * @param onError
+     */
+    updateListOrderNumbers(boardId, updateListOrderNumberDto, onSuccess, onError) {
+        const applicationUser = ApplicationUser.getApplicationUserFromStorage();
+
+        fetch(ServerBaseApiUrl + `/boards/${boardId}/lists/${listId}`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + applicationUser.token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updateListDto)
+        }).then(res => {
+            if (res.status === 200 || res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
+    /**
+     *
+     * @param {string} boardId
      * @param {string} listId
      * @param {function} onSuccess
      * @param {function} onError

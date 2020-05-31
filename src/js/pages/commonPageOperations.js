@@ -99,6 +99,7 @@ export class CommonPageOperations {
                         modalWindow.close();
 
                     }, (error) => {
+                        console.error(error);
                         modalWindow.close();
                         ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of signing in. Reason: ${error}`);
                     });
@@ -141,6 +142,7 @@ export class CommonPageOperations {
                         ModalWindowFactory.showInfoOkMessage("User created", "User has been successfully created");
 
                     }, (error) => {
+                        console.error(error);
                         modalWindow.close();
                         ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of signing up. Reason: ${error}`);
                     });

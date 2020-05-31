@@ -8,10 +8,8 @@ import {
     ModalWindowFactory
 } from "../components/modalWindow";
 import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/popupMenu";
-import BoardsService from "../services/boardsService";
-import ListsService from "../services/listsService";
-import CardsService from "../services/cardsService";
-import {BoardDto, CreateBoardDto} from "../dtos/boards";
+import KabanBoardService from "../services/kabanBoardService";
+import {BoardDto, BoardInfoDto, CreateBoardDto} from "../dtos/boards";
 import utils from "../utils";
 import {CreateListDto} from "../dtos/lists";
 import {CreateCardDto} from "../dtos/cards";
@@ -46,21 +44,10 @@ export class BoardPage {
 
         /**
          * @private
-         * @type {BoardsService}
+         * @readonly
+         * @type {KabanBoardService}
          */
-        this.boardsService = new BoardsService();
-
-        /**
-         * @private
-         * @type {ListsService}
-         */
-        this.listsService = new ListsService();
-
-        /**
-         * @private
-         * @type {CardsService}
-         */
-        this.cardsService = new CardsService();
+        this.kabanBoardService = new KabanBoardService();
 
         /**
          * @private
@@ -70,7 +57,6 @@ export class BoardPage {
     }
 
     initialize() {
-        this.setBoardInfo();
         this.drawBoard();
         this.setupInteractions();
 
@@ -79,38 +65,18 @@ export class BoardPage {
     /**
      * @private
      */
-    setBoardInfo() {
-        const boardHeaderElem = document.querySelector(".board-header");
-        /** @type HTMLElement */
-        const boardTitleElem = boardHeaderElem.querySelector(".board-title");
-
-        // TODO: Rework this method. Here we need to obtain only specific board statistics and that's it.
-
-        this.boardsService.getUserBoard(this.applicationUser.id, this.currentBoardId,
-            /** @param {BoardDto} board */
-            (board) => {
-                boardTitleElem.value = board.name;
-
-            },
-            () => {
-                ModalWindowFactory.showErrorOkMessage("Error occurred", "Error of getting board information");
-            });
-    }
-
-    /**
-     * @private
-     */
     drawBoard() {
-        /** @type HTMLElement */
         const listContainerElem = document.querySelector(".lists-container");
+        const boardHeaderElem = document.querySelector(".board-header");
+        const boardTitleElem = boardHeaderElem.querySelector(".board-title");
 
         this.loadingScreen.show();
 
-        // Retrieve all boards data (lists and related cards)
-        this.listsService.getAllBoardLists(this.currentBoardId,
-            /** @param {ListDto[]} lists */
-            (lists) => {
-                lists.forEach(/** @type ListDto */list => {
+        this.kabanBoardService.getUserBoard(this.applicationUser.id, this.currentBoardId,
+            /** @type BoardDto */
+            (board) => {
+                boardTitleElem.value = board.name;
+                board.lists.forEach(/** @type ListDto */list => {
                     this.addListToBoard(list.id, list.name, list.orderNumber);
 
                     /** @type HTMLElement */
@@ -121,14 +87,14 @@ export class BoardPage {
 
                 });
 
-                this.loadingScreen.close();
 
+                this.loadingScreen.close();
             },
-            () => {
+            (error) => {
+                console.error(error);
                 this.loadingScreen.close();
-                ModalWindowFactory.showErrorOkMessage("Error occurred", "Error of getting user boards");
+                ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting user board. Reason: ${error}`);
             });
-
     }
 
     /**
@@ -416,13 +382,14 @@ export class BoardPage {
                 /** @type CreateListDto */
                 const createListDto = new CreateListDto(createListDtoRaw.name, lastListOrderNumber + 1, this.currentBoardId);
 
-                this.listsService.createList(createListDto,
+                this.kabanBoardService.createList(createListDto,
                     (data) => {
 
                         this.addListToBoard(data.listId, createListDto.name, createListDto.orderNumber);
                         modalWindow.close();
                     },
                     (error) => {
+                        console.error(error);
                         modalWindow.close();
                         ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new list. Reason: ${error}`);
                     });
@@ -503,12 +470,13 @@ export class BoardPage {
                 /** @type CreateCardDto */
                 const createCardDto = new CreateCardDto(createCardDtoRaw.name, "", lastCardNumber + 1, listId);
 
-                this.cardsService.createCard(createCardDto,
+                this.kabanBoardService.createCard(createCardDto,
                     (data) => {
                         this.addCardToList(listElem, data.cardId, createCardDto.name, createCardDto.orderNumber);
                         modalWindow.close();
                     },
                     (error) => {
+                        console.error(error);
                         modalWindow.close();
                         ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new card. Reason: ${error}`);
                     });
@@ -649,39 +617,6 @@ export class BoardPage {
             listCardsElem.prepend(cardPlaceholderElem);
         } else if (position === "end") {
             listCardsElem.append(cardPlaceholderElem);
-        }
-    }
-
-
-    /**
-     * @private
-     * @param {Element} listsContainerElem
-     * @param {string} position
-     */
-    addListPlaceHolderToBoard(listsContainerElem, position) {
-        if (this.currentPlaceholderData &&
-            this.currentPlaceholderData.position === position)
-            return;
-
-        // Remove previously created list placeholder
-        this.clearPlaceholderData();
-
-        const listWrapperElem = document.createElement("div");
-        listWrapperElem.classList.add("list-wrapper");
-        const listPlaceholderElem = this.createListPlaceholderElem();
-        listWrapperElem.append(listPlaceholderElem);
-
-        this.currentPlaceholderData = {
-            elementType: "list",
-            placeholderRef: listPlaceholderElem,
-            position: position,
-            placeholderHeight: this.transferredData.listRef.offsetHeight
-        };
-
-        if (position === "begin") {
-            listsContainerElem.prepend(listWrapperElem);
-        } else if (position === "end") {
-            listsContainerElem.append(listWrapperElem);
         }
     }
 
