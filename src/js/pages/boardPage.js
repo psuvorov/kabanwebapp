@@ -11,8 +11,8 @@ import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/po
 import KabanBoardService from "../services/kabanBoardService";
 import {BoardDto, BoardInfoDto, CreateBoardDto, UpdateBoardDto} from "../dtos/boards";
 import utils from "../utils";
-import {CreateListDto, UpdateListDto} from "../dtos/lists";
-import {CreateCardDto} from "../dtos/cards";
+import {CreateListDto, UpdateListDto, RenumberListDto} from "../dtos/lists";
+import {CreateCardDto, RenumberCardDto, UpdateCardDto} from "../dtos/cards";
 import {LoadingScreen} from "../components/loadingScreen";
 
 export class BoardPage {
@@ -368,6 +368,16 @@ export class BoardPage {
                 const placeholderElem = this.currentPlaceholderData.placeholderRef;
                 placeholderElem.parentElement.replaceChild(draggedCardElem, placeholderElem);
                 draggedCardElem.classList.remove("hidden-dragging-card");
+
+                const cardId = draggedCardElem.getAttribute("data-card-id");
+                const listId = draggedCardElem.parentElement.parentElement.getAttribute("data-list-id");
+
+                this.kabanBoardService.updateCard(new UpdateCardDto(cardId, null, null, null, listId),
+                    () => {},
+                    (error) => {
+                        console.error(error);
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of changing card's list. Reason: ${error}`);
+                    });
 
                 // Renumber all cards in new order for the list in which the card was placed
                 this.renumberAllCardsInList(this.currentPlaceholderData.listElemRef);
@@ -735,9 +745,21 @@ export class BoardPage {
      * @param {HTMLElement} listElem
      */
     renumberAllCardsInList(listElem) {
+        /** @type RenumberCardDto[] */
+        const renumberedCards = [];
+
         const listCardsElem = listElem.querySelector(":scope > .list-cards");
         listCardsElem.children.forEach((cardElem, idx) => {
-            cardElem.setAttribute("data-order-number", (idx + 1).toString());
+            const cardId = cardElem.getAttribute("data-card-id");
+            const orderNumber = idx + 1;
+            renumberedCards.push(new RenumberCardDto(cardId, orderNumber));
+
+            cardElem.setAttribute("data-order-number", orderNumber.toString());
+        });
+
+        this.kabanBoardService.renumberAllCardsInList(this.currentBoardId, renumberedCards, () => {}, (error) => {
+            console.error(error);
+            ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of updating list's order numbers. Reason: ${error}`);
         });
     }
 
@@ -745,10 +767,22 @@ export class BoardPage {
      * @private
      */
     renumberAllLists() {
+        /** @type RenumberListDto[] */
+        const renumberedLists = [];
+
         const listsContainerElem = document.querySelector(".lists-container");
         const lists = listsContainerElem.querySelectorAll(".list:not(.fake-list)");
         lists.forEach((listElem, idx) => {
-            listElem.setAttribute("data-order-number", (idx + 1).toString());
+            const listId = listElem.getAttribute("data-list-id");
+            const orderNumber = idx + 1;
+            renumberedLists.push(new RenumberListDto(listId, orderNumber));
+
+            listElem.setAttribute("data-order-number", orderNumber.toString());
+        });
+
+        this.kabanBoardService.renumberAllLists(this.currentBoardId, renumberedLists, () => {}, (error) => {
+            console.error(error);
+            ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of updating list's order numbers. Reason: ${error}`);
         });
     }
 }

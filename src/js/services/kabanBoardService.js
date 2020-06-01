@@ -282,6 +282,76 @@ export default class KabanBoardService {
         });
     }
 
+    /**
+     * @param {string} boardId
+     * @param {RenumberListDto[]} renumberedLists
+     * @param onSuccess
+     * @param onError
+     */
+    renumberAllLists(boardId, renumberedLists, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/renumber-all-lists?boardId=${boardId}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(renumberedLists)
+        }).then(res => {
+            if (res.status === 200) {
+                return {};
+            } else if (res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
+    /**
+     * @param {string} boardId
+     * @param {RenumberCardDto[]} renumberedCards
+     * @param onSuccess
+     * @param onError
+     */
+    renumberAllCardsInList(boardId, renumberedCards, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/renumber-all-cards?boardId=${boardId}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(renumberedCards)
+        }).then(res => {
+            if (res.status === 200) {
+                return {};
+            } else if (res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
     deleteBoard() {
 
     }

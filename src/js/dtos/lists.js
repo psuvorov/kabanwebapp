@@ -54,6 +54,20 @@ export class UpdateListDto {
         this.name = name;
         /** @readonly */
         this.orderNumber = orderNumber;
-
     }
+}
+
+export class RenumberListDto {
+
+    /**
+     * @param {string} id
+     * @param {number} orderNumber
+     */
+    constructor(id, orderNumber) {
+        /** @readonly */
+        this.id = id;
+        /** @readonly */
+        this.orderNumber = orderNumber;
+    }
+
 }
