@@ -1,23 +1,5 @@
 import {CardDto} from "./cards";
 
-export class CreateListDto {
-
-    /**
-     *
-     * @param {string} name
-     * @param {number} orderNumber
-     * @param {string} boardId
-     */
-    constructor(name, orderNumber, boardId) {
-        /** @readonly */
-        this.name = name;
-        /** @readonly */
-        this.orderNumber = orderNumber;
-        /** @readonly */
-        this.boardId = boardId;
-    }
-}
-
 export class ListDto {
 
     /**
@@ -40,34 +22,38 @@ export class ListDto {
 
 }
 
-export class UpdateListDto {
+export class CreateListDto {
 
     /**
      *
-     * @param name
-     * @param orderNumber
+     * @param {string} name
+     * @param {number} orderNumber
+     * @param {string} boardId
      */
-    constructor(name, orderNumber) {
+    constructor(name, orderNumber, boardId) {
+        /** @readonly */
+        this.name = name;
+        /** @readonly */
+        this.orderNumber = orderNumber;
+        /** @readonly */
+        this.boardId = boardId;
+    }
+}
+
+export class UpdateListDto {
+
+    /**
+     * @param {string} id
+     * @param {string} name
+     * @param {number} orderNumber
+     */
+    constructor(id, name, orderNumber) {
+        /** @readonly */
+        this.id = id;
         /** @readonly */
         this.name = name;
         /** @readonly */
         this.orderNumber = orderNumber;
 
     }
-}
-
-export class UpdateListOrderNumberDto {
-
-    /**
-     *
-     * @param {string} listId
-     * @param {number} orderNumber
-     */
-    constructor(listId, orderNumber) {
-        /** @readonly */
-        this.listId = listId;
-        /** @readonly */
-        this.orderNumber = orderNumber;
-    }
-
 }

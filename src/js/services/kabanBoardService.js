@@ -177,16 +177,109 @@ export default class KabanBoardService {
         });
     }
 
-    updateBoardInfo() {
-
+    /**
+     *
+     * @param {UpdateBoardDto} updateBoardDto
+     * @param onSuccess
+     * @param onError
+     */
+    updateBoardInfo(updateBoardDto, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/update-board-info`, {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updateBoardDto)
+        }).then(res => {
+            if (res.status === 200) {
+                return {};
+            } else if (res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
     }
 
-    updateList() {
-
+    /**
+     *
+     * @param {UpdateListDto} updateListDto
+     * @param onSuccess
+     * @param onError
+     */
+    updateList(updateListDto, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/update-list`, {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updateListDto)
+        }).then(res => {
+            if (res.status === 200) {
+                return {};
+            } else if (res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
     }
 
-    updateCard() {
-
+    /**
+     *
+     * @param {UpdateCardDto} updateCardDto
+     * @param onSuccess
+     * @param onError
+     */
+    updateCard(updateCardDto, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/update-card`, {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updateCardDto)
+        }).then(res => {
+            if (res.status === 200) {
+                return {};
+            } else if (res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
     }
 
     deleteBoard() {

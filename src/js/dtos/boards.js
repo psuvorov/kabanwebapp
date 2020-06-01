@@ -1,7 +1,9 @@
+/**
+ * Contains only dashboard page related data.
+ */
 export class BoardInfoDto {
 
     /**
-     *
      * @param {string} id
      * @param {string} name
      * @param {string} description
@@ -17,9 +19,13 @@ export class BoardInfoDto {
 
 }
 
+/**
+ * Contains full almost full information on specific board
+ * (Comments are not included).
+ */
 export class BoardDto {
+
     /**
-     *
      * @param {string} id
      * @param {string} name
      * @param {string} description
@@ -43,7 +49,6 @@ export class BoardDto {
 export class CreateBoardDto {
 
     /**
-     *
      * @param {string} name
      * @param {string} description
      */
@@ -58,11 +63,13 @@ export class CreateBoardDto {
 export class UpdateBoardDto {
 
     /**
-     *
+     * @param {string} id
      * @param {string} name
      * @param {string} description
      */
-    constructor(name, description) {
+    constructor(id, name, description) {
+        /** @readonly */
+        this.id = id;
         /** @readonly */
         this.name = name;
         /** @readonly */

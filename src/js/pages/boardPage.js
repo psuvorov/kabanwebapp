@@ -9,9 +9,9 @@ import {
 } from "../components/modalWindow";
 import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/popupMenu";
 import KabanBoardService from "../services/kabanBoardService";
-import {BoardDto, BoardInfoDto, CreateBoardDto} from "../dtos/boards";
+import {BoardDto, BoardInfoDto, CreateBoardDto, UpdateBoardDto} from "../dtos/boards";
 import utils from "../utils";
-import {CreateListDto} from "../dtos/lists";
+import {CreateListDto, UpdateListDto} from "../dtos/lists";
 import {CreateCardDto} from "../dtos/cards";
 import {LoadingScreen} from "../components/loadingScreen";
 
@@ -76,6 +76,7 @@ export class BoardPage {
             /** @type BoardDto */
             (board) => {
                 boardTitleElem.value = board.name;
+                boardTitleElem.setAttribute("data-board-name", board.name); // as a fallback in attempt setting null empty value
                 board.lists.forEach(/** @type ListDto */list => {
                     this.addListToBoard(list.id, list.name, list.orderNumber);
 
@@ -102,7 +103,30 @@ export class BoardPage {
      */
     setupInteractions() {
         const pageContainerElem = document.querySelector(".page-container");
+        const boardTitleElem =  pageContainerElem.querySelector(".board-title");
         const listContainerElem = document.querySelector(".lists-container");
+
+        // Update board name after delay
+        let boardNameUpdateTimeoutId = null;
+        boardTitleElem.addEventListener("keyup", (e) => {
+            clearTimeout(boardNameUpdateTimeoutId);
+
+
+            boardNameUpdateTimeoutId = setTimeout(() => {
+                if (utils.isNullOrWhitespace(e.target.value)) {
+                    e.target.value = boardTitleElem.getAttribute("data-board-name");
+                }
+                e.target.blur();
+
+                this.kabanBoardService.updateBoardInfo(new UpdateBoardDto(this.currentBoardId, e.target.value, null),
+                    () => {},
+                    (error) => {
+                        console.error(error);
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of setting new board name. Reason: ${error}`);
+                    });
+
+            }, 1000);
+        });
 
         // "Add a list" link click handler
         const addListLinkElem = document.querySelector(".add-list-button");
@@ -110,15 +134,30 @@ export class BoardPage {
             this.createNewList();
         });
 
-        let timeoutId = null;
+        // Update list caption after delay
+        let listCaptionUpdateTimeoutId = null;
         listContainerElem.addEventListener("keyup", (e) => {
             if (e.target && e.target.parentElement && e.target.parentElement.classList.contains("list-caption")){
-                clearTimeout(timeoutId);
+                // e.target - input tag
+                clearTimeout(listCaptionUpdateTimeoutId);
 
-                timeoutId = setTimeout(() => {
-                    let listId = e.target.parentElement.parentElement.parentElement.getAttribute("data-list-id");
-                    console.log(listId + " " + e.target.value);
+                listCaptionUpdateTimeoutId = setTimeout(() => {
+                    const listElem = e.target.parentElement.parentElement.parentElement;
+                    let listId = listElem.getAttribute("data-list-id");
+                    let listOrderNumber = listElem.getAttribute("data-order-number");
+
+                    if (utils.isNullOrWhitespace(e.target.value)) {
+                        e.target.value = boardTitleElem.getAttribute("data-list-name");
+                    }
                     e.target.blur();
+
+                    this.kabanBoardService.updateList(new UpdateListDto(listId, e.target.value, parseInt(listOrderNumber)),
+                        () => {},
+                        (error) => {
+                            console.error(error);
+                            ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of setting new list name. Reason: ${error}`);
+                        });
+
                 }, 1000);
             }
         });
@@ -423,7 +462,7 @@ export class BoardPage {
         newListElem.setAttribute("draggable", "true");
         newListElem.innerHTML = `
                 <div class="list-header">
-                    <div class="list-caption">
+                    <div class="list-caption" data-list-name="${listName}">
                         <input type="text" value="${listName}" >
                     </div>
                     <div class="list-menu-button">
