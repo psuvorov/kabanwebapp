@@ -372,18 +372,21 @@ export class BoardPage {
                 const cardId = draggedCardElem.getAttribute("data-card-id");
                 const listId = draggedCardElem.parentElement.parentElement.getAttribute("data-list-id");
 
+                const listA = this.currentPlaceholderData.listElemRef;
+                const listB = this.transferredData.listRef;
+
                 this.kabanBoardService.updateCard(new UpdateCardDto(cardId, null, null, null, listId),
-                    () => {},
+                    () => {
+                        // Renumber all cards in new order for the list in which the card was placed
+                        this.renumberAllCardsInList(listA);
+
+                        // Renumber all cards in new order for the list from which the card was taken
+                        this.renumberAllCardsInList(listB);
+                    },
                     (error) => {
                         console.error(error);
                         ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of changing card's list. Reason: ${error}`);
                     });
-
-                // Renumber all cards in new order for the list in which the card was placed
-                this.renumberAllCardsInList(this.currentPlaceholderData.listElemRef);
-
-                // Renumber all cards in new order for the list from which the card was taken
-                this.renumberAllCardsInList(this.transferredData.listRef);
 
             } else if (this.transferredData.elementType === "list") {
                 /** @type Element */
