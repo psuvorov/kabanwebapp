@@ -173,12 +173,14 @@ export class BoardPage {
 
             const listMenuButtonElem = e.target.closest(".list-menu-button");
             if (listMenuButtonElem) {
+                const listElem = e.target.closest(".list");
+
                 /** @type PopupMenu */
                 let popupMenu = null;
 
                 const items = [
                     new PopupMenuItem("Add new card", () => {
-                        console.log("Add card");
+                        this.createNewCard(listElem);
                         popupMenu.close();
                     }),
                     new PopupMenuItem("Copy list",() => {
