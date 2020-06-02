@@ -71,3 +71,18 @@ export class RenumberListDto {
     }
 
 }
+
+export class CopyListDto {
+
+    /**
+     * @param {string} id
+     * @param {string} boardId
+     */
+    constructor(id, boardId) {
+        /** @readonly */
+        this.id = id;
+        /** @readonly */
+        this.boardId = boardId;
+    }
+
+}

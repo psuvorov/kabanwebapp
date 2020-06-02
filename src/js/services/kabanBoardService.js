@@ -1,6 +1,7 @@
 import {ApplicationUser} from "../application/applicationUser";
 import {ServerBaseApiUrl} from "../constants";
 import {BoardDto, BoardInfoDto} from "../dtos/boards";
+import {ListDto} from "../dtos/lists";
 
 export default class KabanBoardService {
 
@@ -80,6 +81,40 @@ export default class KabanBoardService {
 
     /**
      *
+     * @param {string} listId
+     * @param {string} boardId
+     * @param onSuccess
+     * @param onError
+     */
+    getList(listId, boardId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/get-list?listId=${listId}&boardId=${boardId}`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            },
+        }).then(res => {
+            if (res.status === 200 || res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                const list = new ListDto(res.id, res.name, parseInt(res.orderNumber), res.cards);
+                onSuccess(list);
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
+    /**
+     *
      * @param {CreateBoardDto} createBoardDto
      * @param {function} onSuccess
      * @param {function} onError
@@ -125,6 +160,39 @@ export default class KabanBoardService {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(createListDto)
+        }).then(res => {
+            if (res.status === 201 || res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess({listId: res.listId});
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
+    /**
+     *
+     * @param {CopyListDto} copyListDto
+     * @param onSuccess
+     * @param onError
+     */
+    copyList(copyListDto, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/copy-list`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(copyListDto)
         }).then(res => {
             if (res.status === 201 || res.status === 400) {
                 return res.json();

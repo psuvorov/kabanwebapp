@@ -11,7 +11,7 @@ import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/po
 import KabanBoardService from "../services/kabanBoardService";
 import {BoardDto, BoardInfoDto, CreateBoardDto, UpdateBoardDto} from "../dtos/boards";
 import utils from "../utils";
-import {CreateListDto, UpdateListDto, RenumberListDto} from "../dtos/lists";
+import {CreateListDto, UpdateListDto, RenumberListDto, CopyListDto} from "../dtos/lists";
 import {CreateCardDto, RenumberCardDto, UpdateCardDto} from "../dtos/cards";
 import {LoadingScreen} from "../components/loadingScreen";
 
@@ -184,7 +184,7 @@ export class BoardPage {
                         popupMenu.close();
                     }),
                     new PopupMenuItem("Copy list",() => {
-                        console.log("Copy list");
+                        this.copyList(listElem);
                         popupMenu.close();
                     }),
                     new PopupMenuItem("Move list",() => {
@@ -462,14 +462,50 @@ export class BoardPage {
         modalWindow.show();
     }
 
+    copyList(listElem) {
+        this.loadingScreen.show();
+
+        const copyListDto = new CopyListDto(listElem.getAttribute("data-list-id"), this.currentBoardId);
+        this.kabanBoardService.copyList(copyListDto,
+            (data) => {
+                const copiedListId = data.listId;
+                this.kabanBoardService.getList(copiedListId, this.currentBoardId,
+                    /** @type {ListDto} */
+                    (list) => {
+                        const listContainerElem = document.querySelector(".lists-container");
+
+                        this.addListToBoard(list.id, list.name, list.orderNumber, listElem);
+
+                        /** @type HTMLElement */
+                        const justAddedListElem = listContainerElem.querySelector(`[data-list-id="${list.id}"]`);
+                        list.cards.forEach(/** @type CardDto */card => {
+                            this.addCardToList(justAddedListElem, card.id, card.name, card.orderNumber);
+                        });
+
+                        this.loadingScreen.close();
+                    },
+                    (error) => {
+                        console.log(error);
+                        this.loadingScreen.close();
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting list. Reason: ${error}`);
+                    });
+            },
+            (error) => {
+                console.log(error);
+                this.loadingScreen.close();
+                ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of copying list. Reason: ${error}`);
+            });
+    }
+
 
     /**
      * @private
      * @param {string} listId
      * @param {string} listName
      * @param {number} orderNumber
+     * @param {string | HTMLElement} [position]
      */
-    addListToBoard(listId, listName, orderNumber) {
+    addListToBoard(listId, listName, orderNumber, position) {
         const newListElem = document.createElement("div");
         newListElem.classList.add("animated", "fadeIn", "list");
         newListElem.setAttribute("data-list-id", listId);
@@ -496,8 +532,15 @@ export class BoardPage {
         listWrapperElem.append(newListElem);
 
         const listContainerElem = document.querySelector(".lists-container");
-        const fakeListWrapperElem = document.querySelector(".fake-list").parentElement;
-        listContainerElem.insertBefore(listWrapperElem, fakeListWrapperElem);
+
+
+        if (!utils.isInit(position)) {
+            const fakeListWrapperElem = document.querySelector(".fake-list").parentElement;
+            listContainerElem.insertBefore(listWrapperElem, fakeListWrapperElem);
+        } else {
+            const siblingListWrapperElem = position.parentElement;
+            siblingListWrapperElem.after(listWrapperElem);
+        }
     }
 
     /**
