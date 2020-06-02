@@ -647,6 +647,66 @@ export class BoardPage {
         this.loadingScreen.close();
     }
 
+
+    /**
+     * @private
+     * @param {HTMLElement} listElem
+     */
+    copyList(listElem) {
+        // TODO: Would be better making a copy of the list on server side, then retrieving it. Consider creating API method
+
+        this.loadingScreen.show();
+
+        const listName = listElem.querySelector(".list-caption").getAttribute("data-list-name");
+
+        /** @type CreateListDto */
+        const createListDto = new CreateListDto(listName, parseInt(listElem.getAttribute("data-order-number")), this.currentBoardId);
+
+        this.kabanBoardService.createList(createListDto,
+            (data) => {
+                this.addListToBoard(data.listId, createListDto.name, createListDto.orderNumber, listElem.parentElement);
+
+                /** @type HTMLElement */
+                const copiedListElem = listElem.parentElement.nextElementSibling.firstElementChild;
+                this.copyAllCardsFromList(listElem, copiedListElem);
+
+                this.renumberAllLists();
+
+            },
+            (error) => {
+                this.loadingScreen.close();
+                console.error(error);
+                ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of copying the list. Reason: ${error}`);
+            });
+    }
+
+
+    /**
+     * @private
+     * @param {HTMLElement} srcListElem
+     * @param {HTMLElement} targetListElem
+     */
+    copyAllCardsFromList(srcListElem, targetListElem) {
+        let cardNum = 1;
+        srcListElem.querySelectorAll(".list-card").forEach(cardElem => {
+
+            /** @type CreateCardDto */
+            const createCardDto = new CreateCardDto(cardElem.querySelector("span").textContent, "", cardNum++, targetListElem.getAttribute("data-list-id"));
+
+            this.kabanBoardService.createCard(createCardDto,
+                (data) => {
+                    this.addCardToList(targetListElem, data.cardId, createCardDto.name, createCardDto.orderNumber);
+                },
+                (error) => {
+                    console.error(error);
+                    ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of copying card. Reason: ${error}`);
+                });
+
+        });
+
+        this.loadingScreen.close();
+    }
+
     /**
      * @private
      * @return number
