@@ -1,7 +1,13 @@
 import {CardDetailsDto, UpdateCardDto} from "../dtos/cards";
 import utils from "../utils";
-import {UpdateBoardDto} from "../dtos/boards";
-import {ModalWindowFactory} from "../components/modalWindow";
+import {CreateBoardDto, UpdateBoardDto} from "../dtos/boards";
+import {
+    DialogTypes,
+    ModalWindow,
+    ModalWindowElement,
+    ModalWindowElementType,
+    ModalWindowFactory
+} from "../components/modalWindow";
 
 export class CardDetails {
 
@@ -84,13 +90,7 @@ export class CardDetails {
                 <div class="icon-section"><i class="far fa-file-alt"></i></div>
                 <div class="content">
                     <div class="section-caption">Description</div>
-                    <div class="description">${this.cardDetails.description}
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id egestas mi, vel ultricies lacus. Donec viverra augue ut mauris porttitor, eget sagittis lorem ultricies. Suspendisse in nisl mauris. Maecenas leo enim, egestas quis diam id, dictum aliquam est. Etiam ultricies dui ac consectetur tristique. In eget sem egestas est consequat blandit. Vivamus rutrum dolor in orci ultricies, pulvinar tincidunt lectus dapibus. Quisque quis libero orci. Praesent vitae interdum mauris. Nullam faucibus mattis augue, a dictum orci porttitor sit amet. Nulla mollis est sed ante pulvinar, eget pharetra eros blandit. Donec magna diam, tristique at nibh sed, malesuada sodales mi. Cras fringilla rutrum arcu quis pretium. Duis suscipit, turpis sed aliquet molestie, felis augue pulvinar quam, a porta erat risus non lacus. Maecenas ut tempus nisi, ac tempus tellus.
-
-                        Nullam non placerat neque. Pellentesque consequat nisl a semper eleifend. Nulla malesuada ornare arcu eu luctus. Nulla bibendum, nibh sit amet varius commodo, diam odio laoreet erat, vel dapibus mauris sem in turpis. Nulla tincidunt interdum eros sit amet dignissim. Nunc sit amet ipsum sit amet ligula laoreet feugiat. Mauris placerat, dolor sit amet tincidunt egestas, justo nulla accumsan tellus, in sollicitudin turpis nisi tincidunt magna. Vivamus sodales tincidunt lacus eget semper. Nulla tempor sed sem vel sollicitudin. Praesent rhoncus dapibus neque vel aliquam. Suspendisse consequat mi a sapien viverra, tristique pretium arcu pharetra. Vivamus congue feugiat sapien, in tempus augue pharetra sit amet. Pellentesque laoreet nulla quis faucibus interdum. Donec sit amet feugiat neque, sed consequat quam. Proin imperdiet gravida ex, in molestie sapien volutpat in.
-                        
-                        
-                    </div>                
+                    <div class="description">${this.cardDetails.description}</div>                
                 </div>
                 <div class="actions">
                     <div class="button edit"><i class="fas fa-file-alt"></i><span>Edit</span></div>
@@ -161,7 +161,52 @@ export class CardDetails {
 
         const editButtonElem = this.cardDetailsWindowElem.querySelector(".actions .edit");
         editButtonElem.addEventListener("click", (e) => {
-            console.log("Edit button clicked");
+
+            /** @type ModalWindow */
+            let modalWindow = null;
+
+            const callbacks = [
+                /**
+                 * @param {string} serializedFormData
+                 */
+                    (serializedFormData) => {
+                    // Ok pressed
+
+
+                    const newDescriptionRaw = JSON.parse(serializedFormData).description; // to be set to html right now
+                    const newDescription = newDescriptionRaw.replace(/\r?\n/g, "<br />"); // server version with <br /> tags
+
+                    const updateCardDto = new UpdateCardDto(this.cardDetails.id, null, newDescription, null, this.cardDetails.listId);
+                    this.kabanBoardService.updateCard(updateCardDto,
+                        () => {
+                            this.cardDetails.description = updateCardDto.description;
+                            this.cardDetailsWindowElem.querySelector(".description").innerText = newDescriptionRaw;
+
+                            modalWindow.close();
+                        },
+                        (error) => {
+                            console.error(error);
+                            modalWindow.close();
+                            ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of editing card description. Reason: ${error}`);
+                        });
+
+
+                },
+                () => {
+                    // Cancel pressed
+                    modalWindow.close();
+                }
+            ];
+
+            const windowElements = [
+                new ModalWindowElement(ModalWindowElementType.Textarea, "description", "Card description",
+                    this.cardDetails.description.replace(/<br \/>/g, "\r\n"))
+            ];
+
+            modalWindow = new ModalWindow("Edit card description", DialogTypes.OkCancel, callbacks, windowElements);
+            modalWindow.show();
+
+
         });
 
         const participantsButtonElem = this.cardDetailsWindowElem.querySelector(".actions .participants");
