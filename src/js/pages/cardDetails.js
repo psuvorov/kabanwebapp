@@ -46,6 +46,9 @@ export class CardDetails {
          */
         this.kabanBoardService = kabanBoardService;
 
+        /** @private */
+        this.keydownEventHandler = null;
+
         this.initialize();
     }
 
@@ -56,7 +59,9 @@ export class CardDetails {
 
     close() {
         this.cardDetailsWindowElem.style.display = "none";
-        this.cardDetailsWindowElem.parentElement.remove();
+        this.cardDetailsWindowElem.parentElement.remove(); // remove gray overlay as well
+
+        document.removeEventListener("keydown", this.keydownEventHandler);
     }
 
     /**
@@ -233,6 +238,14 @@ export class CardDetails {
         leaveCommentLinkElem.addEventListener("click", (e) => {
             console.log("Leave a new one clicked");
         });
+
+        this.keydownEventHandler = (e) => {
+            if (e.key === "Escape") {
+                e.preventDefault();
+                this.close();
+            }
+        };
+        document.addEventListener("keydown", this.keydownEventHandler);
 
     }
 
