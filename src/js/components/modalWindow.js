@@ -148,7 +148,9 @@ export class ModalWindow {
 
 
         this.keydownEventHandler = (e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && this.elements.some(element => element.elementType !== ModalWindowElementType.Textarea)) {
+                // Disable closing the window if there is a textarea element to allow line break
+
                 e.preventDefault();
 
                 /** @type HTMLElement */
