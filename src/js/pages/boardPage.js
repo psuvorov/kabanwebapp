@@ -14,6 +14,8 @@ import utils from "../utils";
 import {CreateListDto, UpdateListDto, RenumberListDto, CopyListDto} from "../dtos/lists";
 import {CreateCardDto, RenumberCardDto, UpdateCardDto} from "../dtos/cards";
 import {LoadingScreen} from "../components/loadingScreen";
+import {CreateCardCommentDto} from "../dtos/cardComments";
+import {CardDetails} from "./cardDetails";
 
 export class BoardPage {
 
@@ -167,12 +169,14 @@ export class BoardPage {
                 return;
 
             const cardComposerElem = e.target.closest(".card-composer");
+            const listMenuButtonElem = e.target.closest(".list-menu-button");
+            const cardMenuButtonElem = e.target.closest(".card-menu-button");
+            const listCardElem = e.target.closest(".list-card");
+
+
             if (cardComposerElem) {
                 this.createNewCard(cardComposerElem.closest(".list"));
-            }
-
-            const listMenuButtonElem = e.target.closest(".list-menu-button");
-            if (listMenuButtonElem) {
+            } else if (listMenuButtonElem) {
                 const listElem = e.target.closest(".list");
 
                 /** @type PopupMenu */
@@ -200,10 +204,7 @@ export class BoardPage {
 
                 popupMenu = new PopupMenu(items, listMenuButtonElem);
                 popupMenu.show();
-            }
-
-            const cardMenuButtonElem = e.target.closest(".card-menu-button");
-            if (cardMenuButtonElem) {
+            } else if (cardMenuButtonElem) {
                 /** @type PopupMenu */
                 let popupMenu = null;
 
@@ -225,6 +226,8 @@ export class BoardPage {
 
                 popupMenu = new PopupMenu(items, cardMenuButtonElem);
                 popupMenu.show();
+            } else if (listCardElem) {
+                this.openCardDetails(listCardElem);
             }
 
         });
@@ -495,6 +498,90 @@ export class BoardPage {
                 this.loadingScreen.close();
                 ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of copying list. Reason: ${error}`);
             });
+    }
+
+    /**
+     * @private
+     * @param {HTMLElement} cardElem
+     */
+    openCardDetails(cardElem) {
+
+        // this.kabanBoardService.createCardComment(new CreateCardCommentDto(this.applicationUser.id, "This is a text comment 1", cardId),
+        //     (data) => {
+        //         console.log("cardCommentId: " + data.cardCommentId);
+        //     },
+        //     (error) => {
+        //         console.error(error);
+        //     });
+
+        const cardId = cardElem.getAttribute("data-card-id");
+
+
+        this.kabanBoardService.getCardDetails(cardId, this.currentBoardId,
+            /** @type CardDetailsDto */
+            (cardDetails) => {
+
+                console.log(cardDetails);
+
+                const cardDetailsWindow = new CardDetails(cardDetails, this.kabanBoardService, cardElem);
+                cardDetailsWindow.show();
+
+
+
+
+
+
+
+            },
+            (error) => {
+                console.error(error);
+                ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting card details. Reason: ${error}`);
+            });
+
+
+        // /** @type ModalWindow */
+        // let modalWindow = null;
+        //
+        // const callbacks = [
+        //     /**
+        //      * @param {string} serializedFormData
+        //      */
+        //         (serializedFormData) => {
+        //         // Ok pressed
+        //
+        //         const lastListOrderNumber = this.getListLastOrderNumber();
+        //
+        //         const createListDtoRaw = JSON.parse(serializedFormData);
+        //
+        //         /** @type CreateListDto */
+        //         const createListDto = new CreateListDto(createListDtoRaw.name, lastListOrderNumber + 1, this.currentBoardId);
+        //
+        //         this.kabanBoardService.createList(createListDto,
+        //             (data) => {
+        //
+        //                 this.addListToBoard(data.listId, createListDto.name, createListDto.orderNumber);
+        //                 modalWindow.close();
+        //             },
+        //             (error) => {
+        //                 console.error(error);
+        //                 modalWindow.close();
+        //                 ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new list. Reason: ${error}`);
+        //             });
+        //     },
+        //     () => {
+        //         // Cancel pressed
+        //         modalWindow.close();
+        //     }
+        // ];
+        //
+        //
+        //
+        // const windowElements = [
+        //     new ModalWindowElement(ModalWindowElementType.Input, "cardName", "Card name", cardElem.querySelector("span").textContent),
+        // ];
+        //
+        // modalWindow = new ModalWindow("Card details", DialogTypes.OkCancel, callbacks, windowElements);
+        // modalWindow.show();
     }
 
 
@@ -834,3 +921,5 @@ export class BoardPage {
         });
     }
 }
+
+

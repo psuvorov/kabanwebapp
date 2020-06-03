@@ -2,6 +2,7 @@ import {ApplicationUser} from "../application/applicationUser";
 import {ServerBaseApiUrl} from "../constants";
 import {BoardDto, BoardInfoDto} from "../dtos/boards";
 import {ListDto} from "../dtos/lists";
+import {CardDetailsDto} from "../dtos/cards";
 
 export default class KabanBoardService {
 
@@ -107,6 +108,40 @@ export default class KabanBoardService {
             } else {
                 const list = new ListDto(res.id, res.name, parseInt(res.orderNumber), res.cards);
                 onSuccess(list);
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
+    /**
+     *
+     * @param {string} cardId
+     * @param {string} boardId
+     * @param onSuccess
+     * @param onError
+     */
+    getCardDetails(cardId, boardId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/get-card-details?cardId=${cardId}&boardId=${boardId}`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            },
+        }).then(res => {
+            if (res.status === 200 || res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                const cardDetails = new CardDetailsDto(res.id, res.name, res.description, res.orderNumber, res.listId, res.listName, res.created, res.comments);
+                onSuccess(cardDetails);
             }
         }).catch(error => {
             onError(error);
@@ -239,6 +274,39 @@ export default class KabanBoardService {
                 onError(res.title);
             } else {
                 onSuccess({cardId: res.cardId});
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
+    /**
+     *
+     * @param {CreateCardCommentDto} createCardCommentDto
+     * @param onSuccess
+     * @param onError
+     */
+    createCardComment(createCardCommentDto, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/create-card-comment`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(createCardCommentDto)
+        }).then(res => {
+            if (res.status === 201 || res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess({cardCommentId: res.cardCommentId});
             }
         }).catch(error => {
             onError(error);
