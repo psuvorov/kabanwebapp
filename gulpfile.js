@@ -51,7 +51,7 @@ gulp.task("build-js", () => {
 });
 
 gulp.task("build-less", () => {
-    return gulp.src("./src/less/*.less")
+    return gulp.src("./src/less/main.less")
         .pipe(less())
         .pipe(gulp.dest(dist + "assets/css"))
         .pipe(browsersync.stream());
