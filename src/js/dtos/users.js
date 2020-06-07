@@ -2,7 +2,6 @@
 export class AuthenticateUserDto {
 
     /**
-     *
      * @param {string} email
      * @param {string} password
      */

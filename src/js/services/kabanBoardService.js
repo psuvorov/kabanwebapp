@@ -11,12 +11,11 @@ export default class KabanBoardService {
     }
 
     /**
-     * @param {number} userId
      * @param {function} onSuccess
      * @param {function} onError
      */
-    getAllUserBoards(userId, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/get-all-user-boards?userId=${userId}`, {
+    getAllUserBoards(onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/dashboard/get-all-user-boards`, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -48,13 +47,12 @@ export default class KabanBoardService {
 
     /**
      *
-     * @param {number} userId
      * @param {string} boardId
      * @param {function} onSuccess
      * @param {function} onError
      */
-    getUserBoard(userId, boardId, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/get-user-board?userId=${userId}&boardId=${boardId}`, {
+    getBoard(boardId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/boardpage/get-board?boardId=${boardId}`, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -88,7 +86,7 @@ export default class KabanBoardService {
      * @param onError
      */
     getList(listId, boardId, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/get-list?listId=${listId}&boardId=${boardId}`, {
+        fetch(ServerBaseApiUrl + `/boardpage/get-list?listId=${listId}&boardId=${boardId}`, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -122,7 +120,7 @@ export default class KabanBoardService {
      * @param onError
      */
     getCardDetails(cardId, boardId, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/get-card-details?cardId=${cardId}&boardId=${boardId}`, {
+        fetch(ServerBaseApiUrl + `/boardpage/get-card-details?cardId=${cardId}&boardId=${boardId}`, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -155,7 +153,7 @@ export default class KabanBoardService {
      * @param {function} onError
      */
     createBoard(createBoardDto, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/create-board`, {
+        fetch(ServerBaseApiUrl + `/dashboard/create-board`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -188,7 +186,7 @@ export default class KabanBoardService {
      * @param onError
      */
     createList(createListDto, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/create-list`, {
+        fetch(ServerBaseApiUrl + `/boardpage/create-list`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -221,7 +219,7 @@ export default class KabanBoardService {
      * @param onError
      */
     copyList(copyListDto, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/copy-list`, {
+        fetch(ServerBaseApiUrl + `/boardpage/copy-list`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -254,7 +252,7 @@ export default class KabanBoardService {
      * @param onError
      */
     createCard(createCardDto, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/create-card`, {
+        fetch(ServerBaseApiUrl + `/boardpage/create-card`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -287,7 +285,7 @@ export default class KabanBoardService {
      * @param onError
      */
     createCardComment(createCardCommentDto, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/create-card-comment`, {
+        fetch(ServerBaseApiUrl + `/boardpage/create-card-comment`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -320,7 +318,7 @@ export default class KabanBoardService {
      * @param onError
      */
     updateBoardInfo(updateBoardDto, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/update-board-info`, {
+        fetch(ServerBaseApiUrl + `/boardpage/update-board-info`, {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -355,7 +353,7 @@ export default class KabanBoardService {
      * @param onError
      */
     updateList(updateListDto, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/update-list`, {
+        fetch(ServerBaseApiUrl + `/boardpage/update-list`, {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -390,7 +388,7 @@ export default class KabanBoardService {
      * @param onError
      */
     updateCard(updateCardDto, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/update-card`, {
+        fetch(ServerBaseApiUrl + `/boardpage/update-card`, {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -425,7 +423,7 @@ export default class KabanBoardService {
      * @param onError
      */
     renumberAllLists(boardId, renumberedLists, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/renumber-all-lists?boardId=${boardId}`, {
+        fetch(ServerBaseApiUrl + `/boardpage/renumber-all-lists?boardId=${boardId}`, {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,
@@ -460,7 +458,7 @@ export default class KabanBoardService {
      * @param onError
      */
     renumberAllCardsInList(boardId, renumberedCards, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/renumber-all-cards?boardId=${boardId}`, {
+        fetch(ServerBaseApiUrl + `/boardpage/renumber-all-cards?boardId=${boardId}`, {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token,

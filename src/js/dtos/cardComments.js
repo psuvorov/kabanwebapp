@@ -22,14 +22,10 @@ export class CardCommentDto {
 export class CreateCardCommentDto {
 
     /**
-     *
-     * @param {number} userId
      * @param {string} text
      * @param {string} cardId
      */
-    constructor(userId, text, cardId) {
-        /** @readonly */
-        this.userId = userId;
+    constructor(text, cardId) {
         /** @readonly */
         this.text = text;
         /** @readonly */

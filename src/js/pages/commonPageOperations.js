@@ -7,8 +7,6 @@ import {
 } from "../components/modalWindow";
 import {ServerBaseApiUrl, LocalStorageKeys, ApplicationPageUrls} from "../constants";
 import {AuthenticatedUserDto, AuthenticateUserDto, RegisterUserDto} from "../dtos/users";
-import BoardsService from "../services/boardsService";
-import {CreateBoardDto} from "../dtos/boards";
 import {ApplicationUser} from "../application/applicationUser";
 import AuthService from "../services/authService";
 
@@ -155,11 +153,11 @@ export class CommonPageOperations {
             ];
 
             const windowElements = [
-                new ModalWindowElement(ModalWindowElementType.Input, "FirstName", "FirstName", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "LastName", "LastName", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "Username", "Username", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "Email", "Email", ""),
-                new ModalWindowElement(ModalWindowElementType.PasswordInput, "Password", "Password", "")
+                new ModalWindowElement(ModalWindowElementType.Input, "firstName", "FirstName", ""),
+                new ModalWindowElement(ModalWindowElementType.Input, "lastName", "LastName", ""),
+                new ModalWindowElement(ModalWindowElementType.Input, "username", "Username", ""),
+                new ModalWindowElement(ModalWindowElementType.Input, "email", "Email", ""),
+                new ModalWindowElement(ModalWindowElementType.PasswordInput, "password", "Password", "")
             ];
 
             modalWindow = new ModalWindow("Sign Up", DialogTypes.OkCancel, callbacks, windowElements);

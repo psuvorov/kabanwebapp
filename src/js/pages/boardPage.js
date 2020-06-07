@@ -16,6 +16,7 @@ import {CreateCardDto, RenumberCardDto, UpdateCardDto} from "../dtos/cards";
 import {LoadingScreen} from "../components/loadingScreen";
 import {CreateCardCommentDto} from "../dtos/cardComments";
 import {CardDetails} from "./cardDetails";
+import {BoardDetails} from "./boardDetails";
 
 export class BoardPage {
 
@@ -56,6 +57,25 @@ export class BoardPage {
          * @type {LoadingScreen}
          */
         this.loadingScreen = new LoadingScreen();
+
+        /**
+         *
+         * @type {{wallpaperImg: string, description: string, user: {firstName: string, lastName: string, avatarImg: string, id: string, username: string}, participants: []}}
+         */
+        this.boardInformation = {
+            user: {
+                id: "",
+                firstName: "",
+                lastName: "",
+                username: "",
+                avatarImg: ""
+            },
+            participants: [
+
+            ],
+            description: "",
+            wallpaperImg: ""
+        };
     }
 
     initialize() {
@@ -74,7 +94,7 @@ export class BoardPage {
 
         this.loadingScreen.show();
 
-        this.kabanBoardService.getUserBoard(this.applicationUser.id, this.currentBoardId,
+        this.kabanBoardService.getBoard(this.currentBoardId,
             /** @type BoardDto */
             (board) => {
                 boardTitleElem.value = board.name;
@@ -89,6 +109,10 @@ export class BoardPage {
                     });
 
                 });
+
+                this.boardInformation.description = board.description;
+
+                this.kabanBoardService.get
 
 
                 this.loadingScreen.close();
@@ -412,6 +436,13 @@ export class BoardPage {
 
             this.transferredData = null;
             this.clearPlaceholderData();
+        });
+
+
+        const boardDetailsButtonElem = pageContainerElem.querySelector(".board-details-button");
+        boardDetailsButtonElem.addEventListener("click", (e) => {
+            const boardDetails = new BoardDetails(this.currentBoardId, this.kabanBoardService);
+            boardDetails.show();
         });
     }
 

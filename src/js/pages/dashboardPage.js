@@ -1,8 +1,6 @@
 import {LocalStorageKeys, ServerBaseApiUrl, ApplicationPageUrls} from "../constants";
 import {ApplicationUser} from "../application/applicationUser";
-import {AuthenticatedUserDto} from "../dtos/users";
 import {BoardDto, CreateBoardDto} from "../dtos/boards";
-import BoardsService from "../services/boardsService";
 import {
     ModalWindow,
     DialogTypes,
@@ -48,7 +46,7 @@ export class DashboardPage {
     initBoardsList() {
 
         this.loadingScreen.show();
-        this.kabanBoardService.getAllUserBoards(this.applicationUser.id,
+        this.kabanBoardService.getAllUserBoards(
             /** @type BoardInfoDto[] */
             (boards) => {
                 this.initUserBoards(boards);

@@ -14,7 +14,7 @@ export default class AuthService {
      */
     authenticate(authenticateUserDto, onSuccess, onError) {
 
-        fetch(ServerBaseApiUrl + "/users/authenticate", {
+        fetch(ServerBaseApiUrl + "/users/authenticate-user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -47,7 +47,7 @@ export default class AuthService {
      * @param {function} onError
      */
     register(registerUserDto, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + "/users/register", {
+        fetch(ServerBaseApiUrl + "/users/register-user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
