@@ -441,8 +441,18 @@ export class BoardPage {
 
         const boardDetailsButtonElem = pageContainerElem.querySelector(".board-details-button");
         boardDetailsButtonElem.addEventListener("click", (e) => {
-            const boardDetails = new BoardDetails(this.currentBoardId, this.kabanBoardService);
-            boardDetails.show();
+
+            this.kabanBoardService.getBoardDetails(this.currentBoardId,
+                (boardDetailsDto) => {
+                    const boardDetails = new BoardDetails(this.currentBoardId, boardDetailsDto, this.kabanBoardService);
+                    boardDetails.show();
+                },
+                (error) => {
+                    console.error(error);
+                    ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting board details. Reason: ${error}`);
+                });
+
+
         });
     }
 

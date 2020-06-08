@@ -1,6 +1,6 @@
 import {ApplicationUser} from "../application/applicationUser";
 import {ServerBaseApiUrl} from "../constants";
-import {BoardDto, BoardShortInfoDto} from "../dtos/boards";
+import {BoardDetailsDto, BoardDto, BoardShortInfoDto} from "../dtos/boards";
 import {ListDto} from "../dtos/lists";
 import {CardDetailsDto} from "../dtos/cards";
 
@@ -140,6 +140,39 @@ export default class KabanBoardService {
             } else {
                 const cardDetails = new CardDetailsDto(res.id, res.name, res.description, res.orderNumber, res.listId, res.listName, res.created, res.comments);
                 onSuccess(cardDetails);
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
+    /**
+     *
+     * @param {string} boardId
+     * @param onSuccess
+     * @param onError
+     */
+    getBoardDetails(boardId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/boardpage/get-board-details?boardId=${boardId}`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            },
+        }).then(res => {
+            if (res.status === 200 || res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                const boardDetailsDto = new BoardDetailsDto(res.id, res.name, res.description, res.author, res.participants, res.created, res.lastModified);
+                onSuccess(boardDetailsDto);
             }
         }).catch(error => {
             onError(error);

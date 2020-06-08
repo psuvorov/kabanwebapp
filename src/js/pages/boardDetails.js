@@ -1,11 +1,23 @@
+import utils from "../utils";
+import {UpdateCardDto} from "../dtos/cards";
+import {
+    DialogTypes,
+    ModalWindow,
+    ModalWindowElement,
+    ModalWindowElementType,
+    ModalWindowFactory
+} from "../components/modalWindow";
+import {UpdateBoardDto} from "../dtos/boards";
+
 export class BoardDetails {
 
     /**
      *
      * @param {string} boardId
+     * @param {BoardDetailsDto} boardDetails
      * @param {KabanBoardService} kabanBoardService
      */
-    constructor(boardId, kabanBoardService) {
+    constructor(boardId, boardDetails, kabanBoardService) {
 
         /**
          * @private
@@ -19,6 +31,13 @@ export class BoardDetails {
          * @type {string}
          */
         this.currentBoardId = boardId;
+
+        /**
+         * @private
+         * @readonly
+         * @type {BoardDetailsDto}
+         */
+        this.boardDetails = boardDetails;
 
         /**
          * @private
@@ -61,7 +80,39 @@ export class BoardDetails {
         this.boardDetailsWindowElem.classList.add("board-details-window");
 
         this.boardDetailsWindowElem.innerHTML = `
-            
+            <div class="header">
+                <div class="board-info">
+                    <div class="section-caption board-caption">Board info</div>
+                </div>
+                <div class="close-button"><i class="fas fa-times"></i></div>            
+            </div>
+            <div class="main-area">                
+                <div class="content">
+                    <div class="section">
+                        <div class="icon"><i class="fas fa-user"></i></div>
+                        <div class="caption">Author info:</div>
+                        <div class="info">
+                            <div class="author-title">${this.boardDetails.author.firstName} ${this.boardDetails.author.lastName}</div>
+                            <div class="author-username">@${this.boardDetails.author.username}</div>
+                            <a class="author-page highlight" href="/user-page.html?userId=${this.boardDetails.author.id}">Edit profile</a>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="icon"><i class="far fa-file-alt"></i></div>
+                        <div class="caption">Board description</div>
+                        <div class="info">
+                            <div class="board-description">${this.boardDetails.description}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <div class="button edit-description"><i class="fas fa-file-alt"></i><span>Edit descriptions</span></div>
+                    <div class="button board-participants"><i class="fas fa-user-tie"></i><span>Board participants</span></div>
+                    <div class="button board-wallpaper"><i class="far fa-image"></i><span>Board wallpaper</span></div>
+                    <div class="button archived-items"><i class="fas fa-archive"></i><span>Archived items</span></div>
+                    <div class="button close-board"><i class="far fa-window-close"></i><span>Close board</span></div>
+                </div>            
+            </div>
         `;
 
         const windowOverlayElem = document.createElement("div");
@@ -76,7 +127,78 @@ export class BoardDetails {
      */
     initElements() {
 
+        const closeButtonElem = this.boardDetailsWindowElem.querySelector(".close-button");
+        closeButtonElem.addEventListener("click", (e) => {
+            this.close();
+        });
 
+        const editDescriptionButtonElem = this.boardDetailsWindowElem.querySelector(".actions .edit-description");
+        editDescriptionButtonElem.addEventListener("click", (e) => {
+
+            /** @type ModalWindow */
+            let modalWindow = null;
+
+            const callbacks = [
+                /**
+                 * @param {string} serializedFormData
+                 */
+                    (serializedFormData) => {
+                    // Ok pressed
+
+                    const newDescriptionRaw = JSON.parse(serializedFormData).description; // to be set to html right now
+                    const newDescription = newDescriptionRaw.replace(/\r?\n/g, "<br />"); // server version with <br /> tags
+
+
+                    const updateBoardDto = new UpdateBoardDto(this.boardDetails.id, this.boardDetails.name, newDescription);
+                    this.kabanBoardService.updateBoardInfo(updateBoardDto,
+                        () => {
+                            this.boardDetails.description = updateBoardDto.description;
+                            this.boardDetailsWindowElem.querySelector(".board-description").innerText = newDescriptionRaw;
+
+                            modalWindow.close();
+                        },
+                        (error) => {
+                            console.error(error);
+                            modalWindow.close();
+                            ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of editing board description. Reason: ${error}`);
+                        });
+
+
+                },
+                () => {
+                    // Cancel pressed
+                    modalWindow.close();
+                }
+            ];
+
+            const windowElements = [
+                new ModalWindowElement(ModalWindowElementType.Textarea, "description", "Board description",
+                    this.boardDetails.description.replace(/<br \/>/g, "\r\n"))
+            ];
+
+            modalWindow = new ModalWindow("Edit board description", DialogTypes.OkCancel, callbacks, windowElements);
+            modalWindow.show();
+        });
+
+        const participantsButtonElem = this.boardDetailsWindowElem.querySelector(".actions .board-participants");
+        participantsButtonElem.addEventListener("click", (e) => {
+            console.log("Participants button clicked");
+        });
+
+        const boardWallpaperButtonElem = this.boardDetailsWindowElem.querySelector(".actions .board-wallpaper");
+        boardWallpaperButtonElem.addEventListener("click", (e) => {
+            console.log("Board wallpaper button clicked");
+        });
+
+        const archivedItemsButtonElem = this.boardDetailsWindowElem.querySelector(".actions .archived-items");
+        archivedItemsButtonElem.addEventListener("click", (e) => {
+            console.log("Archived items button clicked");
+        });
+
+        const closeBoardButtonElem = this.boardDetailsWindowElem.querySelector(".actions .close-board");
+        closeBoardButtonElem.addEventListener("click", (e) => {
+            console.log("Close board button clicked");
+        });
 
 
         this.keydownEventHandler = (e) => {
