@@ -1,7 +1,7 @@
 /**
  * Contains only dashboard page related data.
  */
-export class BoardInfoDto {
+export class BoardShortInfoDto {
 
     /**
      * @param {string} id
@@ -16,11 +16,10 @@ export class BoardInfoDto {
         /** @readonly */
         this.description = description;
     }
-
 }
 
 /**
- * Contains full almost full information on specific board
+ * Contains almost full information on specific board
  * (Comments are not included).
  */
 export class BoardDto {

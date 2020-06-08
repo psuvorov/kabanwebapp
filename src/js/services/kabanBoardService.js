@@ -1,6 +1,6 @@
 import {ApplicationUser} from "../application/applicationUser";
 import {ServerBaseApiUrl} from "../constants";
-import {BoardDto, BoardInfoDto} from "../dtos/boards";
+import {BoardDto, BoardShortInfoDto} from "../dtos/boards";
 import {ListDto} from "../dtos/lists";
 import {CardDetailsDto} from "../dtos/cards";
 
@@ -35,7 +35,7 @@ export default class KabanBoardService {
             } else {
                 const boards = [];
                 for (let i = 0; i < res.length; i++) {
-                    const board = new BoardInfoDto(res[i].id, res[i].name, res[i].description);
+                    const board = new BoardShortInfoDto(res[i].id, res[i].name, res[i].description);
                     boards.push(board);
                 }
                 onSuccess(boards);

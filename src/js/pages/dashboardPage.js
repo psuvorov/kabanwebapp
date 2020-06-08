@@ -47,7 +47,7 @@ export class DashboardPage {
 
         this.loadingScreen.show();
         this.kabanBoardService.getAllUserBoards(
-            /** @type BoardInfoDto[] */
+            /** @type BoardShortInfoDto[] */
             (boards) => {
                 this.initUserBoards(boards);
                 this.loadingScreen.close();
@@ -61,7 +61,7 @@ export class DashboardPage {
 
     /**
      *
-     * @param {BoardInfoDto[]} boards
+     * @param {BoardShortInfoDto[]} boards
      */
     initUserBoards(boards) {
         const boardsContainerElem = document.querySelector(".boards-container");

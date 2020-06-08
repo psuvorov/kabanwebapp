@@ -9,7 +9,7 @@ import {
 } from "../components/modalWindow";
 import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/popupMenu";
 import KabanBoardService from "../services/kabanBoardService";
-import {BoardDto, BoardInfoDto, CreateBoardDto, UpdateBoardDto} from "../dtos/boards";
+import {BoardDto, BoardShortInfoDto, CreateBoardDto, UpdateBoardDto} from "../dtos/boards";
 import utils from "../utils";
 import {CreateListDto, UpdateListDto, RenumberListDto, CopyListDto} from "../dtos/lists";
 import {CreateCardDto, RenumberCardDto, UpdateCardDto} from "../dtos/cards";
