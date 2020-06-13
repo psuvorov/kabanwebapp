@@ -4,15 +4,18 @@ export class CardDto {
      * @param {string} id
      * @param {string} name
      * @param {number} orderNumber
+     * @param {string} coverImagePath
      * @param {string} listId
      */
-    constructor(id, name, orderNumber, listId) {
+    constructor(id, name, orderNumber, coverImagePath, listId) {
         /** @readonly */
         this.id = id;
         /** @readonly */
         this.name = name;
         /** @readonly */
         this.orderNumber = orderNumber;
+        /** @readonly */
+        this.coverImagePath = coverImagePath;
         /** @readonly */
         this.listId = listId;
     }

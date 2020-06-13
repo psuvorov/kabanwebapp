@@ -8,16 +8,26 @@ import {
     ModalWindowElementType,
     ModalWindowFactory
 } from "../components/modalWindow";
+import {ServerBaseUrl} from "../constants";
 
 export class CardDetails {
 
     /**
      *
+     * @param {string} currentBoardId
      * @param {CardDetailsDto} cardDetails
      * @param {KabanBoardService} kabanBoardService
+     * @param {FilesService} filesService
      * @param {HTMLElement} cardElem
      */
-    constructor(cardDetails, kabanBoardService, cardElem) {
+    constructor(currentBoardId, cardDetails, kabanBoardService, filesService, cardElem) {
+
+        /**
+         * @private
+         * @readonly
+         * @type {string}
+         */
+        this.currentBoardId = currentBoardId;
 
         /**
          * @private
@@ -45,6 +55,13 @@ export class CardDetails {
          * @type {KabanBoardService}
          */
         this.kabanBoardService = kabanBoardService;
+
+        /**
+         * @private
+         * @readonly
+         * @type {FilesService}
+         */
+        this.filesService = filesService;
 
         /** @private */
         this.keydownEventHandler = null;
@@ -102,6 +119,7 @@ export class CardDetails {
                     <div class="button participants"><i class="fas fa-user-tie"></i><span>Participants</span></div>
                     <div class="button attachments"><i class="fas fa-paperclip"></i><span>Attachments</span></div>
                     <div class="button card-cover"><i class="far fa-image"></i><span>Cover</span></div>
+                    <input id="card-cover-file-input" type="file" name="card-cover" style="display: none;" />
                     <div class="button archive"><i class="fas fa-archive"></i><span>Archive</span></div>
                 </div>            
             </div>
@@ -227,6 +245,27 @@ export class CardDetails {
         const cardCoverButtonElem = this.cardDetailsWindowElem.querySelector(".actions .card-cover");
         cardCoverButtonElem.addEventListener("click", (e) => {
             console.log("Card cover button clicked");
+            const cardCoverInputElem = document.querySelector("#card-cover-file-input");
+
+            cardCoverInputElem.addEventListener("change", (e) => {
+                const formData = new FormData();
+                const fileExtensionWithDot = cardCoverInputElem.files[0].name.substring(cardCoverInputElem.files[0].name.lastIndexOf("."));
+                formData.append("imageFile", cardCoverInputElem.files[0], "card-" + this.cardDetails.id + fileExtensionWithDot);
+
+                this.filesService.uploadCardCover(formData, this.currentBoardId, this.cardDetails.id,
+                    (res) => {
+                        const coverPlaceholderElem = this.cardElem.querySelector(".card-cover");
+                        coverPlaceholderElem.style.backgroundImage = `url(${ServerBaseUrl + res.coverImagePath})`;
+                        coverPlaceholderElem.style.display = "block";
+
+                    },
+                    (error) => {
+                        console.error(error);
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of uploading card cover. Reason: ${error}`);
+                    });
+            });
+
+            cardCoverInputElem.click();
         });
 
         const archiveButtonElem = this.cardDetailsWindowElem.querySelector(".actions .archive");

@@ -1,5 +1,5 @@
 import {ApplicationUser} from "../application/applicationUser";
-import {ApplicationPageUrls} from "../constants";
+import {ApplicationPageUrls, ServerBaseUrl} from "../constants";
 import {
     DialogTypes,
     ModalWindow,
@@ -12,11 +12,12 @@ import KabanBoardService from "../services/kabanBoardService";
 import {BoardDto, BoardShortInfoDto, CreateBoardDto, UpdateBoardDto} from "../dtos/boards";
 import utils from "../utils";
 import {CreateListDto, UpdateListDto, RenumberListDto, CopyListDto} from "../dtos/lists";
-import {CreateCardDto, RenumberCardDto, UpdateCardDto} from "../dtos/cards";
+import {CardDto, CreateCardDto, RenumberCardDto, UpdateCardDto} from "../dtos/cards";
 import {LoadingScreen} from "../components/loadingScreen";
 import {CreateCardCommentDto} from "../dtos/cardComments";
 import {CardDetails} from "./cardDetails";
 import {BoardDetails} from "./boardDetails";
+import FilesService from "../services/filesService";
 
 export class BoardPage {
 
@@ -51,6 +52,13 @@ export class BoardPage {
          * @type {KabanBoardService}
          */
         this.kabanBoardService = new KabanBoardService();
+
+        /**
+         * @private
+         * @readonly
+         * @type {FilesService}
+         */
+        this.filesService = new FilesService();
 
         /**
          * @private
@@ -105,15 +113,11 @@ export class BoardPage {
                     /** @type HTMLElement */
                     const justAddedListElem = listContainerElem.querySelector(`[data-list-id="${list.id}"]`);
                     list.cards.forEach(/** @type CardDto */card => {
-                        this.addCardToList(justAddedListElem, card.id, card.name, card.orderNumber);
+                        this.addCardToList(justAddedListElem, card);
                     });
-
                 });
 
                 this.boardInformation.description = board.description;
-
-                this.kabanBoardService.get
-
 
                 this.loadingScreen.close();
             },
@@ -523,7 +527,7 @@ export class BoardPage {
                         /** @type HTMLElement */
                         const justAddedListElem = listContainerElem.querySelector(`[data-list-id="${list.id}"]`);
                         list.cards.forEach(/** @type CardDto */card => {
-                            this.addCardToList(justAddedListElem, card.id, card.name, card.orderNumber);
+                            this.addCardToList(justAddedListElem, card);
                         });
 
                         this.loadingScreen.close();
@@ -564,7 +568,7 @@ export class BoardPage {
 
                 console.log(cardDetails);
 
-                const cardDetailsWindow = new CardDetails(cardDetails, this.kabanBoardService, cardElem);
+                const cardDetailsWindow = new CardDetails(this.currentBoardId, cardDetails, this.kabanBoardService, this.filesService, cardElem);
                 cardDetailsWindow.show();
 
 
@@ -697,7 +701,8 @@ export class BoardPage {
 
                 this.kabanBoardService.createCard(createCardDto,
                     (data) => {
-                        this.addCardToList(listElem, data.cardId, createCardDto.name, createCardDto.orderNumber);
+                        const card = new CardDto(data.cardId, createCardDto.name, createCardDto.orderNumber, "", "");
+                        this.addCardToList(listElem, card);
                         modalWindow.close();
                     },
                     (error) => {
@@ -724,21 +729,27 @@ export class BoardPage {
     /**
      * @private
      * @param {HTMLElement} listElem
-     * @param {string} cardId
-     * @param {string} cardName
-     * @param {number} orderNumber
+     * @param {CardDto} card
      */
-    addCardToList(listElem, cardId, cardName, orderNumber) {
+    addCardToList(listElem, card) {
         const listCardsElem = listElem.querySelector(".list-cards");
 
         const listCardElem = document.createElement("div");
         listCardElem.classList.add("animated", "fadeIn", "list-card");
         listCardElem.setAttribute("draggable", "true");
-        listCardElem.setAttribute("data-card-id", cardId);
-        listCardElem.setAttribute("data-order-number", orderNumber.toString());
+        listCardElem.setAttribute("data-card-id", card.id);
+        listCardElem.setAttribute("data-order-number", card.orderNumber.toString());
+
+        const coverPlaceholderElem = document.createElement("div");
+        coverPlaceholderElem.classList.add("card-cover");
+        if (card.coverImagePath) {
+            coverPlaceholderElem.style.backgroundImage = `url(${ServerBaseUrl + card.coverImagePath})`;
+            coverPlaceholderElem.style.display = "block";
+        }
+        listCardElem.append(coverPlaceholderElem);
 
         const cardTitleElem = document.createElement("span");
-        cardTitleElem.textContent = cardName;
+        cardTitleElem.textContent = card.name;
         listCardElem.append(cardTitleElem);
 
         const cardMenuButtonElem = document.createElement("div");

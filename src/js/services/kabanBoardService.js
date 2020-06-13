@@ -7,6 +7,11 @@ import {CardDetailsDto} from "../dtos/cards";
 export default class KabanBoardService {
 
     constructor() {
+        /**
+         * @private
+         * @readonly
+         * @type {ApplicationUser}
+         */
         this.applicationUser = ApplicationUser.getApplicationUserFromStorage();
     }
 
