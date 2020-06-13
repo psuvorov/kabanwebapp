@@ -115,12 +115,12 @@ export class CardDetails {
                     <div class="description">${this.cardDetails.description}</div>                
                 </div>
                 <div class="actions">
-                    <div class="button edit"><i class="fas fa-file-alt"></i><span>Edit</span></div>
+                    <div class="button edit"><i class="fas fa-file-alt"></i><span>Edit description</span></div>
                     <div class="button participants"><i class="fas fa-user-tie"></i><span>Participants</span></div>
                     <div class="button attachments"><i class="fas fa-paperclip"></i><span>Attachments</span></div>
-                    <div class="button card-cover"><i class="far fa-image"></i><span>Cover</span></div>
+                    <div class="button card-cover"><i class="far fa-image"></i><span>Card cover</span></div>
                     <input id="card-cover-file-input" type="file" name="card-cover" style="display: none;" />
-                    <div class="button archive"><i class="fas fa-archive"></i><span>Archive</span></div>
+                    <div class="button archive"><i class="fas fa-archive"></i><span>Archive card</span></div>
                 </div>            
             </div>
             
