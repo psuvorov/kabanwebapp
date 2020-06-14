@@ -11,3 +11,8 @@ export const ApplicationPageUrls = Object.freeze({
     dashboardPage: "/dashboard.html",
     boardPage: "/board.html"
 });
+
+export const ImageOrientation = Object.freeze({
+    horizontal: "Horizontal",
+    vertical: "Vertical"
+});

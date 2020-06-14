@@ -167,9 +167,16 @@
 						background-position: 50%;
 						background-repeat: no-repeat;
 						background-size: contain;
-						height: 150px;
 						display: none;
+
+						&.horizontal-orientation {
+							height: 150px;
+						}
+						&.vertical-orientation {
+							height: 240px;
+						}
 					}
+
 
 					span {
 						color: @normal-foreground-color;

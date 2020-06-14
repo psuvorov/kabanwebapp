@@ -8,7 +8,7 @@ import {
     ModalWindowElementType,
     ModalWindowFactory
 } from "../components/modalWindow";
-import {ServerBaseUrl} from "../constants";
+import {ImageOrientation, ServerBaseUrl} from "../constants";
 
 export class CardDetails {
 
@@ -257,7 +257,10 @@ export class CardDetails {
                         const coverPlaceholderElem = this.cardElem.querySelector(".card-cover");
                         coverPlaceholderElem.style.backgroundImage = `url(${ServerBaseUrl + res.coverImagePath})`;
                         coverPlaceholderElem.style.display = "block";
-
+                        if (res.orientation === ImageOrientation.vertical)
+                            coverPlaceholderElem.classList.add("vertical-orientation");
+                        else
+                            coverPlaceholderElem.classList.add("horizontal-orientation");
                     },
                     (error) => {
                         console.error(error);

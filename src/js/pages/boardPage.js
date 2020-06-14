@@ -1,5 +1,5 @@
 import {ApplicationUser} from "../application/applicationUser";
-import {ApplicationPageUrls, ServerBaseUrl} from "../constants";
+import {ApplicationPageUrls, ImageOrientation, ServerBaseUrl} from "../constants";
 import {
     DialogTypes,
     ModalWindow,
@@ -701,7 +701,7 @@ export class BoardPage {
 
                 this.kabanBoardService.createCard(createCardDto,
                     (data) => {
-                        const card = new CardDto(data.cardId, createCardDto.name, createCardDto.orderNumber, "", "");
+                        const card = new CardDto(data.cardId, createCardDto.name, createCardDto.orderNumber, "", "", "");
                         this.addCardToList(listElem, card);
                         modalWindow.close();
                     },
@@ -745,6 +745,10 @@ export class BoardPage {
         if (card.coverImagePath) {
             coverPlaceholderElem.style.backgroundImage = `url(${ServerBaseUrl + card.coverImagePath})`;
             coverPlaceholderElem.style.display = "block";
+            if (card.coverImageOrientation === ImageOrientation.vertical)
+                coverPlaceholderElem.classList.add("vertical-orientation");
+            else
+                coverPlaceholderElem.classList.add("horizontal-orientation");
         }
         listCardElem.append(coverPlaceholderElem);
 
