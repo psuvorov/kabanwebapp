@@ -96,9 +96,12 @@ export class BoardPage {
      * @private
      */
     drawBoard() {
+        const topMenuRowElem = document.querySelector(".top-menu-row");
         const listContainerElem = document.querySelector(".lists-container");
         const boardHeaderElem = document.querySelector(".board-header");
         const boardTitleElem = boardHeaderElem.querySelector(".board-title");
+
+        topMenuRowElem.style.backgroundColor = "#fff";
 
         this.loadingScreen.show();
 
