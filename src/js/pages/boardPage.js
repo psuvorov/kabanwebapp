@@ -119,6 +119,10 @@ export class BoardPage {
 
                 this.boardInformation.description = board.description;
 
+                const pageContainerElem = document.querySelector(".page-container");
+                pageContainerElem.style.backgroundImage = `url(${ServerBaseUrl + board.wallpaperPath})`;
+                pageContainerElem.style.display = "block";
+
                 this.loadingScreen.close();
             },
             (error) => {
@@ -448,7 +452,7 @@ export class BoardPage {
 
             this.kabanBoardService.getBoardDetails(this.currentBoardId,
                 (boardDetailsDto) => {
-                    const boardDetails = new BoardDetails(this.currentBoardId, boardDetailsDto, this.kabanBoardService);
+                    const boardDetails = new BoardDetails(this.currentBoardId, boardDetailsDto, this.kabanBoardService, this.filesService);
                     boardDetails.show();
                 },
                 (error) => {

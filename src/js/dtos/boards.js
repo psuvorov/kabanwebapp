@@ -88,16 +88,19 @@ export class BoardDto {
      * @param {string} id
      * @param {string} name
      * @param {string} description
+     * @param {string} wallpaperPath
      * @param {ListDto[]} lists
      * @param {number} userId
      */
-    constructor(id, name, description, lists, userId) {
+    constructor(id, name, description, wallpaperPath, lists, userId) {
         /** @readonly */
         this.id = id;
         /** @readonly */
         this.name = name;
         /** @readonly */
         this.description = description;
+        /** @readonly */
+        this.wallpaperPath = wallpaperPath;
         /** @readonly */
         this.lists = lists;
         /** @readonly */

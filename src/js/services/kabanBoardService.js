@@ -75,7 +75,7 @@ export default class KabanBoardService {
             } else if (res.hasOwnProperty("title")) {
                 onError(res.title);
             } else {
-                const board = new BoardDto(res.id, res.name, res.description, res.lists, parseInt(res.userId));
+                const board = new BoardDto(res.id, res.name, res.description, res.wallpaperPath, res.lists, parseInt(res.userId));
                 onSuccess(board);
             }
         }).catch(error => {

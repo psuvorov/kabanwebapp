@@ -8,6 +8,7 @@ import {
     ModalWindowFactory
 } from "../components/modalWindow";
 import {UpdateBoardDto} from "../dtos/boards";
+import {ImageOrientation, ServerBaseUrl} from "../constants";
 
 export class BoardDetails {
 
@@ -16,8 +17,9 @@ export class BoardDetails {
      * @param {string} boardId
      * @param {BoardDetailsDto} boardDetails
      * @param {KabanBoardService} kabanBoardService
+     * @param {FilesService} filesService
      */
-    constructor(boardId, boardDetails, kabanBoardService) {
+    constructor(boardId, boardDetails, kabanBoardService, filesService) {
 
         /**
          * @private
@@ -45,6 +47,13 @@ export class BoardDetails {
          * @type {KabanBoardService}
          */
         this.kabanBoardService = kabanBoardService;
+
+        /**
+         * @private
+         * @readonly
+         * @type {FilesService}
+         */
+        this.filesService = filesService;
 
         /** @private */
         this.keydownEventHandler = null;
@@ -109,6 +118,7 @@ export class BoardDetails {
                     <div class="button edit-description"><i class="fas fa-file-alt"></i><span>Edit descriptions</span></div>
                     <div class="button board-participants"><i class="fas fa-user-tie"></i><span>Board participants</span></div>
                     <div class="button board-wallpaper"><i class="far fa-image"></i><span>Board wallpaper</span></div>
+                    <input id="board-wallpaper-file-input" type="file" name="board-wallpaper" style="display: none;" />
                     <div class="button archived-items"><i class="fas fa-archive"></i><span>Archived items</span></div>
                     <div class="button close-board"><i class="far fa-window-close"></i><span>Close board</span></div>
                 </div>            
@@ -186,8 +196,27 @@ export class BoardDetails {
         });
 
         const boardWallpaperButtonElem = this.boardDetailsWindowElem.querySelector(".actions .board-wallpaper");
+        const boardWallpaperInputElem = document.querySelector("#board-wallpaper-file-input");
         boardWallpaperButtonElem.addEventListener("click", (e) => {
-            console.log("Board wallpaper button clicked");
+            boardWallpaperInputElem.click();
+        });
+
+        boardWallpaperInputElem.addEventListener("change", (e) => {
+            const formData = new FormData();
+            const fileExtensionWithDot = boardWallpaperInputElem.files[0].name.substring(boardWallpaperInputElem.files[0].name.lastIndexOf("."));
+            formData.append("imageFile", boardWallpaperInputElem.files[0], "board-" + this.currentBoardId + fileExtensionWithDot);
+
+            this.filesService.uploadBoardWallpaper(formData, this.currentBoardId,
+                (res) => {
+                    const pageContainerElem = document.querySelector(".page-container");
+                    pageContainerElem.style.backgroundImage = `url(${ServerBaseUrl + res.wallpaperPath})`;
+                    pageContainerElem.style.display = "block";
+
+                },
+                (error) => {
+                    console.error(error);
+                    ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of uploading board wallpaper. Reason: ${error}`);
+                });
         });
 
         const archivedItemsButtonElem = this.boardDetailsWindowElem.querySelector(".actions .archived-items");
