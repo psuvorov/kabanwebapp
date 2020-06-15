@@ -123,7 +123,7 @@ export class BoardPage {
                 this.boardInformation.description = board.description;
 
                 const pageContainerElem = document.querySelector(".page-container");
-                pageContainerElem.style.backgroundImage = `url(${ServerBaseUrl + board.wallpaperPath})`;
+                pageContainerElem.style.backgroundImage = `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(${ServerBaseUrl + board.wallpaperPath})`;
                 pageContainerElem.style.display = "block";
 
                 this.loadingScreen.close();
