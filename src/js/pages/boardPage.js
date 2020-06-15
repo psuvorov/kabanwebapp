@@ -223,7 +223,7 @@ export class BoardPage {
                         this.copyList(listElem);
                         popupMenu.close();
                     }),
-                    new PopupMenuItem("Move list",() => {
+                    new PopupMenuItem("Move list to board",() => {
                         console.log("Move list");
                         popupMenu.close();
                     }),
