@@ -1,4 +1,4 @@
-import {LocalStorageKeys, ServerBaseApiUrl, ApplicationPageUrls} from "../constants";
+import {LocalStorageKeys, ServerBaseApiUrl, ApplicationPageUrls, ServerBaseUrl} from "../constants";
 import {ApplicationUser} from "../application/applicationUser";
 import {BoardDto, CreateBoardDto} from "../dtos/boards";
 import {
@@ -72,6 +72,7 @@ export class DashboardPage {
         boards.forEach(board => {
             const boardItemElem = document.createElement("div");
             boardItemElem.classList.add("board-item");
+            boardItemElem.style.backgroundImage = `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(${ServerBaseUrl + board.wallpaperPreviewPath})`;
             boardItemElem.setAttribute("data-board-id", `${board.id}`);
             boardItemElem.innerHTML = ` 
                 <div class="title">

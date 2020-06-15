@@ -40,7 +40,7 @@ export default class KabanBoardService {
             } else {
                 const boards = [];
                 for (let i = 0; i < res.length; i++) {
-                    const board = new BoardShortInfoDto(res[i].id, res[i].name, res[i].description);
+                    const board = new BoardShortInfoDto(res[i].id, res[i].name, res[i].description, res[i].wallpaperPreviewPath);
                     boards.push(board);
                 }
                 onSuccess(boards);

@@ -7,14 +7,17 @@ export class BoardShortInfoDto {
      * @param {string} id
      * @param {string} name
      * @param {string} description
+     * @param {string} wallpaperPreviewPath
      */
-    constructor(id, name, description) {
+    constructor(id, name, description, wallpaperPreviewPath) {
         /** @readonly */
         this.id = id;
         /** @readonly */
         this.name = name;
         /** @readonly */
         this.description = description;
+        /** @readonly */
+        this.wallpaperPreviewPath = wallpaperPreviewPath;
     }
 }
 
