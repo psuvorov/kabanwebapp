@@ -243,32 +243,31 @@ export class CardDetails {
         });
 
         const cardCoverButtonElem = this.cardDetailsWindowElem.querySelector(".actions .card-cover");
+        const cardCoverInputElem = document.querySelector("#card-cover-file-input");
         cardCoverButtonElem.addEventListener("click", (e) => {
-            console.log("Card cover button clicked");
-            const cardCoverInputElem = document.querySelector("#card-cover-file-input");
-
-            cardCoverInputElem.addEventListener("change", (e) => {
-                const formData = new FormData();
-                const fileExtensionWithDot = cardCoverInputElem.files[0].name.substring(cardCoverInputElem.files[0].name.lastIndexOf("."));
-                formData.append("imageFile", cardCoverInputElem.files[0], "card-" + this.cardDetails.id + fileExtensionWithDot);
-
-                this.filesService.uploadCardCover(formData, this.currentBoardId, this.cardDetails.id,
-                    (res) => {
-                        const coverPlaceholderElem = this.cardElem.querySelector(".card-cover");
-                        coverPlaceholderElem.style.backgroundImage = `url(${ServerBaseUrl + res.coverImagePath})`;
-                        coverPlaceholderElem.style.display = "block";
-                        if (res.orientation === ImageOrientation.vertical)
-                            coverPlaceholderElem.classList.add("vertical-orientation");
-                        else
-                            coverPlaceholderElem.classList.add("horizontal-orientation");
-                    },
-                    (error) => {
-                        console.error(error);
-                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of uploading card cover. Reason: ${error}`);
-                    });
-            });
-
             cardCoverInputElem.click();
+        });
+
+        cardCoverInputElem.addEventListener("change", (e) => {
+            console.log("Card cover input changed");
+            const formData = new FormData();
+            const fileExtensionWithDot = cardCoverInputElem.files[0].name.substring(cardCoverInputElem.files[0].name.lastIndexOf("."));
+            formData.append("imageFile", cardCoverInputElem.files[0], "card-" + this.cardDetails.id + fileExtensionWithDot);
+
+            this.filesService.uploadCardCover(formData, this.currentBoardId, this.cardDetails.id,
+                (res) => {
+                    const coverPlaceholderElem = this.cardElem.querySelector(".card-cover");
+                    coverPlaceholderElem.style.backgroundImage = `url(${ServerBaseUrl + res.coverImagePath})`;
+                    coverPlaceholderElem.style.display = "block";
+                    if (res.orientation === ImageOrientation.vertical)
+                        coverPlaceholderElem.classList.add("vertical-orientation");
+                    else
+                        coverPlaceholderElem.classList.add("horizontal-orientation");
+                },
+                (error) => {
+                    console.error(error);
+                    ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of uploading card cover. Reason: ${error}`);
+                });
         });
 
         const archiveButtonElem = this.cardDetailsWindowElem.querySelector(".actions .archive");
