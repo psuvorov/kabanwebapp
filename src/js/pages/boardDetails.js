@@ -206,7 +206,7 @@ export class BoardDetails {
             const fileExtensionWithDot = boardWallpaperInputElem.files[0].name.substring(boardWallpaperInputElem.files[0].name.lastIndexOf("."));
             formData.append("imageFile", boardWallpaperInputElem.files[0], "board-" + this.currentBoardId + fileExtensionWithDot);
 
-            this.filesService.uploadBoardWallpaper(formData, this.currentBoardId,
+            this.filesService.setBoardWallpaper(formData, this.currentBoardId,
                 (res) => {
                     const pageContainerElem = document.querySelector(".page-container");
                     pageContainerElem.style.backgroundImage = `url(${ServerBaseUrl + res.wallpaperPath})`;
@@ -215,7 +215,7 @@ export class BoardDetails {
                 },
                 (error) => {
                     console.error(error);
-                    ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of uploading board wallpaper. Reason: ${error}`);
+                    ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of setting board wallpaper. Reason: ${error}`);
                 });
         });
 

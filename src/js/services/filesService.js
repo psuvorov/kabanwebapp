@@ -20,8 +20,8 @@ export default class FilesService {
      * @param onSuccess
      * @param onError
      */
-    uploadCardCover(data, boardId, cardId, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/boardpage/upload-card-cover?boardId=${boardId}&cardId=${cardId}`, {
+    setCardCover(data, boardId, cardId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/boardpage/set-card-cover?boardId=${boardId}&cardId=${cardId}`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token
@@ -53,8 +53,8 @@ export default class FilesService {
      * @param onSuccess
      * @param onError
      */
-    uploadBoardWallpaper(data, boardId, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + `/boardpage/upload-board-wallpaper?boardId=${boardId}`, {
+    setBoardWallpaper(data, boardId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/boardpage/set-board-wallpaper?boardId=${boardId}`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + this.applicationUser.token

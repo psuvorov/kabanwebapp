@@ -254,7 +254,7 @@ export class CardDetails {
             const fileExtensionWithDot = cardCoverInputElem.files[0].name.substring(cardCoverInputElem.files[0].name.lastIndexOf("."));
             formData.append("imageFile", cardCoverInputElem.files[0], "card-" + this.cardDetails.id + fileExtensionWithDot);
 
-            this.filesService.uploadCardCover(formData, this.currentBoardId, this.cardDetails.id,
+            this.filesService.setCardCover(formData, this.currentBoardId, this.cardDetails.id,
                 (res) => {
                     const coverPlaceholderElem = this.cardElem.querySelector(".card-cover");
                     coverPlaceholderElem.style.backgroundImage = `url(${ServerBaseUrl + res.coverImagePath})`;
@@ -266,7 +266,7 @@ export class CardDetails {
                 },
                 (error) => {
                     console.error(error);
-                    ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of uploading card cover. Reason: ${error}`);
+                    ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of setting card cover. Reason: ${error}`);
                 });
         });
 
