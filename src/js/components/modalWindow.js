@@ -401,8 +401,8 @@ export class ModalWindowFactory {
         let modalWindow = null;
 
         const callbacks = [];
-        callbacks.push(yesCallback ? yesCallback : () => {modalWindow.close();});
-        callbacks.push(noCallback ? noCallback : () => {modalWindow.close();});
+        callbacks.push(yesCallback ? () => { yesCallback(); modalWindow.close(); } : () => {modalWindow.close();});
+        callbacks.push(noCallback ? () => { noCallback(); modalWindow.close(); } : () => {modalWindow.close();});
 
         const windowElements = [
             new ModalWindowElement(ModalWindowElementType.TextareaLabel, "label", "Question", text),
