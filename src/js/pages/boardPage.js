@@ -18,6 +18,8 @@ import {CreateCardCommentDto} from "../dtos/cardComments";
 import {CardDetails} from "./cardDetails";
 import {BoardDetails} from "./boardDetails";
 import FilesService from "../services/filesService";
+import {CardsHelper} from "./helpers/CardsHelper";
+import {ListsHelper} from "./helpers/ListsHelper";
 
 export class BoardPage {
 
@@ -212,6 +214,7 @@ export class BoardPage {
             if (cardComposerElem) {
                 this.createNewCard(cardComposerElem.closest(".list"));
             } else if (listMenuButtonElem) {
+
                 const listElem = e.target.closest(".list");
 
                 /** @type PopupMenu */
@@ -232,7 +235,7 @@ export class BoardPage {
                     }),
                     new PopupMenuItemSeparator(),
                     new PopupMenuItem("Archive list",() => {
-                        console.log("Archive list");
+                        ListsHelper.archiveList(this.kabanBoardService, listElem);
                         popupMenu.close();
                     })
                 ];
@@ -242,6 +245,8 @@ export class BoardPage {
             } else if (cardMenuButtonElem) {
                 /** @type PopupMenu */
                 let popupMenu = null;
+
+                const cardElem = cardMenuButtonElem.closest(".list-card");
 
                 const items = [
                     new PopupMenuItem("Copy card",() => {
@@ -254,7 +259,7 @@ export class BoardPage {
                     }),
                     new PopupMenuItemSeparator(),
                     new PopupMenuItem("Archive card",() => {
-                        console.log("Archive card");
+                        CardsHelper.archiveCard(this.kabanBoardService, cardElem);
                         popupMenu.close();
                     })
                 ];

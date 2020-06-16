@@ -84,9 +84,10 @@ export class UpdateCardDto {
      * @param {string | null} name
      * @param {string | null} description
      * @param {number | null} orderNumber
-     * @param {string} listId
+     * @param {string | null} listId
+     * @param {boolean | null} isArchived
      */
-    constructor(id, name, description, orderNumber, listId) {
+    constructor(id, name, description, orderNumber, listId, isArchived) {
         /** @readonly */
         this.id = id;
         /** @readonly */
@@ -97,6 +98,8 @@ export class UpdateCardDto {
         this.orderNumber = orderNumber;
         /** @readonly */
         this.listId = listId;
+        /** @readonly */
+        this.isArchived = isArchived;
     }
 }
 

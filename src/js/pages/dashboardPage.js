@@ -99,8 +99,6 @@ export class DashboardPage {
         } else {
             dashboardTopDescriptionElem.innerText = `Here are all your boards:`;
         }
-
-
     }
 
     /**

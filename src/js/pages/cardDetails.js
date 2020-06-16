@@ -9,6 +9,7 @@ import {
     ModalWindowFactory
 } from "../components/modalWindow";
 import {ImageOrientation, ServerBaseUrl} from "../constants";
+import {CardsHelper} from "./helpers/CardsHelper";
 
 export class CardDetails {
 
@@ -272,7 +273,7 @@ export class CardDetails {
 
         const archiveButtonElem = this.cardDetailsWindowElem.querySelector(".actions .archive");
         archiveButtonElem.addEventListener("click", (e) => {
-            console.log("Archive button clicked");
+            CardsHelper.archiveCard(this.kabanBoardService, this.cardElem);
         });
 
         const leaveCommentLinkElem = this.cardDetailsWindowElem.querySelector(".leave-comment .link");

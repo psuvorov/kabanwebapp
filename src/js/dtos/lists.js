@@ -44,16 +44,19 @@ export class UpdateListDto {
 
     /**
      * @param {string} id
-     * @param {string} name
-     * @param {number} orderNumber
+     * @param {string | null} name
+     * @param {number | null} orderNumber
+     * @param {boolean | null} isArchived
      */
-    constructor(id, name, orderNumber) {
+    constructor(id, name, orderNumber, isArchived) {
         /** @readonly */
         this.id = id;
         /** @readonly */
         this.name = name;
         /** @readonly */
         this.orderNumber = orderNumber;
+        /** @readonly */
+        this.isArchived = isArchived;
     }
 }
 
