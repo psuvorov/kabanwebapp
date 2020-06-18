@@ -4,7 +4,7 @@ import {
     DialogTypes,
     ModalWindow,
     ModalWindowElement,
-    ModalWindowElementType,
+    ModalWindowElementTypes,
     ModalWindowFactory
 } from "../components/modalWindow";
 import {UpdateBoardDto} from "../dtos/boards";
@@ -182,7 +182,7 @@ export class BoardDetails {
             ];
 
             const windowElements = [
-                new ModalWindowElement(ModalWindowElementType.Textarea, "description", "Board description",
+                new ModalWindowElement(ModalWindowElementTypes.Textarea, "description", "Board description",
                     this.boardDetails.description.replace(/<br \/>/g, "\r\n"))
             ];
 

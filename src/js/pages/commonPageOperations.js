@@ -1,7 +1,7 @@
 import {
     ModalWindow,
     DialogTypes,
-    ModalWindowElementType,
+    ModalWindowElementTypes,
     ModalWindowElement,
     ModalWindowFactory
 } from "../components/modalWindow";
@@ -109,8 +109,8 @@ export class CommonPageOperations {
             ];
 
             const windowElements = [
-                new ModalWindowElement(ModalWindowElementType.Input, "email", "Email", ""),
-                new ModalWindowElement(ModalWindowElementType.PasswordInput, "password", "Password", "")
+                new ModalWindowElement(ModalWindowElementTypes.Input, "email", "Email", ""),
+                new ModalWindowElement(ModalWindowElementTypes.PasswordInput, "password", "Password", "")
             ];
 
             modalWindow = new ModalWindow("Sign In", DialogTypes.OkCancel, callbacks, windowElements);
@@ -153,11 +153,11 @@ export class CommonPageOperations {
             ];
 
             const windowElements = [
-                new ModalWindowElement(ModalWindowElementType.Input, "firstName", "FirstName", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "lastName", "LastName", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "username", "Username", ""),
-                new ModalWindowElement(ModalWindowElementType.Input, "email", "Email", ""),
-                new ModalWindowElement(ModalWindowElementType.PasswordInput, "password", "Password", "")
+                new ModalWindowElement(ModalWindowElementTypes.Input, "firstName", "FirstName", ""),
+                new ModalWindowElement(ModalWindowElementTypes.Input, "lastName", "LastName", ""),
+                new ModalWindowElement(ModalWindowElementTypes.Input, "username", "Username", ""),
+                new ModalWindowElement(ModalWindowElementTypes.Input, "email", "Email", ""),
+                new ModalWindowElement(ModalWindowElementTypes.PasswordInput, "password", "Password", "")
             ];
 
             modalWindow = new ModalWindow("Sign Up", DialogTypes.OkCancel, callbacks, windowElements);

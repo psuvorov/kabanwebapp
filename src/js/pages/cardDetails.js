@@ -5,7 +5,7 @@ import {
     DialogTypes,
     ModalWindow,
     ModalWindowElement,
-    ModalWindowElementType,
+    ModalWindowElementTypes,
     ModalWindowFactory
 } from "../components/modalWindow";
 import {ImageOrientation, ServerBaseUrl} from "../constants";
@@ -223,7 +223,7 @@ export class CardDetails {
             ];
 
             const windowElements = [
-                new ModalWindowElement(ModalWindowElementType.Textarea, "description", "Card description",
+                new ModalWindowElement(ModalWindowElementTypes.Textarea, "description", "Card description",
                     this.cardDetails.description.replace(/<br \/>/g, "\r\n"))
             ];
 

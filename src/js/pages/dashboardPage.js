@@ -4,7 +4,7 @@ import {BoardDto, CreateBoardDto} from "../dtos/boards";
 import {
     ModalWindow,
     DialogTypes,
-    ModalWindowElementType,
+    ModalWindowElementTypes,
     ModalWindowElement,
     ModalWindowFactory
 } from "../components/modalWindow";
@@ -145,8 +145,8 @@ export class DashboardPage {
         ];
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementType.Input, "name", "Board name", "My board"),
-            new ModalWindowElement(ModalWindowElementType.Textarea, "description", "Board description", "My board description")
+            new ModalWindowElement(ModalWindowElementTypes.Input, "name", "Board name", "My board"),
+            new ModalWindowElement(ModalWindowElementTypes.Textarea, "description", "Board description", "My board description")
         ];
 
         modalWindow = new ModalWindow("Create new board", DialogTypes.OkCancel, callbacks, windowElements);

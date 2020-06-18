@@ -6,7 +6,7 @@ export const DialogTypes = Object.freeze({
     YesNoCancel: "YesNoCancel"
 });
 
-export const ModalWindowElementType = Object.freeze({
+export const ModalWindowElementTypes = Object.freeze({
     Input: "Input",
     EmailInput: "EmailInput",
     PasswordInput: "PasswordInput",
@@ -19,7 +19,7 @@ export class ModalWindowElement {
 
     /**
      *
-     * @param {ModalWindowElementType} elementType
+     * @param {ModalWindowElementTypes} elementType
      * @param {string} elementName
      * @param {string} elementLabel
      * @param {string} defaultValue
@@ -148,7 +148,7 @@ export class ModalWindow {
 
 
         this.keydownEventHandler = (e) => {
-            if (e.key === "Enter" && this.elements.some(element => element.elementType !== ModalWindowElementType.Textarea)) {
+            if (e.key === "Enter" && this.elements.some(element => element.elementType !== ModalWindowElementTypes.Textarea)) {
                 // Disable closing the window if there is a textarea element to allow line break
 
                 e.preventDefault();
@@ -205,19 +205,19 @@ export class ModalWindow {
             const elementWrapper = document.createElement("div");
             elementWrapper.classList.add("element-wrapper");
 
-            if (modalWindowElement.elementType === ModalWindowElementType.Input) {
+            if (modalWindowElement.elementType === ModalWindowElementTypes.Input) {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="text" name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;
                 formElem.append(elementWrapper);
-            } else if (modalWindowElement.elementType === ModalWindowElementType.PasswordInput) {
+            } else if (modalWindowElement.elementType === ModalWindowElementTypes.PasswordInput) {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="password" name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;
                 formElem.append(elementWrapper);
-            } else if (modalWindowElement.elementType === ModalWindowElementType.Textarea) {
+            } else if (modalWindowElement.elementType === ModalWindowElementTypes.Textarea) {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><textarea rows="5" name="${modalWindowElement.elementName}" >${modalWindowElement.defaultValue}</textarea>`;
                 formElem.append(elementWrapper);
-            } else if (modalWindowElement.elementType === ModalWindowElementType.TextareaLabel) {
+            } else if (modalWindowElement.elementType === ModalWindowElementTypes.TextareaLabel) {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><textarea rows="5" name="${modalWindowElement.elementName}" readonly >${modalWindowElement.defaultValue}</textarea>`;
                 formElem.append(elementWrapper);
-            } else if (modalWindowElement.elementType === ModalWindowElementType.Label) {
+            } else if (modalWindowElement.elementType === ModalWindowElementTypes.Label) {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="text" readonly name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;
                 formElem.append(elementWrapper);
             } else {
@@ -361,7 +361,7 @@ export class ModalWindowFactory {
         callbacks.push(okCallback ? okCallback : () => {modalWindow.close();});
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementType.TextareaLabel, "label", "Error", text),
+            new ModalWindowElement(ModalWindowElementTypes.TextareaLabel, "label", "Error", text),
         ];
 
         modalWindow = new ModalWindow(title, DialogTypes.Ok, callbacks, windowElements);
@@ -382,7 +382,7 @@ export class ModalWindowFactory {
         callbacks.push(okCallback ? okCallback : () => {modalWindow.close();});
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementType.TextareaLabel, "label", "Information", text),
+            new ModalWindowElement(ModalWindowElementTypes.TextareaLabel, "label", "Information", text),
         ];
 
         modalWindow = new ModalWindow(title, DialogTypes.Ok, callbacks, windowElements);
@@ -405,7 +405,7 @@ export class ModalWindowFactory {
         callbacks.push(noCallback ? () => { noCallback(); modalWindow.close(); } : () => {modalWindow.close();});
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementType.TextareaLabel, "label", "Question", text),
+            new ModalWindowElement(ModalWindowElementTypes.TextareaLabel, "label", "Question", text),
         ];
 
         modalWindow = new ModalWindow(title, DialogTypes.YesNo, callbacks, windowElements);
