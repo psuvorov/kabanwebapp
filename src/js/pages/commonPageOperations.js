@@ -109,8 +109,8 @@ export class CommonPageOperations {
             ];
 
             const windowElements = [
-                new ModalWindowElement(ModalWindowElementTypes.Input, "email", "Email", ""),
-                new ModalWindowElement(ModalWindowElementTypes.PasswordInput, "password", "Password", "")
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Input, "email", "Email", ""),
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.PasswordInput, "password", "Password", "")
             ];
 
             modalWindow = new ModalWindow("Sign In", DialogTypes.OkCancel, callbacks, windowElements);
@@ -153,11 +153,11 @@ export class CommonPageOperations {
             ];
 
             const windowElements = [
-                new ModalWindowElement(ModalWindowElementTypes.Input, "firstName", "FirstName", ""),
-                new ModalWindowElement(ModalWindowElementTypes.Input, "lastName", "LastName", ""),
-                new ModalWindowElement(ModalWindowElementTypes.Input, "username", "Username", ""),
-                new ModalWindowElement(ModalWindowElementTypes.Input, "email", "Email", ""),
-                new ModalWindowElement(ModalWindowElementTypes.PasswordInput, "password", "Password", "")
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Input, "firstName", "FirstName", ""),
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Input, "lastName", "LastName", ""),
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Input, "username", "Username", ""),
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Input, "email", "Email", ""),
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.PasswordInput, "password", "Password", "")
             ];
 
             modalWindow = new ModalWindow("Sign Up", DialogTypes.OkCancel, callbacks, windowElements);

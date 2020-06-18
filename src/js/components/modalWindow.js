@@ -3,7 +3,8 @@ export const DialogTypes = Object.freeze({
     Ok: "Ok",
     OkCancel: "OkCancel",
     YesNo: "YesNo",
-    YesNoCancel: "YesNoCancel"
+    YesNoCancel: "YesNoCancel",
+    Empty: "Empty"
 });
 
 export const ModalWindowElementTypes = Object.freeze({
@@ -12,7 +13,8 @@ export const ModalWindowElementTypes = Object.freeze({
     PasswordInput: "PasswordInput",
     Label: "Label",
     Textarea: "Textarea",
-    TextareaLabel: "TextareaLabel"
+    TextareaLabel: "TextareaLabel",
+    Table: "Table"
 });
 
 export class ModalWindowElement {
@@ -23,16 +25,37 @@ export class ModalWindowElement {
      * @param {string} elementName
      * @param {string} elementLabel
      * @param {string} defaultValue
+     * @return {ModalWindowElement}
      */
-    constructor(elementType, elementName, elementLabel, defaultValue) {
-        /** @readonly */
-        this.elementType = elementType;
-        /** @readonly */
-        this.elementName = elementName;
-        /** @readonly */
-        this.elementLabel = elementLabel;
-        /** @readonly */
-        this.defaultValue = defaultValue;
+    static initPrimitiveElement(elementType, elementName, elementLabel, defaultValue) {
+        if (![ModalWindowElementTypes.Input, ModalWindowElementTypes.EmailInput, ModalWindowElementTypes.PasswordInput,
+            ModalWindowElementTypes.Label, ModalWindowElementTypes.Textarea, ModalWindowElementTypes.TextareaLabel]
+            .includes(elementType.toString())
+        )
+            throw new Error(`${elementType} is not a primitive element.`);
+
+        const element = new ModalWindowElement();
+        element.elementType = elementType;
+        element.elementName = elementName;
+        element.elementLabel = elementLabel;
+        element.defaultValue = defaultValue;
+
+        return element;
+    }
+
+    /**
+     *
+     * @param {string} elementName
+     * @param {string} elementLabel
+     * @return {ModalWindowElement}
+     */
+    static initTable(elementName, elementLabel) {
+        const element = new ModalWindowElement();
+        element.elementType = ModalWindowElementTypes.Table;
+        element.elementName = elementName;
+        element.elementLabel = elementLabel;
+
+        return element;
     }
 }
 
@@ -220,6 +243,10 @@ export class ModalWindow {
             } else if (modalWindowElement.elementType === ModalWindowElementTypes.Label) {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="text" readonly name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;
                 formElem.append(elementWrapper);
+            } else if (modalWindowElement.elementType === ModalWindowElementTypes.Table) {
+                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label>`;
+                elementWrapper.append();
+                formElem.append(elementWrapper);
             } else {
                 throw new Error("Unknown Element Type");
             }
@@ -325,6 +352,8 @@ export class ModalWindow {
                 this.callbacks[2]();
                 this.close();
             });
+        } else if (this.dialogType === DialogTypes.Empty) {
+            // Nothing to add
         } else {
             throw new Error("Unknown Dialog Type.");
         }
@@ -361,7 +390,7 @@ export class ModalWindowFactory {
         callbacks.push(okCallback ? okCallback : () => {modalWindow.close();});
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementTypes.TextareaLabel, "label", "Error", text),
+            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.TextareaLabel, "label", "Error", text),
         ];
 
         modalWindow = new ModalWindow(title, DialogTypes.Ok, callbacks, windowElements);
@@ -382,7 +411,7 @@ export class ModalWindowFactory {
         callbacks.push(okCallback ? okCallback : () => {modalWindow.close();});
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementTypes.TextareaLabel, "label", "Information", text),
+            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.TextareaLabel, "label", "Information", text),
         ];
 
         modalWindow = new ModalWindow(title, DialogTypes.Ok, callbacks, windowElements);
@@ -405,7 +434,7 @@ export class ModalWindowFactory {
         callbacks.push(noCallback ? () => { noCallback(); modalWindow.close(); } : () => {modalWindow.close();});
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementTypes.TextareaLabel, "label", "Question", text),
+            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.TextareaLabel, "label", "Question", text),
         ];
 
         modalWindow = new ModalWindow(title, DialogTypes.YesNo, callbacks, windowElements);

@@ -145,8 +145,8 @@ export class DashboardPage {
         ];
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementTypes.Input, "name", "Board name", "My board"),
-            new ModalWindowElement(ModalWindowElementTypes.Textarea, "description", "Board description", "My board description")
+            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Input, "name", "Board name", "My board"),
+            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Textarea, "description", "Board description", "My board description")
         ];
 
         modalWindow = new ModalWindow("Create new board", DialogTypes.OkCancel, callbacks, windowElements);

@@ -223,7 +223,7 @@ export class CardDetails {
             ];
 
             const windowElements = [
-                new ModalWindowElement(ModalWindowElementTypes.Textarea, "description", "Card description",
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Textarea, "description", "Card description",
                     this.cardDetails.description.replace(/<br \/>/g, "\r\n"))
             ];
 

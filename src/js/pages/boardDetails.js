@@ -182,7 +182,7 @@ export class BoardDetails {
             ];
 
             const windowElements = [
-                new ModalWindowElement(ModalWindowElementTypes.Textarea, "description", "Board description",
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Textarea, "description", "Board description",
                     this.boardDetails.description.replace(/<br \/>/g, "\r\n"))
             ];
 

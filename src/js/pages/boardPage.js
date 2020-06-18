@@ -515,7 +515,7 @@ export class BoardPage {
         ];
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementTypes.Input, "name", "List name", "My list"),
+            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Input, "name", "List name", "My list"),
         ];
 
         modalWindow = new ModalWindow("Create new list", DialogTypes.OkCancel, callbacks, windowElements);
@@ -731,7 +731,7 @@ export class BoardPage {
         ];
 
         const windowElements = [
-            new ModalWindowElement(ModalWindowElementTypes.Input, "name", "Card name", "My card")
+            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Input, "name", "Card name", "My card")
         ];
 
         modalWindow = new ModalWindow("Create new card", DialogTypes.OkCancel, callbacks, windowElements);
