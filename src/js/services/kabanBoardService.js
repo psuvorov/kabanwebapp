@@ -1,8 +1,8 @@
 import {ApplicationUser} from "../application/applicationUser";
 import {ServerBaseApiUrl} from "../constants";
 import {BoardDetailsDto, BoardDto, BoardShortInfoDto} from "../dtos/boards";
-import {ListDto} from "../dtos/lists";
-import {CardDetailsDto} from "../dtos/cards";
+import {ArchivedListDto, ListDto} from "../dtos/lists";
+import {ArchivedCardDto, CardDetailsDto} from "../dtos/cards";
 
 export default class KabanBoardService {
 
@@ -178,6 +178,80 @@ export default class KabanBoardService {
             } else {
                 const boardDetailsDto = new BoardDetailsDto(res.id, res.name, res.description, res.author, res.participants, res.created, res.lastModified);
                 onSuccess(boardDetailsDto);
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
+    /**
+     *
+     * @param {string} boardId
+     * @param onSuccess
+     * @param onError
+     */
+    getArchivedCards(boardId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/boardpage/get-archived-cards?boardId=${boardId}`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            }
+        }).then(res => {
+            if (res.status === 200 || res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                const cards = [];
+                for (let i = 0; i < res.length; i++) {
+                    const card = new ArchivedCardDto(res[i].id, res[i].name, res[i].listName, res[i].created, res[i].archived);
+                    cards.push(card);
+                }
+                onSuccess(cards);
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
+    /**
+     *
+     * @param {string} boardId
+     * @param onSuccess
+     * @param onError
+     */
+    getArchivedLists(boardId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/boardpage/get-archived-lists?boardId=${boardId}`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            }
+        }).then(res => {
+            if (res.status === 200 || res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                const lists = [];
+                for (let i = 0; i < res.length; i++) {
+                    const list = new ArchivedListDto(res[i].id, res[i].name, res[i].created, res[i].archived);
+                    lists.push(list);
+                }
+                onSuccess(lists);
             }
         }).catch(error => {
             onError(error);
