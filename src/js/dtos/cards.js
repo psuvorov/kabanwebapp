@@ -116,3 +116,28 @@ export class RenumberCardDto {
         this.orderNumber = orderNumber;
     }
 }
+
+export class ArchivedCardDto {
+
+    /**
+     *
+     * @param {string} id
+     * @param {string} name
+     * @param {string} listName
+     * @param {string} created
+     * @param {string} archived
+     */
+    constructor(id, name, listName, created, archived) {
+        /** @readonly */
+        this.id = id;
+        /** @readonly */
+        this.name = name;
+        /** @readonly */
+        this.listName = listName;
+        /** @readonly */
+        this.created = created;
+        /** @readonly */
+        this.archived = archived;
+    }
+
+}

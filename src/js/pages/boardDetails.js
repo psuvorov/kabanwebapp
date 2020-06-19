@@ -9,6 +9,8 @@ import {
 } from "../components/modalWindow";
 import {UpdateBoardDto} from "../dtos/boards";
 import {ImageOrientation, ServerBaseUrl} from "../constants";
+import {Table} from "../components/table";
+import {ArchivedItems} from "./archivedItems";
 
 export class BoardDetails {
 
@@ -221,7 +223,8 @@ export class BoardDetails {
 
         const archivedItemsButtonElem = this.boardDetailsWindowElem.querySelector(".actions .archived-items");
         archivedItemsButtonElem.addEventListener("click", (e) => {
-            console.log("Archived items button clicked");
+            const archivedItems = new ArchivedItems(this.currentBoardId, this.kabanBoardService);
+            archivedItems.show();
         });
 
         const closeBoardButtonElem = this.boardDetailsWindowElem.querySelector(".actions .close-board");

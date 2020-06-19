@@ -14,6 +14,7 @@ export const ModalWindowElementTypes = Object.freeze({
     Label: "Label",
     Textarea: "Textarea",
     TextareaLabel: "TextareaLabel",
+    DropdownList: "DropdownList",
     Table: "Table"
 });
 
@@ -44,16 +45,35 @@ export class ModalWindowElement {
     }
 
     /**
+     * @param {string} elementName
+     * @param {string} elementLabel
+     * @param {string[][]} values
+     * @return {ModalWindowElement}
+     */
+    static initDropDownList(elementName, elementLabel, values) {
+
+        const element = new ModalWindowElement();
+        element.elementType = ModalWindowElementTypes.DropdownList;
+        element.elementName = elementName;
+        element.elementLabel = elementLabel;
+        element.values = values;
+
+        return element;
+    }
+
+    /**
      *
      * @param {string} elementName
      * @param {string} elementLabel
+     * @param {HTMLElement} tableElement
      * @return {ModalWindowElement}
      */
-    static initTable(elementName, elementLabel) {
+    static initTable(elementName, elementLabel, tableElement) {
         const element = new ModalWindowElement();
         element.elementType = ModalWindowElementTypes.Table;
         element.elementName = elementName;
         element.elementLabel = elementLabel;
+        element.tableElement = tableElement;
 
         return element;
     }
@@ -193,7 +213,7 @@ export class ModalWindow {
                 /** @type HTMLElement */
                 let buttonElem = null;
 
-                if (this.dialogType === DialogTypes.Ok) {
+                if (this.dialogType === DialogTypes.Ok || this.dialogType === DialogTypes.Empty) {
                     this.close();
                 } else if (this.dialogType === DialogTypes.OkCancel) {
                     buttonElem = this.modalWindowElem.querySelector(".cancel-button");
@@ -243,9 +263,23 @@ export class ModalWindow {
             } else if (modalWindowElement.elementType === ModalWindowElementTypes.Label) {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><input type="text" readonly name="${modalWindowElement.elementName}" value="${modalWindowElement.defaultValue}">`;
                 formElem.append(elementWrapper);
+            } else if (modalWindowElement.elementType === ModalWindowElementTypes.DropdownList) {
+                elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label><br />`;
+
+                const selectElem = document.createElement("select");
+                selectElem.setAttribute("name", modalWindowElement.elementName);
+                for (let i = 0; i < modalWindowElement.values.length; i++) {
+                    const optionElem = document.createElement("option");
+                    optionElem.setAttribute("value", modalWindowElement.values[i][0]);
+                    optionElem.innerText = modalWindowElement.values[i][1];
+                    selectElem.append(optionElem);
+                }
+                elementWrapper.append(selectElem);
+                formElem.append(elementWrapper);
+
             } else if (modalWindowElement.elementType === ModalWindowElementTypes.Table) {
                 elementWrapper.innerHTML = `<label for="${modalWindowElement.elementName}">${modalWindowElement.elementLabel}</label>`;
-                elementWrapper.append();
+                elementWrapper.append(modalWindowElement.tableElement);
                 formElem.append(elementWrapper);
             } else {
                 throw new Error("Unknown Element Type");
@@ -354,6 +388,7 @@ export class ModalWindow {
             });
         } else if (this.dialogType === DialogTypes.Empty) {
             // Nothing to add
+            footerElem.style.display = "none";
         } else {
             throw new Error("Unknown Dialog Type.");
         }

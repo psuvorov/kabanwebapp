@@ -89,3 +89,25 @@ export class CopyListDto {
     }
 
 }
+
+export class ArchivedListDto {
+
+    /**
+     *
+     * @param {string} id
+     * @param {string} name
+     * @param {string} created
+     * @param {string} archived
+     */
+    constructor(id, name, created, archived) {
+        /** @readonly */
+        this.id = id;
+        /** @readonly */
+        this.name = name;
+        /** @readonly */
+        this.created = created;
+        /** @readonly */
+        this.archived = archived;
+    }
+
+}

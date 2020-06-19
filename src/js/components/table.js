@@ -1,18 +1,8 @@
 export class Table {
 
 
-    /**
-     *
-     * @param {string} title
-     */
-    constructor(title) {
-        /**
-         * @private
-         * @readonly
-         * @type {string}
-         */
-        this.title = title;
 
+    constructor() {
         /**
          * @private
          * @type {HTMLElement}
@@ -27,9 +17,18 @@ export class Table {
      * @private
      */
     initialize() {
+        this.tableElem = document.createElement("div");
+        this.tableElem.classList.add("table");
+        this.tableElem.innerHTML = `
+            
+        `;
 
     }
 
+    /**
+     *
+     * @return {HTMLElement}
+     */
     getElement() {
         return this.tableElem;
     }
