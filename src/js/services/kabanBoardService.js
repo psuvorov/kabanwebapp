@@ -598,16 +598,140 @@ export default class KabanBoardService {
         });
     }
 
-    deleteBoard() {
-
+    /**
+     *
+     * @param {string} boardId
+     * @param onSuccess
+     * @param onError
+     */
+    deleteBoard(boardId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/boardpage/delete-board?boardId=${boardId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            }
+        }).then(res => {
+            if (res.status === 204) {
+                return {};
+            } else if (res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
     }
 
-    deleteList() {
-
+    /**
+     *
+     * @param {string} listId
+     * @param onSuccess
+     * @param onError
+     */
+    deleteList(listId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/boardpage/delete-list?listId=${listId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            }
+        }).then(res => {
+            if (res.status === 204) {
+                return {};
+            } else if (res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
     }
 
-    deleteCard() {
+    /**
+     *
+     * @param {string} cardId
+     * @param onSuccess
+     * @param onError
+     */
+    deleteCard(cardId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/boardpage/delete-card?cardId=${cardId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            }
+        }).then(res => {
+            if (res.status === 204) {
+                return {};
+            } else if (res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
 
+    /**
+     *
+     * @param {string} cardCommentId
+     * @param onSuccess
+     * @param onError
+     */
+    deleteCardComment(cardCommentId, onSuccess, onError) {
+        fetch(ServerBaseApiUrl + `/boardpage/delete-card-comment?cardCommentId=${cardCommentId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + this.applicationUser.token,
+                "Content-Type": "application/json"
+            }
+        }).then(res => {
+            if (res.status === 204) {
+                return {};
+            } else if (res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
     }
 
 }
