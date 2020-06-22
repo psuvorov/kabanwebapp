@@ -159,7 +159,7 @@ export class CardDetails {
                 }
                 e.target.blur();
 
-                this.kabanBoardService.updateCard(new UpdateCardDto(this.cardDetails.id, e.target.value, null, null, this.cardDetails.listId),
+                this.kabanBoardService.updateCard(new UpdateCardDto(this.cardDetails.id, e.target.value, null, null, this.cardDetails.listId, null),
                     () => {
                         console.log("Card name updated");
                         this.cardElem.querySelector("span").innerText = e.target.value;
@@ -200,7 +200,7 @@ export class CardDetails {
                     const newDescriptionRaw = JSON.parse(serializedFormData).description; // to be set to html right now
                     const newDescription = newDescriptionRaw.replace(/\r?\n/g, "<br />"); // server version with <br /> tags
 
-                    const updateCardDto = new UpdateCardDto(this.cardDetails.id, null, newDescription, null, this.cardDetails.listId);
+                    const updateCardDto = new UpdateCardDto(this.cardDetails.id, null, newDescription, null, this.cardDetails.listId, null);
                     this.kabanBoardService.updateCard(updateCardDto,
                         () => {
                             this.cardDetails.description = updateCardDto.description;
@@ -273,7 +273,7 @@ export class CardDetails {
 
         const archiveButtonElem = this.cardDetailsWindowElem.querySelector(".actions .archive");
         archiveButtonElem.addEventListener("click", (e) => {
-            CardsHelper.archiveCard(this.kabanBoardService, this.cardElem);
+            CardsHelper.archiveCard(this.kabanBoardService, this.cardElem, this);
         });
 
         const leaveCommentLinkElem = this.cardDetailsWindowElem.querySelector(".leave-comment .link");

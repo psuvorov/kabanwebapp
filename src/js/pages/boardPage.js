@@ -240,6 +240,7 @@ export class BoardPage {
                     })
                 ];
 
+                // TODO: take out to external function
                 popupMenu = new PopupMenu(items, listMenuButtonElem);
                 popupMenu.show();
             } else if (cardMenuButtonElem) {
