@@ -53,30 +53,6 @@ export class PopupMenu {
     }
 
     show() {
-        // ! This code doesn't detect right popup menu placement
-        this.popupMenuElem.style.left = this.callerElem.getBoundingClientRect().x + this.callerElem.getBoundingClientRect().width / 2 +  "px";
-        this.popupMenuElem.style.top = this.callerElem.getBoundingClientRect().y + this.callerElem.getBoundingClientRect().height / 2 + "px";
-
-        this.popupMenuElem.classList.add("animated", "fadeIn");
-        this.popupMenuElem.style.display = "flex";
-    }
-
-    close() {
-        this.popupMenuElem.style.display = "none";
-        this.popupMenuElem.remove();
-
-        document.removeEventListener("keydown", this.CloseByEscapeEventHandler);
-        document.removeEventListener("click", this.CloseByClickingOutsideEventHandler);
-
-        console.log("PopupMenu closed");
-    }
-
-    /**
-     * @private
-     */
-    initialize() {
-        this.initMenu();
-
         this.CloseByEscapeEventHandler = (e) => {
             if (e.key === "Escape") {
                 e.preventDefault();
@@ -94,6 +70,32 @@ export class PopupMenu {
 
         // Close menu by clicking outside
         document.addEventListener("click", this.CloseByClickingOutsideEventHandler);
+
+
+        // ! This code doesn't detect right popup menu placement
+        this.popupMenuElem.style.left = this.callerElem.getBoundingClientRect().x + this.callerElem.getBoundingClientRect().width / 2 +  "px";
+        this.popupMenuElem.style.top = this.callerElem.getBoundingClientRect().y + this.callerElem.getBoundingClientRect().height / 2 + "px";
+
+        this.popupMenuElem.classList.add("animated", "fadeIn");
+        this.popupMenuElem.style.display = "flex";
+    }
+
+
+    close() {
+        this.popupMenuElem.style.display = "none";
+        //this.popupMenuElem.remove();
+
+        document.removeEventListener("keydown", this.CloseByEscapeEventHandler);
+        document.removeEventListener("click", this.CloseByClickingOutsideEventHandler);
+
+        console.log("PopupMenu closed");
+    }
+
+    /**
+     * @private
+     */
+    initialize() {
+        this.initMenu();
     }
 
     /**
@@ -121,6 +123,19 @@ export class PopupMenu {
     }
 
 
+    /**
+     *
+     * @param {HTMLElement} callerElem
+     */
+    setCaller(callerElem) {
+        this.callerElem = callerElem;
+    }
 
-
+    /**
+     *
+     * @return {HTMLElement}
+     */
+    getCaller() {
+        return this.callerElem;
+    }
 }
