@@ -14,7 +14,7 @@ export class ListsHelper {
                 const listId = listElem.getAttribute("data-list-id");
                 kabanBoardService.updateList(new UpdateListDto(listId, null, null, true),
                     (res) => {
-                        listElem.style.display = "none";
+                        listElem.parentElement.remove();
                     },
                     (error) => {
                         console.error(error);

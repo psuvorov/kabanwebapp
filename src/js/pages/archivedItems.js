@@ -2,15 +2,18 @@ import {Table} from "../components/table";
 import {ModalWindowFactory} from "../components/modalWindow";
 import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/popupMenu";
 import {CardsHelper} from "./helpers/CardsHelper";
+import {UpdateCardDto} from "../dtos/cards";
+import {UpdateListDto} from "../dtos/lists";
 
 export class ArchivedItems {
 
     /**
      *
-     * @param currentBoardId
-     * @param kabanBoardService
+     * @param {string} currentBoardId
+     * @param {KabanBoardService} kabanBoardService
+     * @param {Function} drawBoardCb
      */
-    constructor(currentBoardId, kabanBoardService) {
+    constructor(currentBoardId, kabanBoardService, drawBoardCb) {
 
         /**
          * @private
@@ -25,6 +28,13 @@ export class ArchivedItems {
          * @type {KabanBoardService}
          */
         this.kabanBoardService = kabanBoardService;
+
+        /**
+         * @private
+         * @readonly
+         * @type {Function}
+         */
+        this.drawBoardCb = drawBoardCb;
 
         /**
          * @private
@@ -145,25 +155,47 @@ export class ArchivedItems {
 
                 const items = [
                     new PopupMenuItem("Restore card",() => {
-                        console.log("Restore card");
-
-
+                        const trElem = popupMenu.getCaller().parentElement.parentElement;
+                        let cardId = trElem.firstElementChild.textContent;
 
                         popupMenu.close();
+                        ModalWindowFactory.showYesNoQuestion("Restore card", "Do you want to restore this card?",
+                            () => {
+
+                                const updateCardDto = new UpdateCardDto(cardId, null, null, null, null, false);
+                                this.kabanBoardService.updateCard(updateCardDto,
+                                    () => {
+                                        trElem.remove();
+
+                                        // TODO: not decent at all, needs to be remade
+                                        this.drawBoardCb();
+                                    },
+                                    (error) => {
+                                        console.error(error);
+                                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of restoring archived card. Reason: ${error}`);
+                                    });
+                            },
+                            () => {
+                            });
+
                     }),
                     new PopupMenuItem("Remove card",() => {
                         const trElem = popupMenu.getCaller().parentElement.parentElement;
                         let cardId = trElem.firstElementChild.textContent;
 
-                        this.kabanBoardService.deleteCard(cardId,
+                        popupMenu.close();
+                        ModalWindowFactory.showYesNoQuestion("Remove card", "Do you want to remove this card?",
                             () => {
-
-                                popupMenu.close();
+                                this.kabanBoardService.deleteCard(cardId,
+                                    () => {
+                                        trElem.remove();
+                                    },
+                                    (error) => {
+                                        console.error(error);
+                                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of deleting archived card. Reason: ${error}`);
+                                    });
                             },
-                            (error) => {
-                                console.error(error);
-                                popupMenu.close();
-                                ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of deleting archived card. Reason: ${error}`);
+                            () => {
                             });
                     })
                 ];
@@ -183,8 +215,7 @@ export class ArchivedItems {
                     },
                     {
                         columnName: "listName",
-                        columnTitle: "List",
-
+                        columnTitle: "List"
                     },
                     {
                         columnName: "created",
@@ -220,6 +251,57 @@ export class ArchivedItems {
             (lists) => {
                 console.log(lists);
 
+                /** @type PopupMenu */
+                let popupMenu = null;
+
+                const items = [
+                    new PopupMenuItem("Restore list",() => {
+                        const trElem = popupMenu.getCaller().parentElement.parentElement;
+                        let listId = trElem.firstElementChild.textContent;
+
+                        popupMenu.close();
+                        ModalWindowFactory.showYesNoQuestion("Restore list", "Do you want to restore this list?",
+                            () => {
+                                const updateListDto = new UpdateListDto(listId, null, null, false);
+                                this.kabanBoardService.updateList(updateListDto,
+                                    () => {
+                                        trElem.remove();
+
+                                        // TODO: not decent at all, needs to be remade
+                                        this.drawBoardCb();
+                                    },
+                                    (error) => {
+                                        console.error(error);
+                                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of restoring archived list. Reason: ${error}`);
+                                    });
+                            },
+                            () => {
+                            });
+
+                    }),
+                    new PopupMenuItem("Remove list",() => {
+                        const trElem = popupMenu.getCaller().parentElement.parentElement;
+                        let listId = trElem.firstElementChild.textContent;
+
+                        popupMenu.close();
+                        ModalWindowFactory.showYesNoQuestion("Remove list", "Do you want to remove this list?",
+                            () => {
+                                this.kabanBoardService.deleteList(listId,
+                                    () => {
+                                        trElem.remove();
+                                    },
+                                    (error) => {
+                                        console.error(error);
+                                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of deleting archived list. Reason: ${error}`);
+                                    });
+                            },
+                            () => {
+                            });
+                    })
+                ];
+
+                popupMenu = new PopupMenu(items, this.table.getElement());
+
                 const columns = [
                     {
                         columnName: "id",
@@ -240,6 +322,11 @@ export class ArchivedItems {
                         columnName: "archived",
                         columnTitle: "Archived",
                         type: "date"
+                    },
+                    {
+                        columnTitle: "Actions",
+                        type: "popupMenu",
+                        popupMenuInstance: popupMenu
                     }
                 ];
 

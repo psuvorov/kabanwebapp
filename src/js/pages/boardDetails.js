@@ -20,8 +20,9 @@ export class BoardDetails {
      * @param {BoardDetailsDto} boardDetails
      * @param {KabanBoardService} kabanBoardService
      * @param {FilesService} filesService
+     * @param {Function} drawBoardCb
      */
-    constructor(boardId, boardDetails, kabanBoardService, filesService) {
+    constructor(boardId, boardDetails, kabanBoardService, filesService, drawBoardCb) {
 
         /**
          * @private
@@ -56,6 +57,13 @@ export class BoardDetails {
          * @type {FilesService}
          */
         this.filesService = filesService;
+
+        /**
+         * @private
+         * @readonly
+         * @type {Function}
+         */
+        this.drawBoardCb = drawBoardCb;
 
         /** @private */
         this.keydownEventHandler = null;
@@ -223,7 +231,7 @@ export class BoardDetails {
 
         const archivedItemsButtonElem = this.boardDetailsWindowElem.querySelector(".actions .archived-items");
         archivedItemsButtonElem.addEventListener("click", (e) => {
-            const archivedItems = new ArchivedItems(this.currentBoardId, this.kabanBoardService);
+            const archivedItems = new ArchivedItems(this.currentBoardId, this.kabanBoardService, this.drawBoardCb);
             archivedItems.show();
         });
 

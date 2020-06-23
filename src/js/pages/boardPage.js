@@ -14,7 +14,6 @@ import utils from "../utils";
 import {CreateListDto, UpdateListDto, RenumberListDto, CopyListDto} from "../dtos/lists";
 import {CardDto, CreateCardDto, RenumberCardDto, UpdateCardDto} from "../dtos/cards";
 import {LoadingScreen} from "../components/loadingScreen";
-import {CreateCardCommentDto} from "../dtos/cardComments";
 import {CardDetails} from "./cardDetails";
 import {BoardDetails} from "./boardDetails";
 import FilesService from "../services/filesService";
@@ -103,6 +102,11 @@ export class BoardPage {
         const boardHeaderElem = document.querySelector(".board-header");
         const boardTitleElem = boardHeaderElem.querySelector(".board-title");
 
+        // Clear previously created board
+        listContainerElem.querySelectorAll(".list-wrapper").forEach(list => {
+            list.remove();
+        });
+
         topMenuRowElem.style.backgroundColor = "#fff";
 
         this.loadingScreen.show();
@@ -190,7 +194,7 @@ export class BoardPage {
                     }
                     e.target.blur();
 
-                    this.kabanBoardService.updateList(new UpdateListDto(listId, e.target.value, parseInt(listOrderNumber)),
+                    this.kabanBoardService.updateList(new UpdateListDto(listId, e.target.value, parseInt(listOrderNumber), null),
                         () => {},
                         (error) => {
                             console.error(error);
@@ -421,7 +425,7 @@ export class BoardPage {
                 const listA = this.currentPlaceholderData.listElemRef;
                 const listB = this.transferredData.listRef;
 
-                this.kabanBoardService.updateCard(new UpdateCardDto(cardId, null, null, null, listId),
+                this.kabanBoardService.updateCard(new UpdateCardDto(cardId, null, null, null, listId, null),
                     () => {
                         // Renumber all cards in new order for the list in which the card was placed
                         this.renumberAllCardsInList(listA);
@@ -461,7 +465,7 @@ export class BoardPage {
 
             this.kabanBoardService.getBoardDetails(this.currentBoardId,
                 (boardDetailsDto) => {
-                    const boardDetails = new BoardDetails(this.currentBoardId, boardDetailsDto, this.kabanBoardService, this.filesService);
+                    const boardDetails = new BoardDetails(this.currentBoardId, boardDetailsDto, this.kabanBoardService, this.filesService, this.drawBoard.bind(this));
                     boardDetails.show();
                 },
                 (error) => {

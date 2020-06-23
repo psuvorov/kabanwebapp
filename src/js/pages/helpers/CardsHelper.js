@@ -16,7 +16,7 @@ export class CardsHelper {
                 const cardId = cardElem.getAttribute("data-card-id");
                 kabanBoardService.updateCard(new UpdateCardDto(cardId, null, null, null, null, true),
                     (res) => {
-                        cardElem.style.display = "none";
+                        cardElem.remove();
                         if (caller) {
                             if (caller) // lack of interfaces...
                                 caller.close();
