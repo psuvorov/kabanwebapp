@@ -169,7 +169,7 @@ export class BoardDetails {
                     const newDescription = newDescriptionRaw.replace(/\r?\n/g, "<br />"); // server version with <br /> tags
 
 
-                    const updateBoardDto = new UpdateBoardDto(this.boardDetails.id, this.boardDetails.name, newDescription);
+                    const updateBoardDto = new UpdateBoardDto(this.boardDetails.id, null, newDescription, null);
                     this.kabanBoardService.updateBoardInfo(updateBoardDto,
                         () => {
                             this.boardDetails.description = updateBoardDto.description;
@@ -237,7 +237,19 @@ export class BoardDetails {
 
         const closeBoardButtonElem = this.boardDetailsWindowElem.querySelector(".actions .close-board");
         closeBoardButtonElem.addEventListener("click", (e) => {
-            console.log("Close board button clicked");
+
+            ModalWindowFactory.showYesNoQuestion("Close board", "Do you want to close this board?",
+                () => {
+                    const updateBoardDto = new UpdateBoardDto(this.currentBoardId, null, null, true);
+                    this.kabanBoardService.updateBoardInfo(updateBoardDto,
+                        () => {
+                            location.href = "/dashboard.html";
+                        },
+                        (error) => {
+                            console.error(error);
+                            ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of closing board. Reason: ${error}`);
+                        });
+                });
         });
 
 

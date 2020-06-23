@@ -161,7 +161,7 @@ export class BoardPage {
                 }
                 e.target.blur();
 
-                this.kabanBoardService.updateBoardInfo(new UpdateBoardDto(this.currentBoardId, e.target.value, null),
+                this.kabanBoardService.updateBoardInfo(new UpdateBoardDto(this.currentBoardId, e.target.value, null, null),
                     () => {},
                     (error) => {
                         console.error(error);

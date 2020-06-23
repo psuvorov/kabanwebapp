@@ -131,13 +131,16 @@ export class UpdateBoardDto {
      * @param {string} id
      * @param {string | null} name
      * @param {string | null} description
+     * @param {boolean | null} isClosed
      */
-    constructor(id, name, description) {
+    constructor(id, name, description, isClosed) {
         /** @readonly */
         this.id = id;
         /** @readonly */
         this.name = name;
         /** @readonly */
         this.description = description;
+        /** @readonly */
+        this.isClosed = isClosed;
     }
 }

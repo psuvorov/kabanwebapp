@@ -1,6 +1,5 @@
 import {ModalWindowFactory} from "../../components/modalWindow";
 import {UpdateCardDto} from "../../dtos/cards";
-import {CardDetails} from "../cardDetails";
 
 export class CardsHelper {
 
