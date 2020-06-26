@@ -1,6 +1,6 @@
-import {CardDetailsDto, UpdateCardDto} from "../dtos/cards";
-import utils from "../utils";
-import {CreateBoardDto, UpdateBoardDto} from "../dtos/boards";
+import {CardDetailsDto, UpdateCardDto} from "../../dtos/cards";
+import utils from "../../utils";
+import {CreateBoardDto, UpdateBoardDto} from "../../dtos/boards";
 import {
     DialogTypes,
     ModalWindow,
@@ -8,8 +8,8 @@ import {
     ModalWindowElementTypes,
     ModalWindowFactory
 } from "../components/modalWindow";
-import {ImageOrientation, ServerBaseUrl} from "../constants";
-import {CardsHelper} from "./helpers/CardsHelper";
+import {ImageOrientation, ServerBaseUrl} from "../../constants";
+import {CardsHelper} from "../helpers/CardsHelper";
 
 export class CardDetails {
 

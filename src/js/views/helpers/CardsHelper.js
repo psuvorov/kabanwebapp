@@ -1,4 +1,4 @@
-import {ModalWindowFactory} from "../../components/modalWindow";
+import {ModalWindowFactory} from "../components/modalWindow";
 import {UpdateCardDto} from "../../dtos/cards";
 
 export class CardsHelper {

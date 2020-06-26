@@ -1,6 +1,6 @@
-import {LocalStorageKeys, ServerBaseApiUrl, ApplicationPageUrls, ServerBaseUrl} from "../constants";
-import {ApplicationUser} from "../application/applicationUser";
-import {BoardDto, CreateBoardDto} from "../dtos/boards";
+import {LocalStorageKeys, ServerBaseApiUrl, ApplicationPageUrls, ServerBaseUrl} from "../../constants";
+import {ApplicationUser} from "../../application/applicationUser";
+import {BoardDto, CreateBoardDto} from "../../dtos/boards";
 import {
     ModalWindow,
     DialogTypes,
@@ -8,9 +8,9 @@ import {
     ModalWindowElement,
     ModalWindowFactory
 } from "../components/modalWindow";
-import utils from "../utils";
+import utils from "../../utils";
 import {LoadingScreen} from "../components/loadingScreen";
-import KabanBoardService from "../services/kabanBoardService";
+import KabanBoardService from "../../services/kabanBoardService";
 
 export class DashboardPage {
 
@@ -107,51 +107,9 @@ export class DashboardPage {
     setupInteractions() {
         const rightItemsAreaElem = document.querySelector(".right-items-area");
 
-        const createBoardElem = rightItemsAreaElem.querySelector(".create-board");
-
-        createBoardElem.addEventListener("click", this.createBoardEventHandler.bind(this));
+        // const createBoardElem = rightItemsAreaElem.querySelector(".create-board");
+        //
+        // createBoardElem.addEventListener("click", this.createBoardEventHandler.bind(this));
     }
-
-    createBoardEventHandler(event) {
-        /** @type ModalWindow */
-        let modalWindow = null;
-
-        const callbacks = [
-            /**
-             *
-             * @param {string} serializedFormData
-             */
-                (serializedFormData) => {
-                // Ok pressed
-
-                const createBoardDtoRaw = JSON.parse(serializedFormData);
-                /** @type CreateBoardDto */
-                const createBoardDto = new CreateBoardDto(createBoardDtoRaw.name, createBoardDtoRaw.description);
-                this.kabanBoardService.createBoard(createBoardDto,
-                    () => {
-                        modalWindow.close();
-                        this.initBoardsList();
-                    },
-                    (error) => {
-                        console.error(error);
-                        modalWindow.close();
-                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new board. Reason: ${error}`);
-                    });
-            },
-            () => {
-                // Cancel pressed
-                modalWindow.close();
-            }
-        ];
-
-        const windowElements = [
-            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Input, "name", "Board name", "My board"),
-            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Textarea, "description", "Board description", "My board description")
-        ];
-
-        modalWindow = new ModalWindow("Create new board", DialogTypes.OkCancel, callbacks, windowElements);
-        modalWindow.show();
-    }
-
 
 }

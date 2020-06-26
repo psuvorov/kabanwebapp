@@ -1,9 +1,9 @@
 import {Table} from "../components/table";
 import {ModalWindowFactory} from "../components/modalWindow";
 import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/popupMenu";
-import {CardsHelper} from "./helpers/CardsHelper";
-import {UpdateCardDto} from "../dtos/cards";
-import {UpdateListDto} from "../dtos/lists";
+import {CardsHelper} from "../helpers/CardsHelper";
+import {UpdateCardDto} from "../../dtos/cards";
+import {UpdateListDto} from "../../dtos/lists";
 
 export class ArchivedItems {
 
@@ -82,7 +82,6 @@ export class ArchivedItems {
             this.loadData(archivedTypesElem.value);
         });
         this.loadData(archivedTypesElem.value);
-
     }
 
     /**

@@ -1,5 +1,5 @@
-import utils from "../utils";
-import {UpdateCardDto} from "../dtos/cards";
+import utils from "../../utils";
+import {UpdateCardDto} from "../../dtos/cards";
 import {
     DialogTypes,
     ModalWindow,
@@ -7,8 +7,8 @@ import {
     ModalWindowElementTypes,
     ModalWindowFactory
 } from "../components/modalWindow";
-import {UpdateBoardDto} from "../dtos/boards";
-import {ImageOrientation, ServerBaseUrl} from "../constants";
+import {UpdateBoardDto} from "../../dtos/boards";
+import {ImageOrientation, ServerBaseUrl} from "../../constants";
 import {Table} from "../components/table";
 import {ArchivedItems} from "./archivedItems";
 
@@ -109,11 +109,11 @@ export class BoardDetails {
                 <div class="content">
                     <div class="section">
                         <div class="icon"><i class="fas fa-user"></i></div>
-                        <div class="caption">Author info:</div>
+                        <div class="caption">Author info</div>
                         <div class="info">
                             <div class="author-title">${this.boardDetails.author.firstName} ${this.boardDetails.author.lastName}</div>
                             <div class="author-username">@${this.boardDetails.author.username}</div>
-                            <a class="author-page highlight" href="/user-page.html?userId=${this.boardDetails.author.id}">Edit profile</a>
+                            <a class="author-page link highlight" href="/user-page.html?userId=${this.boardDetails.author.id}">Edit profile</a>
                         </div>
                     </div>
                     <div class="section">

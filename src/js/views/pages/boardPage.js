@@ -1,5 +1,5 @@
-import {ApplicationUser} from "../application/applicationUser";
-import {ApplicationPageUrls, ImageOrientation, ServerBaseUrl} from "../constants";
+import {ApplicationUser} from "../../application/applicationUser";
+import {ApplicationPageUrls, ImageOrientation, ServerBaseUrl} from "../../constants";
 import {
     DialogTypes,
     ModalWindow,
@@ -8,17 +8,17 @@ import {
     ModalWindowFactory
 } from "../components/modalWindow";
 import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/popupMenu";
-import KabanBoardService from "../services/kabanBoardService";
-import {BoardDto, BoardShortInfoDto, CreateBoardDto, UpdateBoardDto} from "../dtos/boards";
-import utils from "../utils";
-import {CreateListDto, UpdateListDto, RenumberListDto, CopyListDto} from "../dtos/lists";
-import {CardDto, CreateCardDto, RenumberCardDto, UpdateCardDto} from "../dtos/cards";
+import KabanBoardService from "../../services/kabanBoardService";
+import {BoardDto, BoardShortInfoDto, CreateBoardDto, UpdateBoardDto} from "../../dtos/boards";
+import utils from "../../utils";
+import {CreateListDto, UpdateListDto, RenumberListDto, CopyListDto} from "../../dtos/lists";
+import {CardDto, CreateCardDto, RenumberCardDto, UpdateCardDto} from "../../dtos/cards";
 import {LoadingScreen} from "../components/loadingScreen";
-import {CardDetails} from "./cardDetails";
-import {BoardDetails} from "./boardDetails";
-import FilesService from "../services/filesService";
-import {CardsHelper} from "./helpers/CardsHelper";
-import {ListsHelper} from "./helpers/ListsHelper";
+import {CardDetails} from "../windows/cardDetails";
+import {BoardDetails} from "../windows/boardDetails";
+import FilesService from "../../services/filesService";
+import {CardsHelper} from "../helpers/CardsHelper";
+import {ListsHelper} from "../helpers/ListsHelper";
 
 export class BoardPage {
 
@@ -642,7 +642,7 @@ export class BoardPage {
         //     new ModalWindowElement(ModalWindowElementType.Input, "cardName", "Card name", cardElem.querySelector("span").textContent),
         // ];
         //
-        // modalWindow = new ModalWindow("Card details", DialogTypes.OkCancel, callbacks, windowElements);
+        // modalWindow = new ModalWindow("Card windows", DialogTypes.OkCancel, callbacks, windowElements);
         // modalWindow.show();
     }
 

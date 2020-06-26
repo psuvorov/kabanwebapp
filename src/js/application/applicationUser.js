@@ -71,4 +71,9 @@ export class ApplicationUser {
             userObject.hasOwnProperty("email") &&
             userObject.hasOwnProperty("token"));
     }
+
+    static signOut() {
+        localStorage.removeItem(LocalStorageKeys.currentUser);
+        location.href = "/";
+    }
 }

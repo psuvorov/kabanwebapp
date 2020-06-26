@@ -12,11 +12,14 @@ input {
 }
 
 .highlight {
-	color: #d70808;
+	color: #d70808 !important;
 }
 
 .link {
 	cursor: pointer;
+	color: unset;
+	text-decoration: none;
+	border-bottom: 1px dotted transparent;
 }
 
 .link:hover {
@@ -25,4 +28,13 @@ input {
 
 .hidden {
 	display: none;
+}
+
+.button-skeleton {
+	display: flex;
+	border: 1px solid @border-color;
+	cursor: pointer;
+	border-radius: @border-radius;
+	background-color: @background-color-of-element;
+	margin-bottom: 4px;
 }

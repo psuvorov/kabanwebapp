@@ -1,12 +1,19 @@
 @import "constants.less";
 @import "default.less";
-@import "modal-window.less";
-@import "popup-menu.less";
-@import "table.less";
-@import "loading-screen.less";
-@import "card-details-window.less";
-@import "board-details-window.less";
-@import "archived-items-window.less";
+@import "components/modal-window.less";
+@import "components/popup-menu.less";
+@import "components/table.less";
+@import "components/loading-screen.less";
+@import "windows/card-details-window.less";
+@import "windows/board-details-window.less";
+@import "windows/archived-items-window.less";
+@import "components/window-menu.less";
+@import "windowMenus/boards-window-menu.less";
+@import "windowMenus/notifications-window-menu.less";
+@import "windowMenus/user-profile-window-menu.less";
+
+@import "windows/closed-boards-window.less";
+
 
 .page-container {
 	display: flex;
@@ -69,7 +76,7 @@
 				}
 
 				.user-area {
-					.boards-list, .create-board, .notifications, .profile {
+					.boards-list, .create-board, .notifications {
 						margin-right: 10px;
 					}
 				}
@@ -86,8 +93,8 @@
 				flex-flow: column nowrap;
 				flex-grow: 1;
 
-				@import "dashboard.less";
-				@import "board.less";
+				@import "pages/dashboard.less";
+				@import "pages/board.less";
 			}
 		}
 
@@ -109,8 +116,6 @@
 	.page-item:nth-child(2) {
 		flex: 1 1 auto;
 	}
-
-
 
 }
 

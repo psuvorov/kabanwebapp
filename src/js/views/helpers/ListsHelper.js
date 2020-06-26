@@ -1,4 +1,4 @@
-import {ModalWindowFactory} from "../../components/modalWindow";
+import {ModalWindowFactory} from "../components/modalWindow";
 import {UpdateListDto} from "../../dtos/lists";
 
 export class ListsHelper {

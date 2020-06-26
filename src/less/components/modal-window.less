@@ -1,4 +1,5 @@
-@import "constants.less";
+@import "src/less/constants.less";
+@import "src/less/default.less";
 
 .modal-window {
 	border: 1px solid @border-color;
@@ -98,16 +99,13 @@
 		padding-top: 4px;
 
 		.button {
+			.button-skeleton;
 			width: 60px;
 			height: 26px;
 			margin: 4px;
-			border: 1px solid @border-color;
-			display: flex;
 			flex-flow: row wrap;
 			justify-content: center;
 			align-content: center;
-			cursor: pointer;
-			border-radius: @border-radius;
 		}
 
 		.button:hover {

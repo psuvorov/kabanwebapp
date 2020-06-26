@@ -1,7 +1,7 @@
-import {HomePage} from "./pages/homePage";
-import {DashboardPage} from "./pages/dashboardPage";
-import {BoardPage} from "./pages/boardPage";
-import {CommonPageOperations} from "./pages/commonPageOperations";
+import {HomePage} from "./views/pages/homePage";
+import {DashboardPage} from "./views/pages/dashboardPage";
+import {BoardPage} from "./views/pages/boardPage";
+import {CommonPageOperations} from "./views/pages/commonPageOperations";
 import {ApplicationPageUrls} from "./constants";
 
 

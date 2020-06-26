@@ -83,7 +83,6 @@ export class PopupMenu {
 
     close() {
         this.popupMenuElem.style.display = "none";
-        //this.popupMenuElem.remove();
 
         document.removeEventListener("keydown", this.CloseByEscapeEventHandler);
         document.removeEventListener("click", this.CloseByClickingOutsideEventHandler);

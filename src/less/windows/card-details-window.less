@@ -1,4 +1,5 @@
-@import "constants.less";
+@import "src/less/constants.less";
+@import "src/less/default.less";
 
 .card-details-window {
 	border: 1px solid @border-color;
@@ -113,15 +114,9 @@
 			margin-left: 40px;
 
 			.button {
-				display: flex;
-				height: 32px;
-				border: 1px solid @border-color;
-				cursor: pointer;
-				border-radius: @border-radius;
-				background-color: @background-color-of-element;
+				.button-skeleton;
 				width: 138px;
-				text-align: center;
-				margin-bottom: 4px;
+				height: 32px;
 
 				i {
 					position: absolute;
