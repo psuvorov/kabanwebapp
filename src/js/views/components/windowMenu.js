@@ -27,7 +27,7 @@ export class WindowMenu {
          * @protected
          * @type {LoadingScreen}
          */
-        this.loadingScreen = new LoadingScreen();
+        //this.loadingScreen = new LoadingScreen();
 
         /**
          * @protected

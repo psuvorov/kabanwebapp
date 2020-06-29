@@ -9,13 +9,25 @@ import {
 } from "../components/modalWindow";
 import {ApplicationPageUrls} from "../../constants";
 import {ClosedBoards} from "../windows/closedBoards";
+import utils from "../../utils";
 
 export class BoardsWindowMenu extends WindowMenu {
 
 
+    /**
+     *
+     * @param callerElem
+     * @param kabanBoardService
+     * @param {DashboardPage} dashboardPage
+     */
+    constructor(callerElem, kabanBoardService, dashboardPage) {
+        super(callerElem, kabanBoardService);
+
+        this.dashboardPage = dashboardPage;
+    }
+
     initialize() {
         super.initialize();
-
 
         this.windowMenuElem.innerHTML = `
             <div class="boards-window-menu">
@@ -27,10 +39,18 @@ export class BoardsWindowMenu extends WindowMenu {
                 <div class="closed-boards"><span class="highlight link">Closed boards</span></div>
             </div>`;
 
+        this.drawAvailableBoards();
+    }
 
+    /**
+     * @private
+     */
+    drawAvailableBoards() {
         const boardsListElem = this.windowMenuElem.querySelector(".boards-list");
+        utils.removeAllChildren(".boards-list");
 
-        this.kabanBoardService.getAllUserBoards(
+
+        this.kabanBoardService.getUserBoards(
             /** @type BoardShortInfoDto[] */
             (boards) => {
                 boards.forEach(board => {
@@ -44,7 +64,6 @@ export class BoardsWindowMenu extends WindowMenu {
                 console.error(error);
                 ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting user boards. Reason: ${error}`);
             });
-
     }
 
 
@@ -60,7 +79,13 @@ export class BoardsWindowMenu extends WindowMenu {
         createBoardLinkElem.addEventListener("click", this.createBoardEventHandler.bind(this));
 
         closedBoardsLinkElem.addEventListener("click", () => {
-            const closedBoards = new ClosedBoards();
+            this.close();
+
+            const refreshCallbacks = [this.drawAvailableBoards.bind(this)];
+            if (this.dashboardPage) // if it's the Dashboard Page
+                refreshCallbacks.push(this.dashboardPage.initBoardsList.bind(this.dashboardPage));
+
+            const closedBoards = new ClosedBoards(this.kabanBoardService, refreshCallbacks);
             closedBoards.show();
         });
     }

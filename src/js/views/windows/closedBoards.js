@@ -1,14 +1,25 @@
 import {Table} from "../components/table";
+import {ModalWindowFactory} from "../components/modalWindow";
+import {PopupMenu, PopupMenuItem} from "../components/popupMenu";
+import {UpdateCardDto} from "../../dtos/cards";
+import {UpdateBoardDto} from "../../dtos/boards";
 
 export class ClosedBoards {
 
-    constructor(kabanBoardService) {
+    constructor(kabanBoardService, refreshCallbacks) {
         /**
          * @private
          * @readonly
          * @type {KabanBoardService}
          */
         this.kabanBoardService = kabanBoardService;
+
+        /**
+         * @private
+         * @readonly
+         * @type {Array}
+         */
+        this.refreshCallbacks = refreshCallbacks;
 
         /**
          * @private
@@ -35,6 +46,7 @@ export class ClosedBoards {
 
     close() {
         this.closedBoardsWindowElem.style.display = "none";
+        this.closedBoardsWindowElem.parentElement.remove(); // remove gray overlay as well
 
         document.removeEventListener("keydown", this.keydownEventHandler);
     }
@@ -68,8 +80,11 @@ export class ClosedBoards {
 
         this.closedBoardsWindowElem.querySelector(".main-area").append(this.table.getElement());
 
-        const pageContainerElem = document.querySelector(".page-container");
-        pageContainerElem.append(this.closedBoardsWindowElem);
+        const windowOverlayElem = document.createElement("div");
+        windowOverlayElem.classList.add("window-overlay");
+        windowOverlayElem.append(this.closedBoardsWindowElem);
+
+        document.body.append(windowOverlayElem);
     }
 
     /**
@@ -94,7 +109,90 @@ export class ClosedBoards {
      * @private
      */
     loadData() {
+        this.kabanBoardService.getClosedUserBoards(
+            (boards) => {
+                console.log(boards);
 
+                /** @type PopupMenu */
+                let popupMenu = null;
+
+                const menuItems = [
+                    new PopupMenuItem("Restore board",() => {
+                        const trElem = popupMenu.getCaller().parentElement.parentElement;
+                        let boardId = trElem.firstElementChild.textContent;
+
+                        popupMenu.close();
+                        ModalWindowFactory.showYesNoQuestion("Restore board", "Do you want to restore this board?",
+                            () => {
+
+                                const updateBoardDto = new UpdateBoardDto(boardId, null, null, false);
+                                this.kabanBoardService.updateBoardInfo(updateBoardDto,
+                                    () => {
+                                        trElem.remove();
+
+                                        this.refreshCallbacks.forEach(cb => cb());
+                                    },
+                                    (error) => {
+                                        console.error(error);
+                                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of restoring closed board. Reason: ${error}`);
+                                    });
+                            },
+                            () => {
+                            });
+
+                    }),
+                    new PopupMenuItem("Remove board",() => {
+                        const trElem = popupMenu.getCaller().parentElement.parentElement;
+                        let boardId = trElem.firstElementChild.textContent;
+
+                        popupMenu.close();
+                        ModalWindowFactory.showYesNoQuestion("Remove board", "Do you want to remove this board?",
+                            () => {
+                                this.kabanBoardService.deleteBoard(boardId,
+                                    () => {
+                                        trElem.remove();
+                                    },
+                                    (error) => {
+                                        console.error(error);
+                                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of deleting closed board. Reason: ${error}`);
+                                    });
+                            },
+                            () => {
+                            });
+                    })
+                ];
+
+                popupMenu = new PopupMenu(menuItems, this.table.getElement());
+
+                const columns = [
+                    {
+                        columnName: "id",
+                        columnTitle: "Id",
+                        hidden: true
+                    },
+                    {
+                        columnName: "name",
+                        columnTitle: "Board",
+                        width: "40%"
+                    },
+                    {
+                        columnName: "description",
+                        columnTitle: "Description",
+                        width: "50%"
+                    },
+                    {
+                        columnTitle: "Actions",
+                        type: "popupMenu",
+                        popupMenuInstance: popupMenu
+                    }
+                ];
+
+                this.table.setDatasource(columns, boards);
+            },
+            (error) => {
+                console.error(error);
+                ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting closed boards. Reason: ${error}`);
+            });
     }
 
 

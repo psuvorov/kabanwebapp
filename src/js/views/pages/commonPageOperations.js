@@ -21,7 +21,7 @@ import {AuthHelper} from "../helpers/AuthHelper";
 export class CommonPageOperations {
 
 
-    constructor() {
+    constructor(pages) {
         /**
          * @private
          * @type {AuthService}
@@ -33,6 +33,8 @@ export class CommonPageOperations {
          * @type {KabanBoardService}
          */
         this.kabanBoardService = new KabanBoardService();
+
+        this.pages = pages;
 
 
     }
@@ -85,7 +87,7 @@ export class CommonPageOperations {
         });
 
         boardsListElem.addEventListener("click", () => {
-            const windowMenu = new BoardsWindowMenu(boardsListElem, this.kabanBoardService);
+            const windowMenu = new BoardsWindowMenu(boardsListElem, this.kabanBoardService, this.pages.dashboardPage);
             windowMenu.show();
         });
 

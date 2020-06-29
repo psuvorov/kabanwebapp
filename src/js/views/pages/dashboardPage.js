@@ -37,7 +37,6 @@ export class DashboardPage {
 
     initialize() {
         this.initBoardsList();
-        this.setupInteractions();
 
     }
 
@@ -46,7 +45,7 @@ export class DashboardPage {
     initBoardsList() {
 
         this.loadingScreen.show();
-        this.kabanBoardService.getAllUserBoards(
+        this.kabanBoardService.getUserBoards(
             /** @type BoardShortInfoDto[] */
             (boards) => {
                 this.initUserBoards(boards);
@@ -65,9 +64,7 @@ export class DashboardPage {
      */
     initUserBoards(boards) {
         const boardsContainerElem = document.querySelector(".boards-container");
-        while (boardsContainerElem.firstChild) {
-            boardsContainerElem.removeChild(boardsContainerElem.lastChild);
-        }
+        utils.removeAllChildren(".boards-container");
 
         boards.forEach(board => {
             const boardItemElem = document.createElement("div");
@@ -101,15 +98,5 @@ export class DashboardPage {
         }
     }
 
-    /**
-     * @private
-     */
-    setupInteractions() {
-        const rightItemsAreaElem = document.querySelector(".right-items-area");
-
-        // const createBoardElem = rightItemsAreaElem.querySelector(".create-board");
-        //
-        // createBoardElem.addEventListener("click", this.createBoardEventHandler.bind(this));
-    }
 
 }

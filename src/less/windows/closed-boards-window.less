@@ -23,4 +23,44 @@
 	font-size: 14px;
 
 
+	.header {
+		display: flex;
+		//flex: 0 1 auto;
+		margin-bottom: 30px;
+
+		.info-area {
+			flex: 1 1 auto;
+			font-size: 16px;
+			line-height: 30px;
+
+			.archived-types {
+				width: 100px;
+				font-size: 16px;
+			}
+		}
+
+		.close-button {
+			cursor: pointer;
+			display: flex;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+
+			i {
+				margin: auto;
+				color: @menu-button-foreground-color;
+				font-size: 18px;
+			}
+		}
+
+		.close-button:hover {
+			background-color: @background-color-of-hovered-element;
+		}
+	}
+
+	.main-area {
+
+	}
+
+
 }

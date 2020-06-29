@@ -8,13 +8,21 @@ import {ApplicationPageUrls} from "./constants";
 window.addEventListener("DOMContentLoaded", (e) => {
     "use strict";
 
+    const pages = {};
+
     if (window.location.pathname === ApplicationPageUrls.homePage) {
-        new HomePage().initialize();
+        let homePage = new HomePage();
+        homePage.initialize();
+        pages["homePage"] = homePage;
     } else if (window.location.pathname === ApplicationPageUrls.dashboardPage) {
-        new DashboardPage().initialize();
+        let dashboardPage = new DashboardPage();
+        dashboardPage.initialize();
+        pages["dashboardPage"] = dashboardPage;
     } else if (window.location.pathname === ApplicationPageUrls.boardPage) {
-        new BoardPage().initialize();
+        let boardPage = new BoardPage();
+        boardPage.initialize();
+        pages["boardPage"] = boardPage;
     }
 
-    new CommonPageOperations().initialize();
+    new CommonPageOperations(pages).initialize();
 });

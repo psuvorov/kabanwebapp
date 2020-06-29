@@ -114,4 +114,16 @@ export default class Utils {
         return month + "/" + day + "/" + year + " " + hours + ":" + minutes + ":" + seconds + ampm;
     }
 
+    /**
+     *
+     * @param {string} selector
+     */
+    static removeAllChildren(selector) {
+        const parentElem = document.querySelector(selector);
+        while (parentElem.firstElementChild) {
+            parentElem.firstElementChild.remove();
+        }
+    }
+
+
 }
