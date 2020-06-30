@@ -10,6 +10,7 @@ import {
 import {ApplicationPageUrls} from "../../constants";
 import {ClosedBoards} from "../windows/closedBoards";
 import utils from "../../utils";
+import {BoardsHelper} from "../helpers/BoardsHelper";
 
 export class BoardsWindowMenu extends WindowMenu {
 
@@ -34,9 +35,12 @@ export class BoardsWindowMenu extends WindowMenu {
                 <input placeholder="Search by board name..." class="board-search-input">
                 <div class="boards-list">
                 </div>
-                <a class="open-dashboard link highlight" href="${ApplicationPageUrls.dashboardPage}">Dashboard</a>
-                <div class="create-board"><span class="highlight link">Create board</span></div>
-                <div class="closed-boards"><span class="highlight link">Closed boards</span></div>
+                <div class="menu-items">
+                    <div class="open-dashboard"><a class="link highlight" href="${ApplicationPageUrls.dashboardPage}">Dashboard</a></div>
+                    <div class="create-board"><span class="highlight link">Create board</span></div>
+                    <div class="closed-boards"><span class="highlight link">Closed boards</span></div>
+                </div>
+                
             </div>`;
 
         this.drawAvailableBoards();
@@ -80,7 +84,10 @@ export class BoardsWindowMenu extends WindowMenu {
         const closedBoardsLinkElem = this.windowMenuElem.querySelector(".closed-boards .link");
         const boardSearchInputElem = this.windowMenuElem.querySelector(".board-search-input");
 
-        createBoardLinkElem.addEventListener("click", this.createBoardEventHandler.bind(this));
+        createBoardLinkElem.addEventListener("click", (e) => {
+            this.close();
+            (new BoardsHelper).createBoard(this.kabanBoardService);
+        });
 
         closedBoardsLinkElem.addEventListener("click", () => {
             this.close();
@@ -107,50 +114,5 @@ export class BoardsWindowMenu extends WindowMenu {
         });
     }
 
-    /**
-     * @private
-     * @param event
-     */
-    createBoardEventHandler(event) {
-        /** @type ModalWindow */
-        let modalWindow = null;
 
-        const callbacks = [
-            /**
-             *
-             * @param {string} serializedFormData
-             */
-                (serializedFormData) => {
-                // Ok pressed
-
-                const createBoardDtoRaw = JSON.parse(serializedFormData);
-                /** @type CreateBoardDto */
-                const createBoardDto = new CreateBoardDto(createBoardDtoRaw.name, createBoardDtoRaw.description);
-                this.kabanBoardService.createBoard(createBoardDto,
-                    (res) => {
-                        modalWindow.close();
-
-                        const createdBoardId = res.boardId;
-                        window.location = `${ApplicationPageUrls.boardPage}?board_id=${createdBoardId}`;
-                    },
-                    (error) => {
-                        console.error(error);
-                        modalWindow.close();
-                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of creating new board. Reason: ${error}`);
-                    });
-            },
-            () => {
-                // Cancel pressed
-                modalWindow.close();
-            }
-        ];
-
-        const windowElements = [
-            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Input, "name", "Board name", "My board"),
-            ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.Textarea, "description", "Board description", "My board description")
-        ];
-
-        modalWindow = new ModalWindow("Create new board", DialogTypes.OkCancel, callbacks, windowElements);
-        modalWindow.show();
-    }
 }

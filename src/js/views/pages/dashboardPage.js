@@ -11,6 +11,7 @@ import {
 import utils from "../../utils";
 import {LoadingScreen} from "../components/loadingScreen";
 import KabanBoardService from "../../services/kabanBoardService";
+import {BoardsHelper} from "../helpers/BoardsHelper";
 
 export class DashboardPage {
 
@@ -92,7 +93,10 @@ export class DashboardPage {
         if (boards.length === 0) {
             dashboardTopDescriptionElem.innerHTML = `There is no any board, but you can <span class="highlight link">create one</span>`;
             const createOneLink = dashboardTopDescriptionElem.querySelector("span");
-            createOneLink.addEventListener("click", this.createBoardEventHandler.bind(this));
+
+            createOneLink.addEventListener("click", (e) => {
+                (new BoardsHelper).createBoard(this.kabanBoardService);
+            });
         } else {
             dashboardTopDescriptionElem.innerText = `Here are all your boards:`;
         }

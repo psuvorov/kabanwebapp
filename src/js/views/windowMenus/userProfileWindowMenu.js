@@ -26,11 +26,7 @@ export class UserProfileWindowMenu extends WindowMenu {
     constructor(callerElem, kabanBoardService) {
         super(callerElem, kabanBoardService);
 
-        /**
-         * @private
-         * @type {AuthService}
-         */
-        this.authService = new AuthService();
+
 
     }
 
@@ -38,11 +34,19 @@ export class UserProfileWindowMenu extends WindowMenu {
     initialize() {
         super.initialize();
 
+        const user = ApplicationUser.getApplicationUserFromStorage();
+
         this.windowMenuElem.innerHTML = `
-            <div class="user-profile--window-menu">
-                
-                
-                <div class="sign-out"><span class="highlight link">Sign Out</span></div>
+            <div class="user-profile-window-menu">
+                <div class="user-info">
+                    <div class="user-title">${user.firstName} ${user.lastName}</div>
+                    <div class="user-username">@${user.username}</div>
+                </div>
+                <hr />
+                <div class="menu-items">
+                    <div><a class="link highlight" href="/user-page.html?userId=${user.id}">Edit profile</a></div>
+                    <div class="sign-out"><span class="highlight link">Sign Out</span></div>
+                </div>
             </div>`;
     }
 
@@ -54,7 +58,7 @@ export class UserProfileWindowMenu extends WindowMenu {
 
 
         signOutLinkElem.addEventListener("click", () => {
-            AuthHelper.signOut();
+            (new AuthHelper).signOut();
         });
 
     }

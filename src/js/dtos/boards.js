@@ -93,7 +93,7 @@ export class BoardDto {
      * @param {string} description
      * @param {string} wallpaperPath
      * @param {ListDto[]} lists
-     * @param {number} userId
+     * @param {string} userId
      */
     constructor(id, name, description, wallpaperPath, lists, userId) {
         /** @readonly */

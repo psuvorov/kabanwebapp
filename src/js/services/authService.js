@@ -32,7 +32,7 @@ export default class AuthService {
             } else if (res.hasOwnProperty("title")) {
                 onError(res.title);
             } else {
-                const currentUser = new AuthenticatedUserDto(parseInt(res.id), res.firstName, res.lastName, res.username, res.email, res.token);
+                const currentUser = new AuthenticatedUserDto(res.id, res.firstName, res.lastName, res.username, res.email, res.token);
                 onSuccess(currentUser);
             }
         }).catch(error => {

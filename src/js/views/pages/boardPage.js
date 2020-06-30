@@ -239,7 +239,7 @@ export class BoardPage {
                     }),
                     new PopupMenuItemSeparator(),
                     new PopupMenuItem("Archive list",() => {
-                        ListsHelper.archiveList(this.kabanBoardService, listElem);
+                        (new ListsHelper).archiveList(this.kabanBoardService, listElem);
                         popupMenu.close();
                     })
                 ];
@@ -264,7 +264,7 @@ export class BoardPage {
                     }),
                     new PopupMenuItemSeparator(),
                     new PopupMenuItem("Archive card",() => {
-                        CardsHelper.archiveCard(this.kabanBoardService, cardElem);
+                        (new CardsHelper).archiveCard(this.kabanBoardService, cardElem);
                         popupMenu.close();
                     })
                 ];

@@ -273,7 +273,7 @@ export class CardDetails {
 
         const archiveButtonElem = this.cardDetailsWindowElem.querySelector(".actions .archive");
         archiveButtonElem.addEventListener("click", (e) => {
-            CardsHelper.archiveCard(this.kabanBoardService, this.cardElem, this);
+            (new CardsHelper).archiveCard(this.kabanBoardService, this.cardElem, this);
         });
 
         const leaveCommentLinkElem = this.cardDetailsWindowElem.querySelector(".leave-comment .link");

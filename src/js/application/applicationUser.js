@@ -5,7 +5,7 @@ export class ApplicationUser {
 
     /**
      *
-     * @param {number} id
+     * @param {string} id
      * @param {string} firstName
      * @param {string} lastName
      * @param {string} username
@@ -54,14 +54,14 @@ export class ApplicationUser {
         if (this.checkFields(currentUserParsed) === false)
             return null;
 
-        return new ApplicationUser(parseInt(currentUserParsed.id), currentUserParsed.firstName,
+        return new ApplicationUser(currentUserParsed.id, currentUserParsed.firstName,
             currentUserParsed.lastName, currentUserParsed.username, currentUserParsed.email, currentUserParsed.token);
     }
 
     /**
      * @private
      * @param userObject
-     * @return {boolean|boolean}
+     * @return {boolean}
      */
     static checkFields(userObject) {
         return (userObject.hasOwnProperty("id") &&

@@ -8,7 +8,7 @@ export class ListsHelper {
      * @param {KabanBoardService} kabanBoardService
      * @param {HTMLElement} listElem
      */
-    static archiveList(kabanBoardService, listElem) {
+    archiveList(kabanBoardService, listElem) {
         ModalWindowFactory.showYesNoQuestion("Archive list", "Do you wand to archive this list?",
             () => {
                 const listId = listElem.getAttribute("data-list-id");

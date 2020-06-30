@@ -9,7 +9,7 @@ export class CardsHelper {
      * @param {HTMLElement} cardElem
      * @param caller // IClosable
      */
-    static archiveCard(kabanBoardService, cardElem, caller = null) {
+    archiveCard(kabanBoardService, cardElem, caller = null) {
         ModalWindowFactory.showYesNoQuestion("Archive card", "Do you wand to archive this card?",
             () => {
                 const cardId = cardElem.getAttribute("data-card-id");

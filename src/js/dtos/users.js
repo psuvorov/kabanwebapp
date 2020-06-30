@@ -17,7 +17,7 @@ export class AuthenticatedUserDto {
 
     /**
      *
-     * @param {number} id
+     * @param {string} id
      * @param {string} firstName
      * @param {string} lastName
      * @param {string} username
@@ -91,7 +91,7 @@ export class UserDto {
 
     /**
      *
-     * @param {number} id
+     * @param {string} id
      * @param {string} firstName
      * @param {string} lastName
      * @param {string} username

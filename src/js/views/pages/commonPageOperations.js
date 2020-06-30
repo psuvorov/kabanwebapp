@@ -79,11 +79,11 @@ export class CommonPageOperations {
         const signUpLinkElem = rightItemsAreaElem.querySelector(".sign-up");
 
         signInLinkElem.addEventListener("click", () => {
-            AuthHelper.signIn(this.authService);
+            (new AuthHelper).signIn(this.authService);
         });
 
         signUpLinkElem.addEventListener("click", () => {
-            AuthHelper.signUp(this.authService);
+            (new AuthHelper).signUp(this.authService);
         });
 
         boardsListElem.addEventListener("click", () => {

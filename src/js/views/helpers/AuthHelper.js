@@ -15,7 +15,7 @@ export class AuthHelper {
      *
      * @param {AuthService} authService
      */
-    static signUp(authService) {
+    signUp(authService) {
         /** @type ModalWindow */
         let modalWindow = null;
 
@@ -64,7 +64,7 @@ export class AuthHelper {
      *
      * @param {AuthService} authService
      */
-    static signIn(authService) {
+    signIn(authService) {
         /** @type ModalWindow */
         let modalWindow = null;
 
@@ -109,7 +109,7 @@ export class AuthHelper {
         modalWindow.show();
     }
 
-    static signOut() {
+    signOut() {
         ApplicationUser.signOut();
     }
 
