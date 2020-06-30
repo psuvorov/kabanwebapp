@@ -62,6 +62,8 @@ export class BoardsWindowMenu extends WindowMenu {
                     boardItemElem.innerHTML = `<div class="board-name" title="${board.name}">${board.name}</div><div class="board-description" title="${description}">${description}</div>`;
                     boardsListElem.append(boardItemElem);
                 });
+
+                this.windowMenuElem.querySelector(".board-search-input").focus();
             },
             (error) => {
                 console.error(error);
@@ -76,8 +78,7 @@ export class BoardsWindowMenu extends WindowMenu {
         const boardsListElem = this.windowMenuElem.querySelector(".boards-list");
         const createBoardLinkElem = this.windowMenuElem.querySelector(".create-board .link");
         const closedBoardsLinkElem = this.windowMenuElem.querySelector(".closed-boards .link");
-
-
+        const boardSearchInputElem = this.windowMenuElem.querySelector(".board-search-input");
 
         createBoardLinkElem.addEventListener("click", this.createBoardEventHandler.bind(this));
 
@@ -90,6 +91,19 @@ export class BoardsWindowMenu extends WindowMenu {
 
             const closedBoards = new ClosedBoards(this.kabanBoardService, refreshCallbacks);
             closedBoards.show();
+        });
+
+        boardSearchInputElem.addEventListener("keyup", (e) => {
+            const val = e.target.value.toLowerCase();
+
+            boardsListElem.children.forEach(boardItem => {
+                const boardName = boardItem.querySelector(".board-name").textContent.toLowerCase();
+                if (!boardName.includes(val))
+                    boardItem.style.display = "none";
+                else
+                    boardItem.style.display = "block";
+            });
+
         });
     }
 
