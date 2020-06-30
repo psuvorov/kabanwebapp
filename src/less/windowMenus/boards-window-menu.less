@@ -1,8 +1,9 @@
 @import "src/less/constants";
+@import "src/less/default";
 
 .boards-window-menu {
 	.board-search-input {
-		width: 100%;
+		width: calc(~"100% - 2px");
 		box-sizing: border-box;
 		border: 1px solid #aaabaf;
 		padding: 2px;
@@ -13,12 +14,29 @@
 	.boards-list {
 		max-height: 220px;
 		overflow-y: auto;
-
+		display: flex;
+		align-items: flex-start;
+		flex-direction: column;
 
 		.board-item {
-			margin-top: 2px;
-			margin-bottom: 2px;
-			margin-left: 6px;
+			margin: 2px 0;
+			width: calc(~"100% - 12px");
+			height: 33px;
+			cursor: pointer;
+			border: 1px solid @border-color;
+			border-radius: @border-radius;
+			padding: 4px;
+
+			.board-name {
+				.truncate;
+			}
+
+			.board-description {
+				margin-top: 4px;
+				font-size: 12px;
+				.truncate;
+			}
+
 		}
 	}
 

@@ -54,9 +54,12 @@ export class BoardsWindowMenu extends WindowMenu {
             /** @type BoardShortInfoDto[] */
             (boards) => {
                 boards.forEach(board => {
-                    const boardItemElem = document.createElement("div");
-                    boardItemElem.classList.add("board-item");
-                    boardItemElem.innerHTML = `<a href="${ApplicationPageUrls.boardPage}?board_id=${board.id}" class="link">${board.name}</a>`;
+                    const description = board.description.replace(/<br \/>/g, "\r\n");
+
+                    const boardItemElem = document.createElement("a");
+                    boardItemElem.classList.add("board-item", "link");
+                    boardItemElem.setAttribute("href", `${ApplicationPageUrls.boardPage}?board_id=${board.id}`);
+                    boardItemElem.innerHTML = `<div class="board-name" title="${board.name}">${board.name}</div><div class="board-description" title="${description}">${description}</div>`;
                     boardsListElem.append(boardItemElem);
                 });
             },
