@@ -49,6 +49,7 @@ export class WindowMenu {
      * @protected
      */
     initialize() {
+        this.closePreviouslyOpened();
         this.windowMenuElem = document.createElement("div");
         this.windowMenuElem.classList.add("window-menu");
 
@@ -72,6 +73,15 @@ export class WindowMenu {
 
         // Close menu by clicking outside
         document.addEventListener("click", this.CloseByClickingOutsideEventHandler);
+    }
+
+    /**
+     * @private
+     */
+    closePreviouslyOpened() {
+        this.windowMenuElem = document.querySelector(".window-menu");
+        if (this.windowMenuElem)
+            this.close();
     }
 
     /**
