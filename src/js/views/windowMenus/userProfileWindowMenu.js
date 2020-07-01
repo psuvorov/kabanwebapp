@@ -15,6 +15,7 @@ import {WindowMenu} from "../components/windowMenu";
 import {BoardsWindowMenu} from "../windowMenus/boardsWindowMenu";
 import KabanBoardService from "../../services/kabanBoardService";
 import {AuthHelper} from "../helpers/AuthHelper";
+import {UserProfile} from "../windows/userProfile";
 
 export class UserProfileWindowMenu extends WindowMenu {
 
@@ -22,11 +23,16 @@ export class UserProfileWindowMenu extends WindowMenu {
      *
      * @param {HTMLElement} callerElem
      * @param {KabanBoardService} kabanBoardService
+     * @param {AuthService} authService
      */
-    constructor(callerElem, kabanBoardService) {
+    constructor(callerElem, kabanBoardService, authService) {
         super(callerElem, kabanBoardService);
 
-
+        /**
+         * @private
+         * @readonly
+         */
+        this.authService = authService;
 
     }
 
@@ -44,7 +50,7 @@ export class UserProfileWindowMenu extends WindowMenu {
                 </div>
                 <hr />
                 <div class="menu-items">
-                    <div><a class="link highlight" href="/user-page.html?userId=${user.id}">Edit profile</a></div>
+                    <div class="edit-profile"><span class="highlight link">Edit profile</span></div>
                     <div class="sign-out"><span class="highlight link">Sign Out</span></div>
                 </div>
             </div>`;
@@ -53,8 +59,13 @@ export class UserProfileWindowMenu extends WindowMenu {
     setupInteractions() {
         super.setupInteractions();
 
-
+        const editProfileLinkElem = this.windowMenuElem.querySelector(".edit-profile .link");
         const signOutLinkElem = this.windowMenuElem.querySelector(".sign-out .link");
+
+        editProfileLinkElem.addEventListener("click", () => {
+            this.close();
+            new UserProfile(this.authService).show();
+        });
 
 
         signOutLinkElem.addEventListener("click", () => {

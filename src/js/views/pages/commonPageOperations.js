@@ -97,7 +97,7 @@ export class CommonPageOperations {
         });
 
         profileElem.addEventListener("click", () => {
-            const windowMenu = new UserProfileWindowMenu(profileElem, this.kabanBoardService);
+            const windowMenu = new UserProfileWindowMenu(profileElem, this.kabanBoardService, this.authService);
             windowMenu.show();
         });
     }
