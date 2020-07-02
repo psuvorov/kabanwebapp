@@ -72,7 +72,7 @@ export class CardDetails {
 
     show() {
         this.cardDetailsWindowElem.classList.add("animated", "fadeIn");
-        this.cardDetailsWindowElem.style.display = "block";
+        this.cardDetailsWindowElem.style.display = "flex";
     }
 
     close() {
@@ -98,23 +98,47 @@ export class CardDetails {
      */
     initWindow() {
         this.cardDetailsWindowElem = document.createElement("div");
-        this.cardDetailsWindowElem.classList.add("card-details-window");
+        this.cardDetailsWindowElem.classList.add("base-window", "card-details-window");
         this.cardDetailsWindowElem.innerHTML = `
-            <div class="header">
-                <div class="icon-section"><i class="far fa-window-maximize"></i></div>
-                <div class="card-info">
-                    <div class="section-caption card-caption"><input type="text" value="${this.cardDetails.name}"></div>
-                    <div class="list-info">in list <span class="highlight link">${this.cardDetails.listName}</span></div>           
-                    <div class="tags">Card tags: </div>     
+            <div class="left-area">
+                <div class="section">
+                    <div class="icon-area">
+                        <div class="icon"><i class="far fa-window-maximize"></i></div>
+                    </div>
+                    <div class="content-area">
+                        <div class="caption"><input class="card-caption" type="text" value="${this.cardDetails.name}"></div>
+                        <div class="content">
+                            <div class="list-info">in list <span class="highlight link">${this.cardDetails.listName}</span></div>           
+                            <div class="tags">Card tags: </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="close-button"><i class="fas fa-times"></i></div>            
+                <div class="section">
+                    <div class="icon-area">
+                        <div class="icon"><i class="far fa-file-alt"></i></div>
+                    </div>
+                    <div class="content-area">
+                        <div class="caption">Description</div>
+                        <div class="content">
+                            <div class="description">${this.cardDetails.description}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="icon-area">
+                        <div class="icon"><i class="far fa-comments"></i></div>
+                    </div>
+                    <div class="content-area">
+                        <div class="caption">Comments</div>
+                        <div class="content">
+                            <div class="leave-comment">Leave a <span class="highlight link">new one</span></div>
+                            <div class="comments"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="main-area">
-                <div class="icon-section"><i class="far fa-file-alt"></i></div>
-                <div class="content">
-                    <div class="section-caption">Description</div>
-                    <div class="description">${this.cardDetails.description}</div>                
-                </div>
+            <div class="right-area">
+                <div class="close-button"><i class="fas fa-times"></i></div>
                 <div class="actions">
                     <div class="button edit"><i class="fas fa-file-alt"></i><span>Edit description</span></div>
                     <div class="button participants"><i class="fas fa-user-tie"></i><span>Participants</span></div>
@@ -122,14 +146,7 @@ export class CardDetails {
                     <div class="button card-cover"><i class="far fa-image"></i><span>Card cover</span></div>
                     <input id="card-cover-file-input" type="file" name="card-cover" style="display: none;" />
                     <div class="button archive"><i class="fas fa-archive"></i><span>Archive card</span></div>
-                </div>            
-            </div>
-            
-            <div class="comments-area">
-                <div class="icon-section"><i class="far fa-comments"></i></div>
-                <div class="section-caption">Comments</div>
-                <div class="leave-comment">Leave a <span class="highlight link">new one</span></div>
-                <div class="comments"></div>
+                </div>
             </div>
         `;
 
@@ -145,7 +162,7 @@ export class CardDetails {
      * @private
      */
     initElements() {
-        const cardCaptionInputElem = this.cardDetailsWindowElem.querySelector(".card-caption input");
+        const cardCaptionInputElem = this.cardDetailsWindowElem.querySelector(".card-caption");
 
         // Update card name after delay
         let cardNameUpdateTimeoutId = null;

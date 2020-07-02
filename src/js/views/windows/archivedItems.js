@@ -63,7 +63,7 @@ export class ArchivedItems {
         this.archivedItemsWindowElem.style.display = "none";
 
         let windowOverlayElem = this.archivedItemsWindowElem.parentElement;
-        windowOverlayElem.firstElementChild.style.display = "block";
+        windowOverlayElem.firstElementChild.style.display = "flex"; // restore Board Details window
 
         document.removeEventListener("keydown", this.keydownEventHandler);
     }

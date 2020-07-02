@@ -73,7 +73,7 @@ export class BoardDetails {
 
     show() {
         this.boardDetailsWindowElem.classList.add("animated", "fadeIn");
-        this.boardDetailsWindowElem.style.display = "block";
+        this.boardDetailsWindowElem.style.display = "flex";
     }
 
     close() {
@@ -96,30 +96,38 @@ export class BoardDetails {
      */
     initWindow() {
         this.boardDetailsWindowElem = document.createElement("div");
-        this.boardDetailsWindowElem.classList.add("board-details-window");
+        this.boardDetailsWindowElem.classList.add("base-window", "board-details-window");
 
         this.boardDetailsWindowElem.innerHTML = `
-            <div class="header">
-                <div class="close-button"><i class="fas fa-times"></i></div>            
-            </div>
-            <div class="main-area">                
-                <div class="content">
-                    <div class="section">
+            <div class="left-area">
+                <div class="section">
+                    <div class="icon-area">
                         <div class="icon"><i class="fas fa-user"></i></div>
+                    </div>
+                    <div class="content-area">
                         <div class="caption">Author info</div>
-                        <div class="info">
-                            <div class="author-title">${this.boardDetails.author.firstName} ${this.boardDetails.author.lastName}</div>
-                            <div class="author-username">@${this.boardDetails.author.username}</div>
+                        <div class="content">
+                            <div class="avatar"></div>
+                            <div class="title">${this.boardDetails.author.firstName} ${this.boardDetails.author.lastName}</div>
+                            <div class="username">@${this.boardDetails.author.username}</div>      
+                            <div class="email">Available by <a class="link highlight" href="mailto:${this.boardDetails.author.email}">${this.boardDetails.author.email}</a></div>
                         </div>
                     </div>
-                    <div class="section">
+                </div>
+                <div class="section">
+                    <div class="icon-area">
                         <div class="icon"><i class="far fa-file-alt"></i></div>
+                    </div>
+                    <div class="content-area">
                         <div class="caption">Board description</div>
-                        <div class="info">
+                        <div class="content">
                             <div class="board-description">${this.boardDetails.description}</div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="right-area">
+                <div class="close-button"><i class="fas fa-times"></i></div>
                 <div class="actions">
                     <div class="button edit-description"><i class="fas fa-file-alt"></i><span>Edit descriptions</span></div>
                     <div class="button board-participants"><i class="fas fa-user-tie"></i><span>Board participants</span></div>
@@ -127,7 +135,7 @@ export class BoardDetails {
                     <input id="board-wallpaper-file-input" type="file" name="board-wallpaper" style="display: none;" />
                     <div class="button archived-items"><i class="fas fa-archive"></i><span>Archived items</span></div>
                     <div class="button close-board"><i class="far fa-window-close"></i><span>Close board</span></div>
-                </div>            
+                </div>
             </div>
         `;
 
