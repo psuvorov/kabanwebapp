@@ -69,21 +69,24 @@ export class RegisterUserDto {
 export class UpdateUserDto {
 
     /**
-     *
-     * @param {string} firstName
-     * @param {string} lastName
-     * @param {string} username
-     * @param {string} password
+     * @param {string} id
+     * @param {string | null} firstName
+     * @param {string | null} lastName
+     * @param {string | null} username
+     * @param {string | null} currentPassword
+     * @param {string | null} newPassword
      */
-    constructor(firstName, lastName, username, password) {
+    constructor(id, firstName, lastName, currentPassword, newPassword) {
+        /** @readonly */
+        this.id = id;
         /** @readonly */
         this.firstName = firstName;
         /** @readonly */
         this.lastName = lastName;
         /** @readonly */
-        this.username = username;
+        this.currentPassword = currentPassword;
         /** @readonly */
-        this.password = password;
+        this.newPassword = newPassword;
     }
 }
 
@@ -106,5 +109,4 @@ export class UserDto {
         /** @readonly */
         this.username = username;
     }
-
 }

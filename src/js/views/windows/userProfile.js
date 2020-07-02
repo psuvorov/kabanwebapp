@@ -1,4 +1,13 @@
 import {ApplicationUser} from "../../application/applicationUser";
+import {AuthenticateUserDto, UpdateUserDto} from "../../dtos/users";
+import {ApplicationPageUrls, LocalStorageKeys} from "../../constants";
+import {
+    DialogTypes,
+    ModalWindow,
+    ModalWindowElement,
+    ModalWindowElementTypes,
+    ModalWindowFactory
+} from "../components/modalWindow";
 
 export class UserProfile {
 
@@ -110,7 +119,55 @@ export class UserProfile {
 
         const changePasswordElem = this.userProfileWindowElem.querySelector(".change-password");
         changePasswordElem.addEventListener("click", () => {
-            console.log("change password");
+
+            /** @type ModalWindow */
+            let modalWindow = null;
+
+            const callbacks = [
+
+                /**
+                 *
+                 * @param {string} serializedFormData
+                 */
+                    (serializedFormData) => {
+                    // Ok pressed
+
+                    const updateUserDtoRaw = JSON.parse(serializedFormData);
+                    if (updateUserDtoRaw.newPassword !== "" && updateUserDtoRaw.newPassword !== updateUserDtoRaw.newPasswordAgain) {
+                        modalWindow.close();
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of changing password. Reason: You didn't input equal passwords twice.`);
+                        return;
+                    }
+
+                    const applicationUser = ApplicationUser.getApplicationUserFromStorage();
+
+                    /** @type UpdateUserDto */
+                    const updateUserDto = new UpdateUserDto(applicationUser.id, null, null, updateUserDtoRaw.currentPassword, updateUserDtoRaw.newPassword);
+
+                    this.authService.updateUser(updateUserDto,
+                        () => {
+                        ModalWindowFactory.showInfoOkMessage("Success", "Password has been changed");
+                        modalWindow.close();
+                    }, (error) => {
+                        console.error(error);
+                        modalWindow.close();
+                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of changing password. Reason: ${error}`);
+                    });
+                },
+                () => {
+                    // Cancel pressed
+                    modalWindow.close();
+                }
+            ];
+
+            const windowElements = [
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.PasswordInput, "currentPassword", "Current password", ""),
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.PasswordInput, "newPassword", "New password", ""),
+                ModalWindowElement.initPrimitiveElement(ModalWindowElementTypes.PasswordInput, "newPasswordAgain", "New password again", "")
+            ];
+
+            modalWindow = new ModalWindow("Change password", DialogTypes.OkCancel, callbacks, windowElements);
+            modalWindow.show();
         });
 
         const userAvatarElem = this.userProfileWindowElem.querySelector(".user-avatar");

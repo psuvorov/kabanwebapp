@@ -72,5 +72,42 @@ export default class AuthService {
         });
     }
 
+    /**
+     *
+     * @param {UpdateUserDto} updateUserDto
+     * @param {function} onSuccess
+     * @param {function} onError
+     */
+    updateUser(updateUserDto, onSuccess, onError) {
+        const applicationUser = ApplicationUser.getApplicationUserFromStorage();
+
+        fetch(ServerBaseApiUrl + "/users/update-user", {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + applicationUser.token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updateUserDto)
+        }).then(res => {
+            if (res.status === 200) {
+                return {};
+            } else if (res.status === 400) {
+                return res.json();
+            } else {
+                throw new Error(res.status + " " + res.statusText);
+            }
+        }).then(res => {
+            if (res.hasOwnProperty("message")) {
+                onError(res.message);
+            } else if (res.hasOwnProperty("title")) {
+                onError(res.title);
+            } else {
+                onSuccess();
+            }
+        }).catch(error => {
+            onError(error);
+        });
+    }
+
 
 }
