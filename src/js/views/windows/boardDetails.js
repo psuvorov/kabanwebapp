@@ -100,9 +100,6 @@ export class BoardDetails {
 
         this.boardDetailsWindowElem.innerHTML = `
             <div class="header">
-                <div class="board-info">
-                    <div class="section-caption board-caption">Board info</div>
-                </div>
                 <div class="close-button"><i class="fas fa-times"></i></div>            
             </div>
             <div class="main-area">                
@@ -113,7 +110,6 @@ export class BoardDetails {
                         <div class="info">
                             <div class="author-title">${this.boardDetails.author.firstName} ${this.boardDetails.author.lastName}</div>
                             <div class="author-username">@${this.boardDetails.author.username}</div>
-                            <a class="author-page link highlight" href="/user-page.html?userId=${this.boardDetails.author.id}">Edit profile</a>
                         </div>
                     </div>
                     <div class="section">
