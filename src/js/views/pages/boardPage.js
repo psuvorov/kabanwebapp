@@ -760,13 +760,15 @@ export class BoardPage {
         const coverPlaceholderElem = document.createElement("div");
         coverPlaceholderElem.classList.add("card-cover");
         if (card.coverImagePath) {
-            coverPlaceholderElem.style.backgroundImage = `url(${ServerBaseUrl + card.coverImagePath})`;
             coverPlaceholderElem.style.display = "block";
             if (card.coverImageOrientation === ImageOrientation.vertical)
                 coverPlaceholderElem.classList.add("vertical-orientation");
             else
                 coverPlaceholderElem.classList.add("horizontal-orientation");
         }
+        const imgElem = document.createElement("img");
+        imgElem.setAttribute("src", ServerBaseUrl + card.coverImagePath);
+        coverPlaceholderElem.append(imgElem);
         listCardElem.append(coverPlaceholderElem);
 
         const cardTitleElem = document.createElement("span");
