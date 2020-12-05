@@ -275,14 +275,12 @@ export class CardDetails {
             this.filesService.setCardCover(formData, this.currentBoardId, this.cardDetails.id,
                 (res) => {
                     const coverPlaceholderElem = this.cardElem.querySelector(".card-cover");
+                    coverPlaceholderElem.style.backgroundImage = `url(${ServerBaseUrl + res.coverImagePath})`;
                     coverPlaceholderElem.style.display = "block";
                     if (res.orientation === ImageOrientation.vertical)
                         coverPlaceholderElem.classList.add("vertical-orientation");
                     else
                         coverPlaceholderElem.classList.add("horizontal-orientation");
-
-                    const imgElem = coverPlaceholderElem.querySelector("img");
-                    imgElem.setAttribute("src", ServerBaseUrl + res.coverImagePath);
                 },
                 (error) => {
                     console.error(error);
