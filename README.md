@@ -21,7 +21,7 @@ For the backend please see **kabanserver** repo.
 - Searching user boards
 - User profile management (at least as a sketch)
 
-There are many features I'd like to implement, like users collaboration, tagging, etc. Little by little I'm going to implement them, plus many other ones. 
+There are many features I'd like to implement, like users collaboration, tagging, email notifications, etc. Little by little I'm going to implement them, plus many other ones. 
 
 
 A couple of screens:
