@@ -1,6 +1,8 @@
 ![Alt text](./github%20images/Project%20logo.png?raw=true "Project logo")
 
-My own implementation of a kanban board made just for fun and nothing more. Web client. For the backend please see **kabanserver** repo.
+My own implementation of a kanban board made just for fun and nothing more. Web client. 
+
+For the backend please see **kabanserver** repo.
 
 **Used technologies / design approaches:**
 - Old fashioned non-SPA site
