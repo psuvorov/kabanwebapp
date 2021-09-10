@@ -1,25 +1,25 @@
 import {ApplicationUser} from "../application/applicationUser";
 import {LocalStorageKeys, ServerBaseApiUrl} from "../constants";
-import {BoardDto} from "../dtos/boards";
-import {AuthenticatedUserDto} from "../dtos/users";
 
-export default class AuthService {
+export default class UsersService {
 
+    constructor() {
+        this.endpointRootName = "users";
+    }
 
     /**
      *
-     * @param {AuthenticateUserDto} authenticateUserDto
+     * @param {any} authenticateUser
      * @param {function} onSuccess
      * @param {function} onError
      */
-    authenticate(authenticateUserDto, onSuccess, onError) {
-
-        fetch(ServerBaseApiUrl + "/users/authenticate-user", {
+    authenticate(authenticateUser, onSuccess, onError) {
+        fetch(`${ServerBaseApiUrl}/${this.endpointRootName}/authenticate-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(authenticateUserDto)
+            body: JSON.stringify(authenticateUser)
         }).then(res => {
             if (res.status === 200 || res.status === 400) {
                 return res.json();
@@ -32,8 +32,14 @@ export default class AuthService {
             } else if (res.hasOwnProperty("title")) {
                 onError(res.title);
             } else {
-                const currentUser = new AuthenticatedUserDto(res.id, res.firstName, res.lastName, res.username, res.email, res.token);
-                onSuccess(currentUser);
+                onSuccess({
+                    id: res.id,
+                    firstName: res.firstName,
+                    lastName: res.lastName,
+                    username: res.username,
+                    email: res.email,
+                    token: res.token
+                });
             }
         }).catch(error => {
             onError(error);
@@ -42,19 +48,19 @@ export default class AuthService {
 
     /**
      *
-     * @param {RegisterUserDto} registerUserDto
+     * @param {any} registerUser
      * @param {function} onSuccess
      * @param {function} onError
      */
-    register(registerUserDto, onSuccess, onError) {
-        fetch(ServerBaseApiUrl + "/users/register-user", {
+    register(registerUser, onSuccess, onError) {
+        fetch(`${ServerBaseApiUrl}/${this.endpointRootName}/register-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(registerUserDto)
+            body: JSON.stringify(registerUser)
         }).then(res => {
-            if (res.status === 201 || res.status === 400) {
+            if (res.status === 200 || res.status === 400) {
                 return res.json();
             }  else if (res.hasOwnProperty("title")) {
                 onError(res.title);
@@ -65,7 +71,7 @@ export default class AuthService {
             if (res.hasOwnProperty("message")) {
                 onError(res.message);
             } else {
-                onSuccess({userId: res.userId});
+                onSuccess({userId: res.entityId});
             }
         }).catch(error => {
             onError(error);
@@ -74,20 +80,20 @@ export default class AuthService {
 
     /**
      *
-     * @param {UpdateUserDto} updateUserDto
+     * @param {any} updateUser
      * @param {function} onSuccess
      * @param {function} onError
      */
-    updateUser(updateUserDto, onSuccess, onError) {
+    updateUser(updateUser, onSuccess, onError) {
         const applicationUser = ApplicationUser.getApplicationUserFromStorage();
 
-        fetch(ServerBaseApiUrl + "/users/update-user", {
+        fetch(`${ServerBaseApiUrl}/${this.endpointRootName}/update-user`, {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + applicationUser.token,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(updateUserDto)
+            body: JSON.stringify(updateUser)
         }).then(res => {
             if (res.status === 200) {
                 return {};
@@ -108,6 +114,4 @@ export default class AuthService {
             onError(error);
         });
     }
-
-
 }

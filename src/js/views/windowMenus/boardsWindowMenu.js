@@ -1,10 +1,5 @@
 import {WindowMenu} from "../components/windowMenu";
-import {CreateBoardDto} from "../../dtos/boards";
 import {
-    DialogTypes,
-    ModalWindow,
-    ModalWindowElement,
-    ModalWindowElementTypes,
     ModalWindowFactory
 } from "../components/modalWindow";
 import {ApplicationPageUrls} from "../../constants";
@@ -13,16 +8,18 @@ import utils from "../../utils";
 import {BoardsHelper} from "../helpers/BoardsHelper";
 
 export class BoardsWindowMenu extends WindowMenu {
-
-
     /**
      *
      * @param callerElem
-     * @param kabanBoardService
+     * @param dashboardsService
+     * @param boardsService
      * @param {DashboardPage} dashboardPage
      */
-    constructor(callerElem, kabanBoardService, dashboardPage) {
-        super(callerElem, kabanBoardService);
+    constructor(callerElem, dashboardsService, boardsService, dashboardPage) {
+        super(callerElem);
+
+        this.dashboardsService = dashboardsService;
+        this.boardsService = boardsService;
 
         this.dashboardPage = dashboardPage;
     }
@@ -43,6 +40,7 @@ export class BoardsWindowMenu extends WindowMenu {
                 
             </div>`;
 
+        this.setupInteractions();
         this.drawAvailableBoards();
     }
 
@@ -53,9 +51,7 @@ export class BoardsWindowMenu extends WindowMenu {
         const boardsListElem = this.windowMenuElem.querySelector(".boards-list");
         utils.removeAllChildren(".boards-list");
 
-
-        this.kabanBoardService.getUserBoards(
-            /** @type BoardShortInfoDto[] */
+        this.dashboardsService.getUserBoards(
             (boards) => {
                 boards.forEach(board => {
                     const description = board.description.replace(/<br \/>/g, "\r\n");
@@ -75,7 +71,6 @@ export class BoardsWindowMenu extends WindowMenu {
             });
     }
 
-
     setupInteractions() {
         super.setupInteractions();
 
@@ -86,7 +81,7 @@ export class BoardsWindowMenu extends WindowMenu {
 
         createBoardLinkElem.addEventListener("click", (e) => {
             this.close();
-            (new BoardsHelper).createBoard(this.kabanBoardService);
+            (new BoardsHelper).createBoard(this.boardsService);
         });
 
         closedBoardsLinkElem.addEventListener("click", () => {
@@ -96,7 +91,7 @@ export class BoardsWindowMenu extends WindowMenu {
             if (this.dashboardPage) // if it's the Dashboard Page
                 refreshCallbacks.push(this.dashboardPage.initBoardsList.bind(this.dashboardPage));
 
-            const closedBoards = new ClosedBoards(this.kabanBoardService, refreshCallbacks);
+            const closedBoards = new ClosedBoards(this.dashboardsService, this.boardsService, refreshCallbacks);
             closedBoards.show();
         });
 
@@ -110,9 +105,6 @@ export class BoardsWindowMenu extends WindowMenu {
                 else
                     boardItem.style.display = "block";
             });
-
         });
     }
-
-
 }

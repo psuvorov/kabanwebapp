@@ -1,18 +1,23 @@
 import {Table} from "../components/table";
 import {ModalWindowFactory} from "../components/modalWindow";
 import {PopupMenu, PopupMenuItem} from "../components/popupMenu";
-import {UpdateCardDto} from "../../dtos/cards";
-import {UpdateBoardDto} from "../../dtos/boards";
 
 export class ClosedBoards {
 
-    constructor(kabanBoardService, refreshCallbacks) {
+    constructor(dashboardsService, boardsService, refreshCallbacks) {
         /**
          * @private
          * @readonly
-         * @type {KabanBoardService}
+         * @type {DashboardsService}
          */
-        this.kabanBoardService = kabanBoardService;
+        this.dashboardsService = dashboardsService;
+
+        /**
+         * @private
+         * @readonly
+         * @type {BoardsService}
+         */
+        this.boardsService = boardsService;
 
         /**
          * @private
@@ -109,7 +114,7 @@ export class ClosedBoards {
      * @private
      */
     loadData() {
-        this.kabanBoardService.getClosedUserBoards(
+        this.dashboardsService.getClosedUserBoards(
             (boards) => {
                 console.log(boards);
 
@@ -125,8 +130,7 @@ export class ClosedBoards {
                         ModalWindowFactory.showYesNoQuestion("Restore board", "Do you want to restore this board?",
                             () => {
 
-                                const updateBoardDto = new UpdateBoardDto(boardId, null, null, false);
-                                this.kabanBoardService.updateBoardInfo(updateBoardDto,
+                                this.boardsService.updateBoardInfo(boardId, {id: boardId, isClosed: false},
                                     () => {
                                         trElem.remove();
 
@@ -139,7 +143,6 @@ export class ClosedBoards {
                             },
                             () => {
                             });
-
                     }),
                     new PopupMenuItem("Remove board",() => {
                         const trElem = popupMenu.getCaller().parentElement.parentElement;
@@ -148,7 +151,7 @@ export class ClosedBoards {
                         popupMenu.close();
                         ModalWindowFactory.showYesNoQuestion("Remove board", "Do you want to remove this board?",
                             () => {
-                                this.kabanBoardService.deleteBoard(boardId,
+                                this.boardsService.deleteBoard(boardId,
                                     () => {
                                         trElem.remove();
                                     },
@@ -194,11 +197,4 @@ export class ClosedBoards {
                 ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting closed boards. Reason: ${error}`);
             });
     }
-
-
-
-
-
-
-
 }

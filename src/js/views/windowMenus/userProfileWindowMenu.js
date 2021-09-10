@@ -1,19 +1,5 @@
-import {
-    ModalWindow,
-    DialogTypes,
-    ModalWindowElementTypes,
-    ModalWindowElement,
-    ModalWindowFactory
-} from "../components/modalWindow";
-import {ServerBaseApiUrl, LocalStorageKeys, ApplicationPageUrls} from "../../constants";
-import {AuthenticatedUserDto, AuthenticateUserDto, RegisterUserDto} from "../../dtos/users";
 import {ApplicationUser} from "../../application/applicationUser";
-import AuthService from "../../services/authService";
-import {PopupMenu, PopupMenuItem} from "../components/popupMenu";
-import {UpdateCardDto} from "../../dtos/cards";
 import {WindowMenu} from "../components/windowMenu";
-import {BoardsWindowMenu} from "../windowMenus/boardsWindowMenu";
-import KabanBoardService from "../../services/kabanBoardService";
 import {AuthHelper} from "../helpers/AuthHelper";
 import {UserProfile} from "../windows/userProfile";
 
@@ -22,20 +8,17 @@ export class UserProfileWindowMenu extends WindowMenu {
     /**
      *
      * @param {HTMLElement} callerElem
-     * @param {KabanBoardService} kabanBoardService
-     * @param {AuthService} authService
+     * @param {UsersService} usersService
      */
-    constructor(callerElem, kabanBoardService, authService) {
-        super(callerElem, kabanBoardService);
+    constructor(callerElem, usersService) {
+        super(callerElem);
 
         /**
          * @private
          * @readonly
          */
-        this.authService = authService;
-
+        this.usersService = usersService;
     }
-
 
     initialize() {
         super.initialize();
@@ -54,6 +37,8 @@ export class UserProfileWindowMenu extends WindowMenu {
                     <div class="sign-out"><span class="highlight link">Sign Out</span></div>
                 </div>
             </div>`;
+
+        this.setupInteractions();
     }
 
     setupInteractions() {
@@ -67,11 +52,8 @@ export class UserProfileWindowMenu extends WindowMenu {
             new UserProfile(this.authService).show();
         });
 
-
         signOutLinkElem.addEventListener("click", () => {
             (new AuthHelper).signOut();
         });
-
     }
-
 }

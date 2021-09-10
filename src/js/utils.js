@@ -124,6 +124,4 @@ export default class Utils {
             parentElem.firstElementChild.remove();
         }
     }
-
-
 }

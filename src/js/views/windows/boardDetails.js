@@ -1,5 +1,3 @@
-import utils from "../../utils";
-import {UpdateCardDto} from "../../dtos/cards";
 import {
     DialogTypes,
     ModalWindow,
@@ -7,9 +5,7 @@ import {
     ModalWindowElementTypes,
     ModalWindowFactory
 } from "../components/modalWindow";
-import {UpdateBoardDto} from "../../dtos/boards";
-import {ImageOrientation, ServerBaseUrl} from "../../constants";
-import {Table} from "../components/table";
+import {ServerBaseUrl} from "../../constants";
 import {ArchivedItems} from "./archivedItems";
 
 export class BoardDetails {
@@ -17,12 +13,13 @@ export class BoardDetails {
     /**
      *
      * @param {string} boardId
-     * @param {BoardDetailsDto} boardDetails
-     * @param {KabanBoardService} kabanBoardService
-     * @param {FilesService} filesService
+     * @param {any} boardDetails
+     * @param {BoardsService} boardsService
+     * @param {ListsService} listsService
+     * @param {CardsService} cardsService
      * @param {Function} drawBoardCb
      */
-    constructor(boardId, boardDetails, kabanBoardService, filesService, drawBoardCb) {
+    constructor(boardId, boardDetails, boardsService, listsService, cardsService, drawBoardCb) {
 
         /**
          * @private
@@ -40,23 +37,30 @@ export class BoardDetails {
         /**
          * @private
          * @readonly
-         * @type {BoardDetailsDto}
+         * @type {any}
          */
         this.boardDetails = boardDetails;
 
         /**
          * @private
          * @readonly
-         * @type {KabanBoardService}
+         * @type {BoardsService}
          */
-        this.kabanBoardService = kabanBoardService;
+        this.boardsService = boardsService;
 
         /**
          * @private
          * @readonly
-         * @type {FilesService}
+         * @type {ListsService}
          */
-        this.filesService = filesService;
+        this.listsService = listsService;
+
+        /**
+         * @private
+         * @readonly
+         * @type {CardsService}
+         */
+        this.cardsService = cardsService;
 
         /**
          * @private
@@ -150,7 +154,6 @@ export class BoardDetails {
      * @private
      */
     initElements() {
-
         const closeButtonElem = this.boardDetailsWindowElem.querySelector(".close-button");
         closeButtonElem.addEventListener("click", (e) => {
             this.close();
@@ -172,11 +175,9 @@ export class BoardDetails {
                     const newDescriptionRaw = JSON.parse(serializedFormData).description; // to be set to html right now
                     const newDescription = newDescriptionRaw.replace(/\r?\n/g, "<br />"); // server version with <br /> tags
 
-
-                    const updateBoardDto = new UpdateBoardDto(this.boardDetails.id, null, newDescription, null);
-                    this.kabanBoardService.updateBoardInfo(updateBoardDto,
+                    this.boardsService.updateBoardInfo(this.currentBoardId, {boardId: this.boardDetails.id, description: newDescription},
                         () => {
-                            this.boardDetails.description = updateBoardDto.description;
+                            this.boardDetails.description = newDescription;
                             this.boardDetailsWindowElem.querySelector(".board-description").innerText = newDescriptionRaw;
 
                             modalWindow.close();
@@ -186,8 +187,6 @@ export class BoardDetails {
                             modalWindow.close();
                             ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of editing board description. Reason: ${error}`);
                         });
-
-
                 },
                 () => {
                     // Cancel pressed
@@ -220,7 +219,7 @@ export class BoardDetails {
             const fileExtensionWithDot = boardWallpaperInputElem.files[0].name.substring(boardWallpaperInputElem.files[0].name.lastIndexOf("."));
             formData.append("imageFile", boardWallpaperInputElem.files[0], "board-" + this.currentBoardId + fileExtensionWithDot);
 
-            this.filesService.setBoardWallpaper(formData, this.currentBoardId,
+            this.boardsService.setBoardWallpaper(this.currentBoardId, formData,
                 (res) => {
                     const pageContainerElem = document.querySelector(".page-container");
                     pageContainerElem.style.backgroundImage = `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(${ServerBaseUrl + res.wallpaperPath})`;
@@ -235,7 +234,7 @@ export class BoardDetails {
 
         const archivedItemsButtonElem = this.boardDetailsWindowElem.querySelector(".actions .archived-items");
         archivedItemsButtonElem.addEventListener("click", (e) => {
-            const archivedItems = new ArchivedItems(this.currentBoardId, this.kabanBoardService, this.drawBoardCb);
+            const archivedItems = new ArchivedItems(this.currentBoardId, this.listsService, this.cardsService, this.drawBoardCb);
             archivedItems.show();
         });
 
@@ -244,8 +243,7 @@ export class BoardDetails {
 
             ModalWindowFactory.showYesNoQuestion("Close board", "Do you want to close this board?",
                 () => {
-                    const updateBoardDto = new UpdateBoardDto(this.currentBoardId, null, null, true);
-                    this.kabanBoardService.updateBoardInfo(updateBoardDto,
+                    this.boardsService.updateBoardInfo(this.currentBoardId, {boardId: this.currentBoardId, isClosed: true},
                         () => {
                             location.href = "/dashboard.html";
                         },
@@ -256,7 +254,6 @@ export class BoardDetails {
                 });
         });
 
-
         this.keydownEventHandler = (e) => {
             if (e.key === "Escape") {
                 e.preventDefault();
@@ -265,7 +262,4 @@ export class BoardDetails {
         };
         document.addEventListener("keydown", this.keydownEventHandler);
     }
-
-
-
 }

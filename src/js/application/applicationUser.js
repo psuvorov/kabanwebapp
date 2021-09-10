@@ -1,48 +1,24 @@
 import {LocalStorageKeys} from "../constants";
-import {AuthenticateUserDto, AuthenticatedUserDto} from "../dtos/users";
 
 export class ApplicationUser {
 
-    /**
-     *
-     * @param {string} id
-     * @param {string} firstName
-     * @param {string} lastName
-     * @param {string} username
-     * @param {string} email
-     * @param {string} token
-     */
-    constructor(id, firstName, lastName, username, email, token) {
-
-        /** @readonly */
-        this.id = id;
-        /** @readonly */
-        this.firstName = firstName;
-        /** @readonly */
-        this.lastName = lastName;
-        /** @readonly */
-        this.username = username;
-        /** @readonly */
-        this.email = email;
-        /** @readonly */
-        this.token = token;
-    }
-
-    /**
-     *
-     * @param {AuthenticatedUserDto} authenticatedUserDto
-     */
-    static fromAuthenticatedUserDto(authenticatedUserDto) {
-        if (this.checkFields(authenticatedUserDto) === false)
+    static fromAuthenticatedUserDto(authenticatedUser) {
+        if (!this.hasValidFields(authenticatedUser))
             return null;
 
-        return new ApplicationUser(authenticatedUserDto.id, authenticatedUserDto.firstName,
-            authenticatedUserDto.lastName, authenticatedUserDto.username, authenticatedUserDto.email, authenticatedUserDto.token);
+        return {
+            id: authenticatedUser.id,
+            firstName: authenticatedUser.firstName,
+            lastName: authenticatedUser.lastName,
+            username: authenticatedUser.username,
+            email: authenticatedUser.email,
+            token: authenticatedUser.token
+        };
     }
 
     /**
      *
-     * @return {ApplicationUser}
+     * @return {any}
      */
     static getApplicationUserFromStorage() {
         const currentUserRaw = localStorage.getItem(LocalStorageKeys.currentUser);
@@ -51,19 +27,25 @@ export class ApplicationUser {
 
         const currentUserParsed = JSON.parse(currentUserRaw);
 
-        if (this.checkFields(currentUserParsed) === false)
+        if (!this.hasValidFields(currentUserParsed))
             return null;
 
-        return new ApplicationUser(currentUserParsed.id, currentUserParsed.firstName,
-            currentUserParsed.lastName, currentUserParsed.username, currentUserParsed.email, currentUserParsed.token);
+        return {
+            id: currentUserParsed.id,
+            firstName: currentUserParsed.firstName,
+            lastName: currentUserParsed.lastName,
+            username: currentUserParsed.username,
+            email: currentUserParsed.email,
+            token: currentUserParsed.token
+        };
     }
 
     /**
      * @private
-     * @param userObject
+     * @param {any} userObject
      * @return {boolean}
      */
-    static checkFields(userObject) {
+    static hasValidFields(userObject) {
         return (userObject.hasOwnProperty("id") &&
             userObject.hasOwnProperty("firstName") &&
             userObject.hasOwnProperty("lastName") &&

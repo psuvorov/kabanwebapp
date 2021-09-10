@@ -1,6 +1,4 @@
-import {CardDetailsDto, UpdateCardDto} from "../../dtos/cards";
 import utils from "../../utils";
-import {CreateBoardDto, UpdateBoardDto} from "../../dtos/boards";
 import {
     DialogTypes,
     ModalWindow,
@@ -16,12 +14,11 @@ export class CardDetails {
     /**
      *
      * @param {string} currentBoardId
-     * @param {CardDetailsDto} cardDetails
-     * @param {KabanBoardService} kabanBoardService
-     * @param {FilesService} filesService
+     * @param {any} cardDetails
+     * @param {CardsService} cardsService
      * @param {HTMLElement} cardElem
      */
-    constructor(currentBoardId, cardDetails, kabanBoardService, filesService, cardElem) {
+    constructor(currentBoardId, cardDetails, cardsService, cardElem) {
 
         /**
          * @private
@@ -39,7 +36,7 @@ export class CardDetails {
         /**
          * @private
          * @readonly
-         * @type {CardDetailsDto}
+         * @type {any}
          */
         this.cardDetails = cardDetails;
 
@@ -53,16 +50,9 @@ export class CardDetails {
         /**
          * @private
          * @readonly
-         * @type {KabanBoardService}
+         * @type {CardsService}
          */
-        this.kabanBoardService = kabanBoardService;
-
-        /**
-         * @private
-         * @readonly
-         * @type {FilesService}
-         */
-        this.filesService = filesService;
+        this.cardsService = cardsService;
 
         /** @private */
         this.keydownEventHandler = null;
@@ -88,9 +78,6 @@ export class CardDetails {
     initialize() {
         this.initWindow();
         this.initElements();
-
-
-
     }
 
     /**
@@ -155,7 +142,6 @@ export class CardDetails {
         windowOverlayElem.append(this.cardDetailsWindowElem);
 
         document.body.append(windowOverlayElem);
-
     }
 
     /**
@@ -169,14 +155,13 @@ export class CardDetails {
         cardCaptionInputElem.addEventListener("keyup", (e) => {
             clearTimeout(cardNameUpdateTimeoutId);
 
-
             cardNameUpdateTimeoutId = setTimeout(() => {
                 if (utils.isNullOrWhitespace(e.target.value)) {
                     e.target.value = this.cardDetails.name;
                 }
                 e.target.blur();
 
-                this.kabanBoardService.updateCard(new UpdateCardDto(this.cardDetails.id, e.target.value, null, null, this.cardDetails.listId, null),
+                this.cardsService.updateCard(this.currentBoardId, {cardId: this.cardDetails.id, name: e.target.value, listId: this.cardDetails.listId},
                     () => {
                         console.log("Card name updated");
                         this.cardElem.querySelector("span").innerText = e.target.value;
@@ -185,7 +170,6 @@ export class CardDetails {
                         console.error(error);
                         ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of setting new card name. Reason: ${error}`);
                     });
-
             }, 1000);
         });
 
@@ -193,7 +177,6 @@ export class CardDetails {
         listNameLinkElem.addEventListener("click", (e) => {
             console.log("list name click");
         });
-
 
         const closeButtonElem = this.cardDetailsWindowElem.querySelector(".close-button");
         closeButtonElem.addEventListener("click", (e) => {
@@ -213,14 +196,12 @@ export class CardDetails {
                     (serializedFormData) => {
                     // Ok pressed
 
-
                     const newDescriptionRaw = JSON.parse(serializedFormData).description; // to be set to html right now
                     const newDescription = newDescriptionRaw.replace(/\r?\n/g, "<br />"); // server version with <br /> tags
 
-                    const updateCardDto = new UpdateCardDto(this.cardDetails.id, null, newDescription, null, this.cardDetails.listId, null);
-                    this.kabanBoardService.updateCard(updateCardDto,
+                    this.cardsService.updateCard(this.currentBoardId, {cardId: this.cardDetails.id, description: newDescription, listId: this.cardDetails.listId},
                         () => {
-                            this.cardDetails.description = updateCardDto.description;
+                            this.cardDetails.description = newDescription;
                             this.cardDetailsWindowElem.querySelector(".description").innerText = newDescriptionRaw;
 
                             modalWindow.close();
@@ -230,8 +211,6 @@ export class CardDetails {
                             modalWindow.close();
                             ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of editing card description. Reason: ${error}`);
                         });
-
-
                 },
                 () => {
                     // Cancel pressed
@@ -246,8 +225,6 @@ export class CardDetails {
 
             modalWindow = new ModalWindow("Edit card description", DialogTypes.OkCancel, callbacks, windowElements);
             modalWindow.show();
-
-
         });
 
         const participantsButtonElem = this.cardDetailsWindowElem.querySelector(".actions .participants");
@@ -272,7 +249,7 @@ export class CardDetails {
             const fileExtensionWithDot = cardCoverInputElem.files[0].name.substring(cardCoverInputElem.files[0].name.lastIndexOf("."));
             formData.append("imageFile", cardCoverInputElem.files[0], "card-" + this.cardDetails.id + fileExtensionWithDot);
 
-            this.filesService.setCardCover(formData, this.currentBoardId, this.cardDetails.id,
+            this.cardsService.setCardCover(this.currentBoardId, this.cardDetails.id, formData,
                 (res) => {
                     const coverPlaceholderElem = this.cardElem.querySelector(".card-cover");
                     coverPlaceholderElem.style.backgroundImage = `url(${ServerBaseUrl + res.coverImagePath})`;
@@ -290,7 +267,7 @@ export class CardDetails {
 
         const archiveButtonElem = this.cardDetailsWindowElem.querySelector(".actions .archive");
         archiveButtonElem.addEventListener("click", (e) => {
-            (new CardsHelper).archiveCard(this.kabanBoardService, this.cardElem, this);
+            (new CardsHelper).archiveCard(this.currentBoardId, this.cardsService, this.cardElem, this);
         });
 
         const leaveCommentLinkElem = this.cardDetailsWindowElem.querySelector(".leave-comment .link");
@@ -304,10 +281,7 @@ export class CardDetails {
                 this.close();
             }
         };
+
         document.addEventListener("keydown", this.keydownEventHandler);
-
     }
-
-
-
 }

@@ -406,7 +406,6 @@ export class ModalWindow {
 
         return buttonElem;
     }
-
 }
 
 export class ModalWindowFactory {
@@ -475,6 +474,4 @@ export class ModalWindowFactory {
         modalWindow = new ModalWindow(title, DialogTypes.YesNo, callbacks, windowElements);
         modalWindow.show();
     }
-
 }
-

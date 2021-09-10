@@ -5,9 +5,8 @@ export class WindowMenu {
     /**
      *
      * @param {HTMLElement} callerElem
-     * @param {KabanBoardService} kabanBoardService
      */
-    constructor(callerElem, kabanBoardService) {
+    constructor(callerElem) {
 
         /**
          * @private
@@ -15,13 +14,6 @@ export class WindowMenu {
          * @type {HTMLElement}
          */
         this.callerElem = callerElem;
-
-        /**
-         * @protected
-         * @readonly
-         * @type {KabanBoardService}
-         */
-        this.kabanBoardService = kabanBoardService;
 
         /**
          * @protected
@@ -40,10 +32,9 @@ export class WindowMenu {
         /** @private */
         this.CloseByClickingOutsideEventHandler = null;
 
-        this.initialize();
-        this.setupInteractions();
+        // this.initialize();
+        // this.setupInteractions();
     }
-
 
     /**
      * @protected
@@ -91,13 +82,10 @@ export class WindowMenu {
 
     }
 
-
     show() {
         this.windowMenuElem.classList.add("animated", "fadeIn");
         this.windowMenuElem.style.display = "flex";
     }
-
-
 
     close() {
         document.removeEventListener("keydown", this.CloseByEscapeEventHandler);
@@ -106,8 +94,4 @@ export class WindowMenu {
         this.windowMenuElem.style.display = "none";
         this.windowMenuElem.remove();
     }
-
-
-
-
 }

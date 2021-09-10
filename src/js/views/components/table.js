@@ -1,6 +1,5 @@
 export class Table {
-
-
+    // TODO: try to give more meaningful name for the component
 
     constructor() {
         /**
@@ -11,7 +10,7 @@ export class Table {
 
         /**
          * @private
-         * @type {{columnName: string, columnTitle: string}[]}
+         * @type {{columnName: string, columnTitle: string, hidden: boolean | undefined, type: string | undefined, width: string | undefined}[]}
          */
         this.columns = null;
 
@@ -19,7 +18,6 @@ export class Table {
          * @private
          */
         this.datasource = null;
-
 
         this.initialize();
     }
@@ -30,7 +28,6 @@ export class Table {
     initialize() {
         this.tableElem = document.createElement("table");
         this.tableElem.classList.add("table");
-
     }
 
     /**
@@ -49,8 +46,6 @@ export class Table {
         this.clearTableElement();
         this.setColumns(columns);
         this.setData(data);
-
-
     }
 
     clearTableElement() {
@@ -92,7 +87,7 @@ export class Table {
     setData(data) {
         this.datasource = data;
 
-        const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit', hour:'2-digit', minute: '2-digit'};
+        const dateOptions = {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'};
 
         const tbodyElem = document.createElement("tbody");
 
@@ -129,9 +124,4 @@ export class Table {
 
         this.tableElem.append(tbodyElem);
     }
-
-
-
-
-
 }

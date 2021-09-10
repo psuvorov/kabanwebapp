@@ -1,6 +1,4 @@
 import {ApplicationUser} from "../../application/applicationUser";
-import {AuthenticateUserDto, UpdateUserDto} from "../../dtos/users";
-import {ApplicationPageUrls, LocalStorageKeys} from "../../constants";
 import {
     DialogTypes,
     ModalWindow,
@@ -11,12 +9,11 @@ import {
 
 export class UserProfile {
 
-
     /**
      *
-     * @param {AuthService} authService
+     * @param {UsersService} usersService
      */
-    constructor(authService) {
+    constructor(usersService) {
 
         /**
          * @private
@@ -28,9 +25,9 @@ export class UserProfile {
         /**
          * @private
          * @readonly
-         * @type {AuthService}
+         * @type {UsersService}
          */
-        this.authService = authService;
+        this.usersService = usersService;
 
         /**
          * @private
@@ -63,7 +60,6 @@ export class UserProfile {
     initialize() {
         this.initWindow();
         this.initElements();
-
     }
 
     /**
@@ -105,7 +101,6 @@ export class UserProfile {
         windowOverlayElem.append(this.userProfileWindowElem);
 
         document.body.append(windowOverlayElem);
-
     }
 
     /**
@@ -119,7 +114,6 @@ export class UserProfile {
 
         const changePasswordElem = this.userProfileWindowElem.querySelector(".change-password");
         changePasswordElem.addEventListener("click", () => {
-
             /** @type ModalWindow */
             let modalWindow = null;
 
@@ -141,10 +135,11 @@ export class UserProfile {
 
                     const applicationUser = ApplicationUser.getApplicationUserFromStorage();
 
-                    /** @type UpdateUserDto */
-                    const updateUserDto = new UpdateUserDto(applicationUser.id, null, null, updateUserDtoRaw.currentPassword, updateUserDtoRaw.newPassword);
-
-                    this.authService.updateUser(updateUserDto,
+                    this.usersService.updateUser({
+                            id: applicationUser.id,
+                            currentPassword: updateUserDtoRaw.currentPassword,
+                            newPassword: updateUserDtoRaw.newPassword
+                        },
                         () => {
                         ModalWindowFactory.showInfoOkMessage("Success", "Password has been changed");
                         modalWindow.close();
@@ -189,7 +184,4 @@ export class UserProfile {
         };
         document.addEventListener("keydown", this.keydownEventHandler);
     }
-
-
-
 }

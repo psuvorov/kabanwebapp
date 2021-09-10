@@ -1,19 +1,17 @@
 import {Table} from "../components/table";
 import {ModalWindowFactory} from "../components/modalWindow";
-import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/popupMenu";
-import {CardsHelper} from "../helpers/CardsHelper";
-import {UpdateCardDto} from "../../dtos/cards";
-import {UpdateListDto} from "../../dtos/lists";
+import {PopupMenu, PopupMenuItem} from "../components/popupMenu";
 
 export class ArchivedItems {
 
     /**
      *
      * @param {string} currentBoardId
-     * @param {KabanBoardService} kabanBoardService
+     * @param {ListsService} listsService
+     * @param {CardsService} cardsService
      * @param {Function} drawBoardCb
      */
-    constructor(currentBoardId, kabanBoardService, drawBoardCb) {
+    constructor(currentBoardId, listsService, cardsService, drawBoardCb) {
 
         /**
          * @private
@@ -25,9 +23,16 @@ export class ArchivedItems {
         /**
          * @private
          * @readonly
-         * @type {KabanBoardService}
+         * @type {ListsService}
          */
-        this.kabanBoardService = kabanBoardService;
+        this.listsService = listsService;
+
+        /**
+         * @private
+         * @readonly
+         * @type {CardsService}
+         */
+        this.cardsService = cardsService;
 
         /**
          * @private
@@ -68,14 +73,12 @@ export class ArchivedItems {
         document.removeEventListener("keydown", this.keydownEventHandler);
     }
 
-
     /**
      * @private
      */
     initialize() {
         this.initWindow();
         this.initElements();
-
 
         let archivedTypesElem = this.archivedItemsWindowElem.querySelector(".archived-types");
         archivedTypesElem.addEventListener("change", (e) => {
@@ -145,7 +148,7 @@ export class ArchivedItems {
      * @private
      */
     loadArchivedCards() {
-        this.kabanBoardService.getArchivedCards(this.currentBoardId,
+        this.cardsService.getArchivedCards(this.currentBoardId,
             (cards) => {
                 console.log(cards);
 
@@ -161,8 +164,7 @@ export class ArchivedItems {
                         ModalWindowFactory.showYesNoQuestion("Restore card", "Do you want to restore this card?",
                             () => {
 
-                                const updateCardDto = new UpdateCardDto(cardId, null, null, null, null, false);
-                                this.kabanBoardService.updateCard(updateCardDto,
+                                this.cardsService.updateCard(this.currentBoardId, {cardId, isArchived: false},
                                     () => {
                                         trElem.remove();
 
@@ -185,7 +187,7 @@ export class ArchivedItems {
                         popupMenu.close();
                         ModalWindowFactory.showYesNoQuestion("Remove card", "Do you want to remove this card?",
                             () => {
-                                this.kabanBoardService.deleteCard(cardId,
+                                this.cardsService.deleteCard(this.currentBoardId, cardId,
                                     () => {
                                         trElem.remove();
                                     },
@@ -239,14 +241,13 @@ export class ArchivedItems {
                 console.error(error);
                 ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting archived cards. Reason: ${error}`);
             });
-
     }
 
     /**
      * @private
      */
     loadArchivedLists() {
-        this.kabanBoardService.getArchivedLists(this.currentBoardId,
+        this.listsService.getArchivedLists(this.currentBoardId,
             (lists) => {
                 console.log(lists);
 
@@ -261,8 +262,7 @@ export class ArchivedItems {
                         popupMenu.close();
                         ModalWindowFactory.showYesNoQuestion("Restore list", "Do you want to restore this list?",
                             () => {
-                                const updateListDto = new UpdateListDto(listId, null, null, false);
-                                this.kabanBoardService.updateList(updateListDto,
+                                this.listsService.updateList(this.currentBoardId, {listId, isArchived: false},
                                     () => {
                                         trElem.remove();
 
@@ -285,7 +285,7 @@ export class ArchivedItems {
                         popupMenu.close();
                         ModalWindowFactory.showYesNoQuestion("Remove list", "Do you want to remove this list?",
                             () => {
-                                this.kabanBoardService.deleteList(listId,
+                                this.listsService.deleteList(this.currentBoardId, listId,
                                     () => {
                                         trElem.remove();
                                     },
@@ -336,9 +336,4 @@ export class ArchivedItems {
                 ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting archived lists. Reason: ${error}`);
             });
     }
-
-
-
-
-
 }

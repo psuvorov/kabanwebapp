@@ -8,17 +8,15 @@ import {
     ModalWindowFactory
 } from "../components/modalWindow";
 import {PopupMenu, PopupMenuItem, PopupMenuItemSeparator} from "../components/popupMenu";
-import KabanBoardService from "../../services/kabanBoardService";
-import {BoardDto, BoardShortInfoDto, CreateBoardDto, UpdateBoardDto} from "../../dtos/boards";
 import utils from "../../utils";
-import {CreateListDto, UpdateListDto, RenumberListDto, CopyListDto} from "../../dtos/lists";
-import {CardDto, CreateCardDto, RenumberCardDto, UpdateCardDto} from "../../dtos/cards";
 import {LoadingScreen} from "../components/loadingScreen";
 import {CardDetails} from "../windows/cardDetails";
 import {BoardDetails} from "../windows/boardDetails";
-import FilesService from "../../services/filesService";
 import {CardsHelper} from "../helpers/CardsHelper";
 import {ListsHelper} from "../helpers/ListsHelper";
+import BoardsService from "../../services/boardsService";
+import {ListsService} from "../../services/listsService";
+import {CardsService} from "../../services/cardsService";
 
 export class BoardPage {
 
@@ -50,16 +48,23 @@ export class BoardPage {
         /**
          * @private
          * @readonly
-         * @type {KabanBoardService}
+         * @type {BoardsService}
          */
-        this.kabanBoardService = new KabanBoardService();
+        this.boardsService = new BoardsService();
 
         /**
          * @private
          * @readonly
-         * @type {FilesService}
+         * @type {ListsService}
          */
-        this.filesService = new FilesService();
+        this.listsService = new ListsService();
+
+        /**
+         * @private
+         * @readonly
+         * @type {CardsService}
+         */
+        this.cardsService = new CardsService();
 
         /**
          * @private
@@ -90,7 +95,6 @@ export class BoardPage {
     initialize() {
         this.drawBoard();
         this.setupInteractions();
-
     }
 
     /**
@@ -111,34 +115,33 @@ export class BoardPage {
 
         this.loadingScreen.show();
 
-        this.kabanBoardService.getBoard(this.currentBoardId,
-            /** @type BoardDto */
-            (board) => {
-                boardTitleElem.value = board.name;
-                boardTitleElem.setAttribute("data-board-name", board.name); // as a fallback in attempt setting null empty value
-                board.lists.forEach(/** @type ListDto */list => {
-                    this.addListToBoard(list.id, list.name, list.orderNumber);
+        this.boardsService.getBoard(this.currentBoardId,
+        (board) => {
+            boardTitleElem.value = board.name;
+            boardTitleElem.setAttribute("data-board-name", board.name); // as a fallback in attempt setting null empty value
+            board.lists.forEach(list => {
+                this.addListToBoard(list.id, list.name, list.orderNumber);
 
-                    /** @type HTMLElement */
-                    const justAddedListElem = listContainerElem.querySelector(`[data-list-id="${list.id}"]`);
-                    list.cards.forEach(/** @type CardDto */card => {
-                        this.addCardToList(justAddedListElem, card);
-                    });
+                /** @type HTMLElement */
+                const justAddedListElem = listContainerElem.querySelector(`[data-list-id="${list.id}"]`);
+                list.cards.forEach(card => {
+                    this.addCardToList(justAddedListElem, card);
                 });
-
-                this.boardInformation.description = board.description;
-
-                const pageContainerElem = document.querySelector(".page-container");
-                pageContainerElem.style.backgroundImage = `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(${ServerBaseUrl + board.wallpaperPath})`;
-                pageContainerElem.style.display = "block";
-
-                this.loadingScreen.close();
-            },
-            (error) => {
-                console.error(error);
-                this.loadingScreen.close();
-                ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting user board. Reason: ${error}`);
             });
+
+            this.boardInformation.description = board.description;
+
+            const pageContainerElem = document.querySelector(".page-container");
+            pageContainerElem.style.backgroundImage = `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(${ServerBaseUrl + board.wallpaperPath})`;
+            pageContainerElem.style.display = "block";
+
+            this.loadingScreen.close();
+        },
+        (error) => {
+            console.error(error);
+            this.loadingScreen.close();
+            ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting user board. Reason: ${error}`);
+        });
     }
 
     /**
@@ -154,20 +157,18 @@ export class BoardPage {
         boardTitleElem.addEventListener("keyup", (e) => {
             clearTimeout(boardNameUpdateTimeoutId);
 
-
             boardNameUpdateTimeoutId = setTimeout(() => {
                 if (utils.isNullOrWhitespace(e.target.value)) {
                     e.target.value = boardTitleElem.getAttribute("data-board-name");
                 }
                 e.target.blur();
 
-                this.kabanBoardService.updateBoardInfo(new UpdateBoardDto(this.currentBoardId, e.target.value, null, null),
+                this.boardsService.updateBoardInfo(this.currentBoardId, {boardId: this.currentBoardId, name: e.target.value},
                     () => {},
                     (error) => {
                         console.error(error);
                         ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of setting new board name. Reason: ${error}`);
                     });
-
             }, 1000);
         });
 
@@ -194,7 +195,7 @@ export class BoardPage {
                     }
                     e.target.blur();
 
-                    this.kabanBoardService.updateList(new UpdateListDto(listId, e.target.value, parseInt(listOrderNumber), null),
+                    this.listsService.updateList(this.currentBoardId, {listId, name: e.target.value, orderNumber: parseInt(listOrderNumber)},
                         () => {},
                         (error) => {
                             console.error(error);
@@ -214,11 +215,9 @@ export class BoardPage {
             const cardMenuButtonElem = e.target.closest(".card-menu-button");
             const listCardElem = e.target.closest(".list-card");
 
-
             if (cardComposerElem) {
                 this.createNewCard(cardComposerElem.closest(".list"));
             } else if (listMenuButtonElem) {
-
                 const listElem = e.target.closest(".list");
 
                 /** @type PopupMenu */
@@ -239,7 +238,7 @@ export class BoardPage {
                     }),
                     new PopupMenuItemSeparator(),
                     new PopupMenuItem("Archive list",() => {
-                        (new ListsHelper).archiveList(this.kabanBoardService, listElem);
+                        (new ListsHelper).archiveList(this.currentBoardId, this.listsService, listElem);
                         popupMenu.close();
                     })
                 ];
@@ -264,7 +263,7 @@ export class BoardPage {
                     }),
                     new PopupMenuItemSeparator(),
                     new PopupMenuItem("Archive card",() => {
-                        (new CardsHelper).archiveCard(this.kabanBoardService, cardElem);
+                        (new CardsHelper).archiveCard(this.currentBoardId, this.cardsService, cardElem);
                         popupMenu.close();
                     })
                 ];
@@ -274,10 +273,7 @@ export class BoardPage {
             } else if (listCardElem) {
                 this.openCardDetails(listCardElem);
             }
-
         });
-
-
 
         pageContainerElem.addEventListener("dragstart", (e) => {
             this.transferredData = null;
@@ -314,7 +310,6 @@ export class BoardPage {
                     elementType: "list",
                     listRef: listElem
                 };
-
             }
         });
 
@@ -425,7 +420,10 @@ export class BoardPage {
                 const listA = this.currentPlaceholderData.listElemRef;
                 const listB = this.transferredData.listRef;
 
-                this.kabanBoardService.updateCard(new UpdateCardDto(cardId, null, null, null, listId, null),
+                this.cardsService.updateCard(this.currentBoardId, {
+                        cardId,
+                        listId
+                    },
                     () => {
                         // Renumber all cards in new order for the list in which the card was placed
                         this.renumberAllCardsInList(listA);
@@ -437,7 +435,6 @@ export class BoardPage {
                         console.error(error);
                         ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of changing card's list. Reason: ${error}`);
                     });
-
             } else if (this.transferredData.elementType === "list") {
                 /** @type Element */
                 const listContainerElem = document.querySelector(".lists-container");
@@ -459,31 +456,25 @@ export class BoardPage {
             this.clearPlaceholderData();
         });
 
-
         const boardDetailsButtonElem = pageContainerElem.querySelector(".board-details-button");
         boardDetailsButtonElem.addEventListener("click", (e) => {
 
-            this.kabanBoardService.getBoardDetails(this.currentBoardId,
+            this.boardsService.getBoardDetails(this.currentBoardId,
                 (boardDetailsDto) => {
-                    const boardDetails = new BoardDetails(this.currentBoardId, boardDetailsDto, this.kabanBoardService, this.filesService, this.drawBoard.bind(this));
+                    const boardDetails = new BoardDetails(this.currentBoardId, boardDetailsDto, this.boardsService, this.listsService, this.cardsService, this.drawBoard.bind(this));
                     boardDetails.show();
                 },
                 (error) => {
                     console.error(error);
                     ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of getting board details. Reason: ${error}`);
                 });
-
-
         });
     }
-
-
 
     /**
      * @private
      */
     createNewList() {
-
         /** @type ModalWindow */
         let modalWindow = null;
 
@@ -498,13 +489,12 @@ export class BoardPage {
 
                 const createListDtoRaw = JSON.parse(serializedFormData);
 
-                /** @type CreateListDto */
-                const createListDto = new CreateListDto(createListDtoRaw.name, lastListOrderNumber + 1, this.currentBoardId);
-
-                this.kabanBoardService.createList(createListDto,
+                this.listsService.createList(this.currentBoardId,{
+                        name: createListDtoRaw.name,
+                        orderNumber: lastListOrderNumber + 1,
+                        boardId: this.currentBoardId},
                     (data) => {
-
-                        this.addListToBoard(data.listId, createListDto.name, createListDto.orderNumber);
+                        this.addListToBoard(data.listId, createListDtoRaw.name, lastListOrderNumber + 1);
                         modalWindow.close();
                     },
                     (error) => {
@@ -530,12 +520,12 @@ export class BoardPage {
     copyList(listElem) {
         this.loadingScreen.show();
 
-        const copyListDto = new CopyListDto(listElem.getAttribute("data-list-id"), this.currentBoardId);
-        this.kabanBoardService.copyList(copyListDto,
+        let listId = listElem.getAttribute("data-list-id");
+
+        this.listsService.copyList(this.currentBoardId, listId,
             (data) => {
                 const copiedListId = data.listId;
-                this.kabanBoardService.getList(copiedListId, this.currentBoardId,
-                    /** @type {ListDto} */
+                this.listsService.getList(this.currentBoardId, copiedListId,
                     (list) => {
                         const listContainerElem = document.querySelector(".lists-container");
 
@@ -543,7 +533,7 @@ export class BoardPage {
 
                         /** @type HTMLElement */
                         const justAddedListElem = listContainerElem.querySelector(`[data-list-id="${list.id}"]`);
-                        list.cards.forEach(/** @type CardDto */card => {
+                        list.cards.forEach(card => {
                             this.addCardToList(justAddedListElem, card);
                         });
 
@@ -578,22 +568,12 @@ export class BoardPage {
 
         const cardId = cardElem.getAttribute("data-card-id");
 
-
-        this.kabanBoardService.getCardDetails(cardId, this.currentBoardId,
-            /** @type CardDetailsDto */
+        this.cardsService.getCardDetails(this.currentBoardId, cardId,
             (cardDetails) => {
-
                 console.log(cardDetails);
 
-                const cardDetailsWindow = new CardDetails(this.currentBoardId, cardDetails, this.kabanBoardService, this.filesService, cardElem);
+                const cardDetailsWindow = new CardDetails(this.currentBoardId, cardDetails, this.cardsService, cardElem);
                 cardDetailsWindow.show();
-
-
-
-
-
-
-
             },
             (error) => {
                 console.error(error);
@@ -646,7 +626,6 @@ export class BoardPage {
         // modalWindow.show();
     }
 
-
     /**
      * @private
      * @param {string} listId
@@ -682,7 +661,6 @@ export class BoardPage {
 
         const listContainerElem = document.querySelector(".lists-container");
 
-
         if (!utils.isInit(position)) {
             const fakeListWrapperElem = document.querySelector(".fake-list").parentElement;
             listContainerElem.insertBefore(listWrapperElem, fakeListWrapperElem);
@@ -713,13 +691,23 @@ export class BoardPage {
                 const lastCardNumber = this.getCardLastOrderNumber(listElem);
                 const createCardDtoRaw = JSON.parse(serializedFormData);
 
-                /** @type CreateCardDto */
-                const createCardDto = new CreateCardDto(createCardDtoRaw.name, "", lastCardNumber + 1, listId);
+                const createCard = {
+                    name: createCardDtoRaw.name,
+                    description: "",
+                    orderNumber: lastCardNumber + 1,
+                    listId: listId
+                };
 
-                this.kabanBoardService.createCard(createCardDto,
+                this.cardsService.createCard(this.currentBoardId, createCard,
                     (data) => {
-                        const card = new CardDto(data.cardId, createCardDto.name, createCardDto.orderNumber, "", "", "");
-                        this.addCardToList(listElem, card);
+                        this.addCardToList(listElem, {
+                            cardId: data.cardId,
+                            name: createCard.name,
+                            orderNumber: createCard.orderNumber,
+                            coverImagePath: "",
+                            coverImageOrientation: "",
+                            listId: ""
+                        });
                         modalWindow.close();
                     },
                     (error) => {
@@ -731,7 +719,6 @@ export class BoardPage {
             () => {
                 // Cancel pressed
                 modalWindow.close();
-
             }
         ];
 
@@ -746,7 +733,7 @@ export class BoardPage {
     /**
      * @private
      * @param {HTMLElement} listElem
-     * @param {CardDto} card
+     * @param {any} card
      */
     addCardToList(listElem, card) {
         const listCardsElem = listElem.querySelector(".list-cards");
@@ -813,9 +800,8 @@ export class BoardPage {
     getCardLastOrderNumber(listElem) {
         const lastCardElem = listElem.querySelector(".list-cards").lastElementChild;
 
-        if (lastCardElem) {
+        if (lastCardElem)
             return parseInt(lastCardElem.getAttribute("data-order-number"));
-        }
 
         return 0;
     }
@@ -944,6 +930,7 @@ export class BoardPage {
                 this.currentPlaceholderData.placeholderRef.remove();
             else
                 this.currentPlaceholderData.placeholderRef.parentElement.remove();
+
             this.currentPlaceholderData = null;
         }
     }
@@ -953,19 +940,18 @@ export class BoardPage {
      * @param {HTMLElement} listElem
      */
     renumberAllCardsInList(listElem) {
-        /** @type RenumberCardDto[] */
         const renumberedCards = [];
 
         const listCardsElem = listElem.querySelector(":scope > .list-cards");
         listCardsElem.children.forEach((cardElem, idx) => {
             const cardId = cardElem.getAttribute("data-card-id");
             const orderNumber = idx + 1;
-            renumberedCards.push(new RenumberCardDto(cardId, orderNumber));
+            renumberedCards.push({cardId, orderNumber});
 
             cardElem.setAttribute("data-order-number", orderNumber.toString());
         });
 
-        this.kabanBoardService.renumberAllCardsInList(this.currentBoardId, renumberedCards, () => {}, (error) => {
+        this.cardsService.reorderCardsInList(this.currentBoardId, renumberedCards, () => {}, (error) => {
             console.error(error);
             ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of updating list's order numbers. Reason: ${error}`);
         });
@@ -975,7 +961,6 @@ export class BoardPage {
      * @private
      */
     renumberAllLists() {
-        /** @type RenumberListDto[] */
         const renumberedLists = [];
 
         const listsContainerElem = document.querySelector(".lists-container");
@@ -983,16 +968,14 @@ export class BoardPage {
         lists.forEach((listElem, idx) => {
             const listId = listElem.getAttribute("data-list-id");
             const orderNumber = idx + 1;
-            renumberedLists.push(new RenumberListDto(listId, orderNumber));
+            renumberedLists.push({listId, orderNumber: orderNumber});
 
             listElem.setAttribute("data-order-number", orderNumber.toString());
         });
 
-        this.kabanBoardService.renumberAllLists(this.currentBoardId, renumberedLists, () => {}, (error) => {
+        this.listsService.reorderLists(this.currentBoardId, renumberedLists, () => {}, (error) => {
             console.error(error);
             ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of updating list's order numbers. Reason: ${error}`);
         });
     }
 }
-
-

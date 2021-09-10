@@ -1,15 +1,12 @@
 import {WindowMenu} from "../components/windowMenu";
-import {ApplicationPageUrls} from "../../constants";
 
-export class NotificationsWindowMenu extends WindowMenu{
-
+export class NotificationsWindowMenu extends WindowMenu {
     /**
      *
      * @param callerElem
-     * @param kabanBoardService
      */
-    constructor(callerElem, kabanBoardService) {
-        super(callerElem, kabanBoardService);
+    constructor(callerElem) {
+        super(callerElem);
     }
 
     initialize() {
@@ -21,8 +18,6 @@ export class NotificationsWindowMenu extends WindowMenu{
                 
             </div>`;
 
-
+        this.setupInteractions();
     }
-
-
 }

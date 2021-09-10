@@ -1,31 +1,33 @@
 import {ModalWindowFactory} from "../components/modalWindow";
-import {UpdateCardDto} from "../../dtos/cards";
 
 export class CardsHelper {
 
-
     /**
-     * @param {KabanBoardService} kabanBoardService
+     * @param boardId
+     * @param {CardsService} cardsService
      * @param {HTMLElement} cardElem
-     * @param caller // IClosable
+     * @param caller
      */
-    archiveCard(kabanBoardService, cardElem, caller = null) {
-        ModalWindowFactory.showYesNoQuestion("Archive card", "Do you wand to archive this card?",
+    archiveCard(boardId, cardsService, cardElem, caller = null) {
+        ModalWindowFactory.showYesNoQuestion("Archive card", "Do you want to archive this card?",
             () => {
-                const cardId = cardElem.getAttribute("data-card-id");
-                kabanBoardService.updateCard(new UpdateCardDto(cardId, null, null, null, null, true),
-                    (res) => {
-                        cardElem.remove();
-                        if (caller) {
-                            if (caller) // lack of interfaces...
-                                caller.close();
-                        }
-                    },
-                    (error) => {
-                        console.error(error);
-                        ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of updating card. Reason: ${error}`);
-                    });
-            });
-    }
 
+            const cardId = cardElem.getAttribute("data-card-id");
+            cardsService.updateCard(boardId, {
+                    cardId,
+                    isArchived: true
+                },
+                (res) => {
+                    cardElem.remove();
+                    if (caller) {
+                        if (caller)
+                            caller.close();
+                    }
+                },
+                (error) => {
+                    console.error(error);
+                    ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of updating card. Reason: ${error}`);
+                });
+        });
+    }
 }

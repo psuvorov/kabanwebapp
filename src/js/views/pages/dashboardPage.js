@@ -1,17 +1,13 @@
 import {LocalStorageKeys, ServerBaseApiUrl, ApplicationPageUrls, ServerBaseUrl} from "../../constants";
 import {ApplicationUser} from "../../application/applicationUser";
-import {BoardDto, CreateBoardDto} from "../../dtos/boards";
 import {
-    ModalWindow,
-    DialogTypes,
-    ModalWindowElementTypes,
-    ModalWindowElement,
     ModalWindowFactory
 } from "../components/modalWindow";
 import utils from "../../utils";
 import {LoadingScreen} from "../components/loadingScreen";
-import KabanBoardService from "../../services/kabanBoardService";
 import {BoardsHelper} from "../helpers/BoardsHelper";
+import {DashboardsService} from "../../services/dashboardsService";
+import BoardsService from "../../services/boardsService";
 
 export class DashboardPage {
 
@@ -25,9 +21,15 @@ export class DashboardPage {
 
         /**
          * @private
-         * @type {KabanBoardService}
+         * @type {DashboardsService}
          */
-        this.kabanBoardService = new KabanBoardService();
+        this.dashboardsService = new DashboardsService();
+
+        /**
+         * @private
+         * @type {BoardsService}
+         */
+        this.boardsService = new BoardsService();
 
         /**
          * @private
@@ -38,16 +40,11 @@ export class DashboardPage {
 
     initialize() {
         this.initBoardsList();
-
     }
 
-
-
     initBoardsList() {
-
         this.loadingScreen.show();
-        this.kabanBoardService.getUserBoards(
-            /** @type BoardShortInfoDto[] */
+        this.dashboardsService.getUserBoards(
             (boards) => {
                 this.initUserBoards(boards);
                 this.loadingScreen.close();
@@ -61,7 +58,7 @@ export class DashboardPage {
 
     /**
      *
-     * @param {BoardShortInfoDto[]} boards
+     * @param {any[]} boards
      */
     initUserBoards(boards) {
         const boardsContainerElem = document.querySelector(".boards-container");
@@ -95,12 +92,10 @@ export class DashboardPage {
             const createOneLink = dashboardTopDescriptionElem.querySelector("span");
 
             createOneLink.addEventListener("click", (e) => {
-                (new BoardsHelper).createBoard(this.kabanBoardService);
+                (new BoardsHelper).createBoard(this.boardsService);
             });
         } else {
             dashboardTopDescriptionElem.innerText = `Here are all your boards:`;
         }
     }
-
-
 }

@@ -1,49 +1,45 @@
-import {
-    ModalWindow,
-    DialogTypes,
-    ModalWindowElementTypes,
-    ModalWindowElement,
-    ModalWindowFactory
-} from "../components/modalWindow";
-import {ServerBaseApiUrl, LocalStorageKeys, ApplicationPageUrls} from "../../constants";
-import {AuthenticatedUserDto, AuthenticateUserDto, RegisterUserDto} from "../../dtos/users";
 import {ApplicationUser} from "../../application/applicationUser";
-import AuthService from "../../services/authService";
-import {PopupMenu, PopupMenuItem} from "../components/popupMenu";
-import {UpdateCardDto} from "../../dtos/cards";
-import {WindowMenu} from "../components/windowMenu";
+import UsersService from "../../services/usersService";
 import {BoardsWindowMenu} from "../windowMenus/boardsWindowMenu";
-import KabanBoardService from "../../services/kabanBoardService";
 import {UserProfileWindowMenu} from "../windowMenus/userProfileWindowMenu";
 import {NotificationsWindowMenu} from "../windowMenus/notificationsWindowMenu";
 import {AuthHelper} from "../helpers/AuthHelper";
+import {DashboardsService} from "../../services/dashboardsService";
+import BoardsService from "../../services/boardsService";
 
 export class CommonPageOperations {
-
 
     constructor(pages) {
         /**
          * @private
-         * @type {AuthService}
+         * @type {UsersService}
          */
-        this.authService = new AuthService();
+        this.authService = new UsersService();
 
         /**
          * @private
-         * @type {KabanBoardService}
+         * @type {DashboardsService}
          */
-        this.kabanBoardService = new KabanBoardService();
+        this.dashboardsService = new DashboardsService();
+
+        /**
+         * @private
+         * @type {BoardsService}
+         */
+        this.boardsService = new BoardsService();
+
+        /**
+         * @private
+         * @type {UsersService}
+         */
+        this.usersService = new UsersService();
 
         this.pages = pages;
-
-
     }
 
     initialize() {
         this.initTopLeftItems();
         this.initTopRightItems();
-
-
     }
 
     /**
@@ -87,17 +83,20 @@ export class CommonPageOperations {
         });
 
         boardsListElem.addEventListener("click", () => {
-            const windowMenu = new BoardsWindowMenu(boardsListElem, this.kabanBoardService, this.pages.dashboardPage);
+            const windowMenu = new BoardsWindowMenu(boardsListElem, this.dashboardsService, this.boardsService, this.pages.dashboardPage);
+            windowMenu.initialize();
             windowMenu.show();
         });
 
         notificationsElem.addEventListener("click", () => {
-            const windowMenu = new NotificationsWindowMenu(notificationsElem, this.kabanBoardService);
+            const windowMenu = new NotificationsWindowMenu(notificationsElem);
+            windowMenu.initialize();
             windowMenu.show();
         });
 
         profileElem.addEventListener("click", () => {
-            const windowMenu = new UserProfileWindowMenu(profileElem, this.kabanBoardService, this.authService);
+            const windowMenu = new UserProfileWindowMenu(profileElem, this.usersService);
+            windowMenu.initialize();
             windowMenu.show();
         });
     }
@@ -119,9 +118,5 @@ export class CommonPageOperations {
             userAreaElem.classList.remove("hidden");
         }
     }
-
-
-
-
 }
 

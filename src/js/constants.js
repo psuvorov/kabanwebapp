@@ -1,6 +1,6 @@
 
-export const ServerBaseUrl = "http://localhost:5000";
-export const ServerBaseApiUrl = "http://localhost:5000/api";
+export const ServerBaseUrl = "https://localhost:5001";
+export const ServerBaseApiUrl = "https://localhost:5001/api";
 
 export const LocalStorageKeys = Object.freeze({
     currentUser: "currentUser"

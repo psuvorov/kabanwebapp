@@ -1,4 +1,3 @@
-import {CreateBoardDto} from "../../dtos/boards";
 import {ApplicationPageUrls} from "../../constants";
 import {
     DialogTypes,
@@ -11,9 +10,9 @@ import {
 export class BoardsHelper {
 
     /**
-     * @param {KabanBoardService} kabanBoardService
+     * @param {BoardsService} boardsService
      */
-    createBoard(kabanBoardService) {
+    createBoard(boardsService) {
         /** @type ModalWindow */
         let modalWindow = null;
 
@@ -26,9 +25,10 @@ export class BoardsHelper {
                 // Ok pressed
 
                 const createBoardDtoRaw = JSON.parse(serializedFormData);
-                /** @type CreateBoardDto */
-                const createBoardDto = new CreateBoardDto(createBoardDtoRaw.name, createBoardDtoRaw.description);
-                kabanBoardService.createBoard(createBoardDto,
+                boardsService.createBoard({
+                        name: createBoardDtoRaw.name,
+                        description: createBoardDtoRaw.description
+                    },
                     (res) => {
                         modalWindow.close();
 
@@ -55,5 +55,4 @@ export class BoardsHelper {
         modalWindow = new ModalWindow("Create new board", DialogTypes.OkCancel, callbacks, windowElements);
         modalWindow.show();
     }
-
 }

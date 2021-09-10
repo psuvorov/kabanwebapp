@@ -1,4 +1,3 @@
-import {AuthenticateUserDto, RegisterUserDto} from "../../dtos/users";
 import {
     DialogTypes,
     ModalWindow,
@@ -13,9 +12,9 @@ export class AuthHelper {
 
     /**
      *
-     * @param {AuthService} authService
+     * @param {UsersService} usersService
      */
-    signUp(authService) {
+    signUp(usersService) {
         /** @type ModalWindow */
         let modalWindow = null;
 
@@ -27,20 +26,21 @@ export class AuthHelper {
                 // Ok pressed
 
                 const registerUserDtoRaw = JSON.parse(serializedFormData);
-                /** @type RegisterUserDto */
-                const registerUserDto = new RegisterUserDto(registerUserDtoRaw.firstName, registerUserDtoRaw.lastName,
-                    registerUserDtoRaw.username, registerUserDtoRaw.email, registerUserDtoRaw.password);
 
-                authService.register(registerUserDto, (userId) => {
+                usersService.register({
+                    firstName: registerUserDtoRaw.firstName,
+                    lastName: registerUserDtoRaw.lastName,
+                    username: registerUserDtoRaw.username,
+                    email: registerUserDtoRaw.email,
+                    password: registerUserDtoRaw.password
+                }, (userId) => {
                     modalWindow.close();
                     ModalWindowFactory.showInfoOkMessage("User created", "User has been successfully created");
-
                 }, (error) => {
                     console.error(error);
                     modalWindow.close();
                     ModalWindowFactory.showErrorOkMessage("Error occurred", `Error of signing up. Reason: ${error}`);
                 });
-
             },
             () => {
                 // Cancel pressed
@@ -62,9 +62,9 @@ export class AuthHelper {
 
     /**
      *
-     * @param {AuthService} authService
+     * @param {UsersService} usersService
      */
-    signIn(authService) {
+    signIn(usersService) {
         /** @type ModalWindow */
         let modalWindow = null;
 
@@ -78,16 +78,16 @@ export class AuthHelper {
                 // Ok pressed
 
                 const authenticateUserDtoRaw = JSON.parse(serializedFormData);
-                /** @type AuthenticateUserDto */
-                const authenticateUserDto = new AuthenticateUserDto(authenticateUserDtoRaw.email, authenticateUserDtoRaw.password);
 
-                authService.authenticate(authenticateUserDto, (authenticatedUserDto) => {
+                usersService.authenticate({
+                    email: authenticateUserDtoRaw.email,
+                    password: authenticateUserDtoRaw.password
+                }, (authenticatedUserDto) => {
                     const applicationUser = ApplicationUser.fromAuthenticatedUserDto(authenticatedUserDto);
                     localStorage.setItem(LocalStorageKeys.currentUser, JSON.stringify(applicationUser));
                     window.location = ApplicationPageUrls.dashboardPage;
 
                     modalWindow.close();
-
                 }, (error) => {
                     console.error(error);
                     modalWindow.close();
@@ -112,5 +112,4 @@ export class AuthHelper {
     signOut() {
         ApplicationUser.signOut();
     }
-
 }

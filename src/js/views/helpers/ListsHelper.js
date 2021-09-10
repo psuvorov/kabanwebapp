@@ -1,18 +1,18 @@
 import {ModalWindowFactory} from "../components/modalWindow";
-import {UpdateListDto} from "../../dtos/lists";
 
 export class ListsHelper {
 
     /**
      *
-     * @param {KabanBoardService} kabanBoardService
+     * @param boardId
+     * @param {ListsService} listsService
      * @param {HTMLElement} listElem
      */
-    archiveList(kabanBoardService, listElem) {
+    archiveList(boardId, listsService, listElem) {
         ModalWindowFactory.showYesNoQuestion("Archive list", "Do you wand to archive this list?",
             () => {
                 const listId = listElem.getAttribute("data-list-id");
-                kabanBoardService.updateList(new UpdateListDto(listId, null, null, true),
+                listsService.updateList(boardId, {listId, isArchived: true},
                     (res) => {
                         listElem.parentElement.remove();
                     },
@@ -22,5 +22,4 @@ export class ListsHelper {
                     });
             });
     }
-
 }

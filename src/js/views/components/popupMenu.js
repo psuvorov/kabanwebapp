@@ -121,7 +121,6 @@ export class PopupMenu {
         pageContainerElem.append(this.popupMenuElem);
     }
 
-
     /**
      *
      * @param {HTMLElement} callerElem
